@@ -1,0 +1,155 @@
+/* =============================================================
+   CONTACT PAGE  —  styles specific to contact.html.
+   Hero styles live in components.css (.page-hero).
+   ============================================================= */
+
+
+/* ── Page shell ──────────────────────────────────────────── */
+.ct-page { padding: 0 0 5rem; background: var(--bg); }
+
+.ct-wrap {
+  max-width: 960px;
+  margin: 2rem auto;
+  padding: 0 1.25rem;
+}
+
+.ct-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+@media (max-width: 820px) { .ct-grid { grid-template-columns: 1fr; } }
+
+
+/* ── Rate card ───────────────────────────────────────────── */
+.rate-card {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hi) 100%);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  color: #fff;
+}
+.rate-card-label {
+  font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 1px; color: rgba(255,255,255,.8);
+}
+.rate-card-price { font-size: 3rem; font-weight: 800; letter-spacing: -2px; line-height: 1; margin: 0.4rem 0 0.1rem; }
+.rate-card-price span { font-size: 1.1rem; font-weight: 600; color: rgba(255,255,255,.8); }
+.rate-card-min {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25);
+  color: #fff; font-size: 0.75rem; font-weight: 600;
+  padding: 0.3rem 0.75rem; border-radius: var(--radius-full);
+  margin-top: 0.6rem;
+}
+.rate-card-note      { font-size: 0.78rem; color: rgba(255,255,255,.75); line-height: 1.55; margin-top: 1rem; }
+.rate-card-divider   { height: 1px; background: rgba(255,255,255,.2); margin: 1.2rem 0; }
+.rate-card-row       { display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 0.5rem; }
+.rate-card-row span:first-child { color: rgba(255,255,255,.8); }
+.rate-card-row span:last-child  { font-weight: 700; }
+.rate-card-cta {
+  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  background: #fff; color: var(--accent);
+  font-size: 0.9rem; font-weight: 700;
+  padding: 0.75rem; border-radius: var(--radius-md);
+  text-decoration: none; margin-top: 1.3rem;
+  transition: transform var(--transition-fast);
+}
+.rate-card-cta:hover { transform: translateY(-2px); }
+.rate-card-alt { text-align: center; font-size: 0.75rem; color: rgba(255,255,255,.7); margin-top: 0.7rem; }
+.rate-card-alt a { color: #fff; font-weight: 600; }
+.rate-card-offer {
+  display: inline-block;
+  background: var(--yellow); color: var(--yellow-dark);
+  font-size: 0.7rem; font-weight: 800; letter-spacing: 0.3px;
+  padding: 0.25rem 0.7rem; border-radius: var(--radius-full);
+  margin: 0.55rem 0 0.15rem;
+}
+.rate-card-strike   { font-size: 1.3rem; font-weight: 600; text-decoration: line-through; opacity: 0.55; margin-right: 0.5rem; vertical-align: middle; }
+
+
+/* ── Content cards ───────────────────────────────────────── */
+.ct-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.25rem;
+}
+.ct-card:last-child { margin-bottom: 0; }
+.ct-card-title {
+  font-size: 1.02rem; font-weight: 800; color: var(--text);
+  letter-spacing: -0.3px; margin-bottom: 1rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+
+
+/* ── Includes list ───────────────────────────────────────── */
+.incl-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.7rem; }
+.incl-list li { display: flex; gap: 0.65rem; align-items: flex-start; font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+.incl-list li svg    { color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+.incl-list li strong { color: var(--text); font-weight: 600; }
+
+
+/* ── Process steps ───────────────────────────────────────── */
+.steps { display: flex; flex-direction: column; gap: 1rem; }
+.step  { display: flex; gap: 0.85rem; align-items: flex-start; }
+.step-num {
+  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+  background: var(--accent-lo); border: 1px solid var(--accent-mid);
+  color: var(--accent); font-size: 0.78rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.step-body-title { font-size: 0.88rem; font-weight: 700; color: var(--text); }
+.step-body-desc  { font-size: 0.8rem; color: var(--muted); margin-top: 0.15rem; line-height: 1.5; }
+
+
+/* ── Contact links grid ──────────────────────────────────── */
+.ct-contacts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.7rem;
+}
+.ct-contact {
+  display: flex; align-items: center; gap: 0.75rem;
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  text-decoration: none; color: inherit;
+  transition: border-color var(--transition-fast);
+}
+.ct-contact:hover        { border-color: var(--accent); }
+.ct-contact-icon         { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ct-contact-label        { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted2); }
+.ct-contact-value        { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+
+
+/* ── FAQ accordion ───────────────────────────────────────── */
+.faq-acc  { display: flex; flex-direction: column; gap: 0.5rem; }
+.faq-item { background: var(--card2); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+.faq-trigger {
+  width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+  background: none; border: none; cursor: pointer;
+  padding: 0.85rem 1rem;
+  font-family: var(--font-sans); text-align: left;
+}
+.faq-q    { font-size: 0.85rem; font-weight: 700; color: var(--text); }
+.faq-chev { flex-shrink: 0; color: var(--muted2); transition: transform var(--transition-mid), color var(--transition-mid); }
+.faq-item.open .faq-chev            { transform: rotate(180deg); color: var(--accent); }
+.faq-item.open .faq-trigger .faq-q  { color: var(--accent); }
+.faq-panel { max-height: 0; overflow: hidden; transition: max-height .28s ease; }
+.faq-item.open .faq-panel { max-height: 320px; }
+.faq-a    { font-size: 0.8rem; color: var(--muted); line-height: 1.55; padding: 0 1rem 0.9rem; }
+
+
+/* ── Testimonials ────────────────────────────────────────── */
+.tst-head  { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 0.4rem; margin: 1.75rem 0 1rem; }
+.tst-title { font-size: 1.15rem; font-weight: 800; color: var(--text); letter-spacing: -0.4px; }
+.tst-sub   { font-size: 0.76rem; color: var(--muted2); display: inline-flex; align-items: center; gap: 0.4rem; }
+
+.tst-carousel { overflow: hidden; }
+.tst-track {
+  display: flex; gap: 0.9rem;
+  overflow-x: auto; scroll-snap-type: x mandatory;
+  scrollbar-width: none; scroll-behavior: smooth;
+}
+.tst-track::-webkit-scrollbar { display: none; }
+
+.ct-disclaimer { font-size: 0.72rem; color: var(--muted2); text-align: center; margin-top: 1.5rem; line-height: 1.5; }

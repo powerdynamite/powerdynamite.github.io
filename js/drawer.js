@@ -4,7 +4,7 @@
 
 const projects = {
   altus: {
-    tag: { text: 'DE Microsoft Partner', cls: 'tag-ind' },
+    tag: { text: 'DE Microsoft Partner', cls: 'badge--accent' },
     title: 'Altus PPM & xPM — Client Enhancements & Migrations',
     subtitle: 'Technical Lead · Solution Designer · Developer',
     overview: 'Led end-to-end product enhancement and migration work across two enterprise PPM platforms — Altus PPM and Projectum xPM — for manufacturing and technology clients across Germany and Austria. Worked hands-on from solution design through to deployment.',
@@ -20,7 +20,7 @@ const projects = {
   },
 
   copilot: {
-    tag: { text: 'Copilot Studio · AI', cls: 'tag-sky' },
+    tag: { text: 'Copilot Studio · AI', cls: 'badge--sky' },
     title: 'Copilot Studio AI Agents — Teams & Enterprise Deployment',
     subtitle: 'AI Agent Designer · Technical Lead',
     overview: 'Extensively designed, built, and deployed Copilot Studio AI agents for enterprise internal use cases. Explored the full spectrum of agent capabilities from knowledge-grounded conversational bots to Computer-Using Agents (CUA) — evaluating where AI automation could replace or augment human workflows.',
@@ -36,7 +36,7 @@ const projects = {
   },
 
   banking: {
-    tag: { text: 'UAE Microsoft Partner · Banking', cls: 'tag-amb' },
+    tag: { text: 'UAE Microsoft Partner · Banking', cls: 'badge--amber' },
     title: 'Banking CRM — Customer 360 & Onboarding (Gulf Region)',
     subtitle: 'D365 CE Developer · Production Support',
     overview: 'Worked on a specialised Dynamics 365 CE banking CRM product deployed at major Islamic banks in the Gulf region. Responsible for core CRM module development including Customer 360 and the full Customer Onboarding journey — then extended into production support for a flagship client.',
@@ -52,7 +52,7 @@ const projects = {
   },
 
   ppm: {
-    tag: { text: 'AU Microsoft Partner · PPM', cls: 'tag-grn' },
+    tag: { text: 'AU Microsoft Partner · PPM', cls: 'badge--green' },
     title: 'AppSource PPM SaaS — Customer-Driven Enhancements',
     subtitle: 'Power Platform & BI Developer',
     overview: 'Worked on an AppSource-listed Project Portfolio Management SaaS product built on Microsoft Power Platform — enhancing and extending the product during client delivery engagements to meet each organisation\'s specific PMO requirements across APAC corporate and government sectors.',
@@ -68,7 +68,7 @@ const projects = {
   },
 
   formengine: {
-    tag: { text: 'Personal Project · Mature & Active', cls: 'tag-grn' },
+    tag: { text: 'Personal Project · Mature & Active', cls: 'badge--green' },
     title: 'Configurable Form Engine',
     subtitle: 'Creator · Power Platform Developer',
     overview: 'A Power Platform-based open-source project that solves a real enterprise pain point — the need to change form structures in Dataverse without creating new solution versions or deploying code. The engine lets administrators define, version, and publish dynamic forms entirely through configuration.',
@@ -85,7 +85,7 @@ const projects = {
   },
 
   ppskill: {
-    tag: { text: 'Personal Project · Claude Code Skill', cls: 'tag-ind' },
+    tag: { text: 'Personal Project · Claude Code Skill', cls: 'badge--accent' },
     title: 'Power Platform Architect Skill',
     subtitle: 'Creator · AI Tool Builder',
     overview: 'A custom Claude Code skill built to make Power Platform architecture work faster and cheaper with AI. Instead of repeatedly explaining Dataverse patterns, plugin conventions, ALM structures, and Copilot Studio YAML syntax to an AI assistant, this skill pre-loads all that domain knowledge — so you can work at architect speed from the first prompt.',
@@ -102,7 +102,7 @@ const projects = {
   },
 
   auditdash: {
-    tag: { text: 'Personal Project · Open Source', cls: 'tag-grn' },
+    tag: { text: 'Personal Project · Open Source', cls: 'badge--green' },
     title: 'Dataverse Audit Insights',
     subtitle: 'Power BI Developer · Power Apps Builder',
     overview: 'Turns the Dataverse audit table into an active governance and adoption intelligence layer — a 4-page Power BI dashboard plus a Canvas App for record-level diff and restore. Free stack only (Power BI + Dataverse + Power Apps), portable across environments via a single parameter. The audit table is not exposed via the standard Dataverse connector so the model uses the Web API OData endpoint directly.',
@@ -119,7 +119,7 @@ const projects = {
   },
 
   azsearch: {
-    tag: { text: 'DE Microsoft Partner · Azure AI', cls: 'tag-sky' },
+    tag: { text: 'DE Microsoft Partner · Azure AI', cls: 'badge--sky' },
     title: 'Azure AI Search + Copilot Studio Knowledge Bot',
     subtitle: 'Solution Designer · Azure Developer',
     overview: 'Designed and built a full end-to-end enterprise RAG (Retrieval-Augmented Generation) pipeline for a German client — enabling employees to query internal SharePoint knowledge bases through a natural language Copilot Studio agent. The solution automatically keeps the AI Search index in sync with SharePoint document changes.',
@@ -135,7 +135,7 @@ const projects = {
   },
 
   alm: {
-    tag: { text: 'Power Platform · DevOps', cls: 'tag-rose' },
+    tag: { text: 'Power Platform · DevOps', cls: 'badge--rose' },
     title: 'ALM Pipeline Automation — PAC CLI + Dataverse Web API',
     subtitle: 'Power Platform Architect · Developer',
     overview: 'Designed and implemented a fully automated ALM pipeline system for Power Platform solutions — replacing time-consuming manual portal-based deployment steps with programmatic, repeatable processes using PAC CLI and the Dataverse Web API.',

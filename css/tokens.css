@@ -36,6 +36,15 @@
   --sky:       #0284c7;
   --sky-lo:    rgba(2,132,199,0.10);
 
+  /* ── Hero background ───────────────────────────────── */
+  --hero-bg: linear-gradient(135deg, #f0f6ff 0%, #e8f1fb 100%);
+
+  /* ── Extended semantic ──────────────────────────────── */
+  --success:     #107c10;
+  --success-lo:  rgba(16,124,16,0.10);
+  --yellow:      #ffd23f;
+  --yellow-dark: #3d2c00;
+
   /* ── Brand colours ─────────────────────────────────── */
   --brand-li:  #0a66c2;   /* LinkedIn                        */
   --brand-yt:  #ff0000;   /* YouTube                         */
