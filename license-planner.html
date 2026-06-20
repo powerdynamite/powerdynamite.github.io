@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>License Planner — Power Platform & D365</title>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <style>
+    .lp-page { padding: 0 0 5rem; background: var(--bg); }
+
+    .lp-hero {
+      background: linear-gradient(135deg, #f0f6ff 0%, #e8f1fb 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 2rem 1.25rem 1.6rem; text-align: center;
+    }
+    .lp-hero h1 { font-size: clamp(1.5rem,3vw,2.2rem); font-weight: 800; color: var(--text); letter-spacing: -0.8px; margin-bottom: 0.4rem; }
+    .lp-hero h1 span { color: var(--accent); }
+    .lp-hero p { font-size: 0.88rem; color: var(--muted); max-width: 560px; margin: 0 auto 0.9rem; line-height: 1.6; }
+    .lp-disclaimer {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      background: rgba(0,120,212,.07); border: 1px solid rgba(0,120,212,.18);
+      color: var(--accent); font-size: 0.7rem; padding: 0.28rem 0.85rem; border-radius: var(--radius-full);
+    }
+
+    .wizard-wrap { max-width: 920px; margin: 2rem auto; padding: 0 1.25rem; }
+
+    /* progress */
+    .wiz-progress { display: flex; align-items: center; gap: 0; margin-bottom: 2rem; }
+    .wiz-step { display: flex; align-items: center; gap: 0.5rem; font-size: 0.76rem; font-weight: 600; color: var(--muted2); transition: color .2s; }
+    .wiz-step.active { color: var(--accent); }
+    .wiz-step.done { color: #107c10; }
+    .wiz-step-num {
+      width: 27px; height: 27px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.76rem; font-weight: 700; border: 2px solid var(--border);
+      background: var(--card); color: var(--muted2); transition: all .2s;
+    }
+    .wiz-step.active .wiz-step-num { border-color: var(--accent); background: var(--accent); color: #fff; }
+    .wiz-step.done .wiz-step-num { border-color: #107c10; background: #107c10; color: #fff; }
+    .wiz-step-connector { flex: 1; height: 2px; background: var(--border); margin: 0 0.35rem; }
+    .wiz-step-connector.done { background: #107c10; }
+    @media (max-width: 640px) { .wiz-step-label { display: none; } .wiz-step-connector { flex: 1; } }
+
+    .wiz-panel { display: none; animation: fadeUp .22s ease; }
+    .wiz-panel.active { display: block; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+
+    .wiz-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.75rem 1.75rem 1.5rem; margin-bottom: 1rem;
+    }
+    .wiz-card-title { font-size: 1.05rem; font-weight: 800; color: var(--text); letter-spacing: -0.3px; margin-bottom: 0.3rem; }
+    .wiz-card-sub { font-size: 0.83rem; color: var(--muted); margin-bottom: 1.4rem; line-height: 1.55; }
+
+    /* solution pills (step 1) */
+    .sol-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.6rem; }
+    .sol-tile {
+      display: flex; align-items: center; gap: 0.75rem;
+      border: 1.5px solid var(--border); background: var(--card2);
+      border-radius: 12px; padding: 0.85rem 1rem; cursor: pointer;
+      transition: border-color .15s, background .15s; user-select: none;
+    }
+    .sol-tile:hover { border-color: var(--accent); background: var(--accent-lo); }
+    .sol-tile.sel { border-color: var(--accent); background: var(--accent-lo); box-shadow: 0 0 0 1px var(--accent) inset; }
+    .sol-tile-icon { width: 38px; height: 38px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+    .sol-tile-name { font-size: 0.86rem; font-weight: 700; color: var(--text); }
+    .sol-tile-desc { font-size: 0.7rem; color: var(--muted); margin-top: 0.1rem; line-height: 1.35; }
+    .sol-check {
+      margin-left: auto; width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0;
+      border: 1.5px solid var(--border); background: var(--card);
+      display: flex; align-items: center; justify-content: center; color: #fff;
+    }
+    .sol-tile.sel .sol-check { background: var(--accent); border-color: var(--accent); }
+    .sol-check svg { display: none; }
+    .sol-tile.sel .sol-check svg { display: block; }
+
+    /* base license pills (step 1) */
+    .base-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .base-pill {
+      display: flex; flex-direction: column; gap: 0.1rem;
+      border: 1.5px solid var(--border); background: var(--card2);
+      border-radius: 10px; padding: 0.6rem 0.9rem; cursor: pointer;
+      transition: border-color .15s, background .15s; user-select: none; min-width: 120px;
+    }
+    .base-pill:hover { border-color: var(--accent); background: var(--accent-lo); }
+    .base-pill.sel { border-color: var(--accent); background: var(--accent-lo); box-shadow: 0 0 0 1px var(--accent) inset; }
+    .base-pill-name { font-size: 0.82rem; font-weight: 700; color: var(--text); }
+    .base-pill-note { font-size: 0.68rem; color: var(--muted); }
+
+    /* role cards (step 2) */
+    .role-section { margin-bottom: 1.5rem; }
+    .role-section:last-child { margin-bottom: 0; }
+    .role-section-title {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.1px;
+      color: var(--muted2); margin-bottom: 0.7rem; display: flex; align-items: center; gap: 0.5rem;
+    }
+    .role-section-title span { display: inline-block; width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+    .role-grid { display: flex; flex-direction: column; gap: 0.6rem; }
+    .role-card { border: 1px solid var(--border); border-radius: 12px; padding: 0.9rem 1rem; background: var(--card2); }
+    .role-card-head { display: flex; align-items: flex-start; gap: 0.7rem; margin-bottom: 0.75rem; }
+    .role-card-icon { width: 34px; height: 34px; border-radius: 9px; background: var(--accent-lo); display: flex; align-items: center; justify-content: center; font-size: 1.05rem; flex-shrink: 0; }
+    .role-card-name { font-size: 0.88rem; font-weight: 700; color: var(--text); }
+    .role-card-desc { font-size: 0.74rem; color: var(--muted); margin-top: 0.12rem; line-height: 1.4; }
+    .role-card-controls { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 0.6rem; align-items: end; }
+    @media (max-width: 560px) { .role-card-controls { grid-template-columns: 1fr; } }
+    .role-field { display: flex; flex-direction: column; gap: 0.25rem; }
+    .role-field > span { font-size: 0.64rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: var(--muted2); }
+    .role-tier {
+      width: 100%; padding: 0.45rem 0.6rem; border: 1.5px solid var(--border);
+      border-radius: var(--radius-md); background: var(--card); color: var(--text);
+      font-size: 0.78rem; font-family: var(--font-sans); outline: none; cursor: pointer;
+      transition: border-color .15s;
+    }
+    .role-tier:focus { border-color: var(--accent); }
+    .num-stepper {
+      display: flex; align-items: center; background: var(--card);
+      border: 1.5px solid var(--border); border-radius: var(--radius-md); overflow: hidden;
+    }
+    .num-stepper button {
+      width: 30px; height: 34px; background: none; border: none; cursor: pointer;
+      color: var(--muted); font-size: 1.15rem; line-height: 1;
+      display: flex; align-items: center; justify-content: center; transition: color .15s, background .15s;
+    }
+    .num-stepper button:hover { color: var(--accent); background: var(--accent-lo); }
+    .num-input {
+      flex: 1; min-width: 0; width: 100%; text-align: center; border: none; background: none;
+      color: var(--text); font-size: 0.9rem; font-weight: 700; font-family: var(--font-sans); outline: none;
+    }
+    .num-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .role-card-sub {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 0.75rem; padding-top: 0.6rem; border-top: 1px solid var(--border);
+      font-size: 0.76rem; color: var(--muted);
+    }
+    .role-card-sub strong { font-size: 0.92rem; color: var(--text); }
+    .role-note {
+      background: var(--accent-lo); border: 1px solid var(--accent-mid); border-radius: var(--radius-md);
+      padding: 0.8rem 1rem; font-size: 0.8rem; color: var(--muted); line-height: 1.55;
+    }
+    .role-empty { font-size: 0.85rem; color: var(--muted2); text-align: center; padding: 2rem 0; }
+
+    /* shared add-ons (step 3) */
+    .shared-group { margin-bottom: 1.4rem; }
+    .shared-group:last-child { margin-bottom: 0; }
+    .shared-group-title {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.1px;
+      color: var(--muted2); margin-bottom: 0.7rem; display: flex; align-items: center; gap: 0.5rem;
+    }
+    .shared-grid { display: flex; flex-direction: column; gap: 0.5rem; }
+    .shared-row {
+      display: grid; grid-template-columns: 38px 1fr auto auto; align-items: center; gap: 0.8rem;
+      border: 1px solid var(--border); border-radius: 10px; padding: 0.6rem 0.85rem; background: var(--card2);
+    }
+    .shared-row-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--accent-lo); display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+    .shared-row-name { font-size: 0.82rem; font-weight: 700; color: var(--text); }
+    .shared-row-desc { font-size: 0.7rem; color: var(--muted); margin-top: 0.08rem; line-height: 1.35; }
+    .shared-row-price { font-size: 0.7rem; color: var(--muted2); white-space: nowrap; }
+    .shared-row .num-stepper { width: 110px; }
+    .shared-row-cost { font-size: 0.82rem; font-weight: 700; color: var(--text); min-width: 70px; text-align: right; white-space: nowrap; }
+    @media (max-width: 560px) {
+      .shared-row { grid-template-columns: 32px 1fr; row-gap: 0.5rem; }
+      .shared-row-price, .shared-row .num-stepper, .shared-row-cost { grid-column: 2; }
+      .shared-row-cost { text-align: left; }
+    }
+
+    /* live step total bar */
+    .step-total {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--card); border: 1px solid var(--accent-mid); border-radius: var(--radius-md);
+      padding: 0.7rem 1.1rem; margin-bottom: 1rem;
+    }
+    .step-total-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); }
+    .step-total-val { font-size: 1.1rem; font-weight: 800; color: var(--accent); }
+
+    /* nav buttons */
+    .wiz-nav { display: flex; align-items: center; justify-content: space-between; padding-top: 0.5rem; }
+    .wiz-btn-back {
+      display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; font-weight: 500;
+      color: var(--muted); background: none; border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 0.5rem 1rem; cursor: pointer; transition: all .15s;
+    }
+    .wiz-btn-back:hover { border-color: var(--border2); color: var(--text); }
+    .wiz-btn-next {
+      display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.88rem; font-weight: 700;
+      color: #fff; background: var(--accent); border: none; border-radius: var(--radius-md);
+      padding: 0.55rem 1.4rem; cursor: pointer; transition: background .15s; box-shadow: 0 2px 8px rgba(0,120,212,.25);
+    }
+    .wiz-btn-next:hover { background: var(--accent-hi); }
+    .wiz-btn-next:disabled { background: var(--border2); cursor: not-allowed; box-shadow: none; }
+
+    /* results (step 4) */
+    .result-summary-bar {
+      background: linear-gradient(135deg, #0078d4, #106ebe); border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;
+    }
+    .result-total-label { color: rgba(255,255,255,.8); font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+    .result-total-monthly { color: #fff; font-size: 2rem; font-weight: 800; letter-spacing: -1px; line-height: 1.1; }
+    .result-total-annual { color: rgba(255,255,255,.7); font-size: 0.75rem; margin-top: 0.15rem; }
+    .result-meta { text-align: right; }
+    .result-meta-item { color: rgba(255,255,255,.7); font-size: 0.72rem; margin-top: 0.15rem; }
+
+    .result-section { margin-bottom: 1.1rem; }
+    .result-group-title {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.1px;
+      color: var(--text); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;
+    }
+    .result-group-sub { font-weight: 800; color: var(--accent); margin-left: auto; }
+    .result-rows { display: flex; flex-direction: column; gap: 0.4rem; }
+    .result-row {
+      display: flex; align-items: flex-start; gap: 0.7rem; background: var(--card2);
+      border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.65rem 0.85rem;
+      border-left: 3px solid var(--accent);
+    }
+    .result-row.covered { border-left-color: #107c10; }
+    .result-row.shared { border-left-color: #742774; }
+    .result-row-icon { width: 30px; height: 30px; border-radius: 7px; background: var(--accent-lo); display: flex; align-items: center; justify-content: center; font-size: 0.95rem; flex-shrink: 0; }
+    .result-row-body { flex: 1; min-width: 0; }
+    .result-row-name { font-size: 0.83rem; font-weight: 700; color: var(--text); }
+    .result-row-lic { font-size: 0.73rem; color: var(--muted); margin-top: 0.12rem; }
+    .result-row-right { text-align: right; flex-shrink: 0; }
+    .result-row-cost { font-size: 0.85rem; font-weight: 700; color: var(--text); white-space: nowrap; }
+    .result-row-qty { font-size: 0.67rem; color: var(--muted2); margin-top: 0.1rem; white-space: nowrap; }
+    .result-covered-label {
+      font-size: 0.7rem; font-weight: 700; color: #107c10; background: rgba(16,124,16,.09);
+      border: 1px solid rgba(16,124,16,.2); border-radius: var(--radius-full); padding: 0.12rem 0.5rem; white-space: nowrap;
+    }
+    .result-section-head {
+      display: flex; align-items: center; gap: 0.55rem; font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.1px; margin: 1.25rem 0 0.6rem;
+    }
+    .result-section-head.covered { color: #107c10; }
+    .result-tip {
+      display: flex; gap: 0.55rem; align-items: flex-start; background: rgba(0,120,212,.05);
+      border: 1px solid rgba(0,120,212,.18); border-radius: var(--radius-md); padding: 0.7rem 1rem;
+      font-size: 0.77rem; color: var(--muted); line-height: 1.55; margin-top: 0.5rem;
+    }
+    .result-tip strong { color: var(--accent); }
+    .result-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1.1rem; }
+    .result-empty { text-align: center; padding: 2.5rem 1rem; }
+    .result-empty-icon { font-size: 2.5rem; }
+    .result-empty-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-top: 0.5rem; }
+    .result-empty-sub { font-size: 0.83rem; color: var(--muted); max-width: 420px; margin: 0.4rem auto 0; line-height: 1.55; }
+
+    .wiz-restart {
+      display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.78rem; color: var(--muted);
+      cursor: pointer; background: none; border: none; padding: 0; text-decoration: underline; text-underline-offset: 2px; transition: color .15s;
+    }
+    .wiz-restart:hover { color: var(--accent); }
+
+    /* advanced canvas */
+    .adv-toggle-bar { max-width: 920px; margin: 0 auto 1rem; padding: 0 1.25rem; }
+    .adv-toggle-btn {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+      padding: 0.9rem 1.2rem; font-size: 0.82rem; font-weight: 600; color: var(--muted);
+      cursor: pointer; transition: border-color .15s, color .15s;
+    }
+    .adv-toggle-btn:hover { border-color: var(--border2); color: var(--text); }
+    .adv-toggle-btn .adv-arrow { transition: transform .2s; font-size: 0.75rem; }
+    .adv-toggle-btn.open .adv-arrow { transform: rotate(180deg); }
+    .adv-canvas { display: none; max-width: 1280px; margin: 0 auto; padding: 0 1.25rem; }
+    .adv-canvas.open { display: block; }
+    .lp-body-inner { display: grid; grid-template-columns: 300px 1fr; gap: 1.25rem; align-items: start; }
+    @media (max-width: 860px) { .lp-body-inner { grid-template-columns: 1fr; } }
+
+    .catalog-panel { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; position: sticky; top: 68px; }
+    .catalog-header { padding: 0.85rem 1rem 0.7rem; border-bottom: 1px solid var(--border); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted2); display: flex; align-items: center; gap: 0.5rem; }
+    .catalog-search { padding: 0.6rem 1rem; border-bottom: 1px solid var(--border); }
+    .catalog-search input { width: 100%; padding: 0.42rem 0.75rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--card2); color: var(--text); font-size: 0.82rem; font-family: var(--font-sans); outline: none; transition: border-color .15s; }
+    .catalog-search input:focus { border-color: var(--accent); }
+    .catalog-body { max-height: calc(100vh - 220px); overflow-y: auto; padding: 0.5rem; }
+    .catalog-body::-webkit-scrollbar { width: 4px; }
+    .catalog-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+    .cat-group { margin-bottom: 0.35rem; }
+    .cat-group-label { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.1px; color: var(--muted2); padding: 0.5rem 0.5rem 0.3rem; display: flex; align-items: center; gap: 0.45rem; }
+    .cat-group-label span { display: inline-block; width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+    .cat-tile { display: flex; align-items: center; gap: 0.65rem; padding: 0.55rem 0.65rem; border-radius: var(--radius-md); cursor: grab; user-select: none; border: 1px solid transparent; transition: background .15s, border-color .15s; margin-bottom: 0.2rem; }
+    .cat-tile:hover { background: var(--card2); border-color: var(--border); }
+    .cat-tile:active { cursor: grabbing; opacity: 0.7; }
+    .cat-tile.dragging { opacity: 0.4; }
+    .cat-tile-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1rem; }
+    .cat-tile-info { flex: 1; min-width: 0; }
+    .cat-tile-name { font-size: 0.8rem; font-weight: 600; color: var(--text); line-height: 1.2; }
+    .cat-tile-price { font-size: 0.68rem; color: var(--muted); margin-top: 0.1rem; }
+    .cat-tile-add { width: 22px; height: 22px; border-radius: 6px; background: var(--accent-lo); color: var(--accent); border: 1px solid var(--accent-mid); font-size: 1rem; line-height: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; font-weight: 300; transition: background .15s; }
+    .cat-tile-add:hover { background: var(--accent); color: #fff; }
+    .canvas-panel { display: flex; flex-direction: column; gap: 1.25rem; }
+    .canvas-box { background: var(--card); border: 2px dashed var(--border); border-radius: var(--radius-lg); min-height: 200px; transition: border-color .15s, background .15s; padding: 0.75rem; }
+    .canvas-box.drag-over { border-color: var(--accent); background: var(--accent-lo); }
+    .canvas-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 180px; gap: 0.6rem; color: var(--muted2); pointer-events: none; }
+    .canvas-empty svg { opacity: .35; }
+    .canvas-empty p { font-size: 0.82rem; margin: 0; }
+    .canvas-items { display: flex; flex-direction: column; gap: 0.55rem; }
+    .canvas-item { background: var(--card2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.7rem 0.85rem; display: grid; grid-template-columns: 32px 1fr auto auto; align-items: center; gap: 0.75rem; transition: border-color .15s; animation: slideIn .18s ease; }
+    @keyframes slideIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:none; } }
+    .canvas-item:hover { border-color: var(--border2); }
+    .canvas-item-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+    .canvas-item-info { min-width: 0; }
+    .canvas-item-name { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+    .canvas-item-unit { font-size: 0.68rem; color: var(--muted); margin-top: 0.08rem; }
+    .qty-ctrl { display: flex; align-items: center; gap: 0.35rem; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.18rem 0.4rem; }
+    .qty-btn { width: 22px; height: 22px; border-radius: 5px; background: none; border: none; cursor: pointer; color: var(--muted); font-size: 1.1rem; line-height: 1; display: flex; align-items: center; justify-content: center; transition: color .15s, background .15s; }
+    .qty-btn:hover { color: var(--accent); background: var(--accent-lo); }
+    .qty-input { width: 44px; text-align: center; border: none; background: none; color: var(--text); font-size: 0.85rem; font-weight: 600; font-family: var(--font-sans); outline: none; }
+    .qty-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .canvas-item-cost { font-size: 0.85rem; font-weight: 700; color: var(--text); white-space: nowrap; min-width: 72px; text-align: right; }
+    .canvas-item-remove { width: 24px; height: 24px; border-radius: 6px; background: none; border: 1px solid transparent; cursor: pointer; color: var(--muted2); font-size: 0.9rem; display: flex; align-items: center; justify-content: center; transition: color .15s, border-color .15s, background .15s; }
+    .canvas-item-remove:hover { color: #e11d48; border-color: rgba(225,29,72,.25); background: rgba(225,29,72,.06); }
+    .cat-d365 { --cat-color:#002050; --cat-bg:rgba(0,32,80,.08); }
+    .cat-pp { --cat-color:#742774; --cat-bg:rgba(116,39,116,.08); }
+    .cat-pbi { --cat-color:#f2c811; --cat-bg:rgba(242,200,17,.12); }
+    .cat-cs { --cat-color:#0078d4; --cat-bg:rgba(0,120,212,.10); }
+    .cat-m365 { --cat-color:#d13438; --cat-bg:rgba(209,52,56,.08); }
+    .cat-tile-icon, .canvas-item-icon { background: var(--cat-bg, var(--accent-lo)); }
+    .env-section { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.1rem; }
+    .env-section-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted2); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .env-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.6rem; }
+    .env-card { background: var(--card2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.7rem 0.85rem; display: flex; flex-direction: column; gap: 0.4rem; }
+    .env-card-name { font-size: 0.8rem; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 0.4rem; }
+    .env-card-price { font-size: 0.68rem; color: var(--muted); }
+    .env-card-cost { font-size: 0.82rem; font-weight: 700; color: var(--accent); }
+    .env-note { font-size: 0.67rem; color: var(--muted2); margin-top: 0.1rem; }
+    .summary-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .summary-header { background: linear-gradient(135deg, #0078d4, #106ebe); padding: 0.85rem 1.25rem; display: flex; align-items: center; justify-content: space-between; }
+    .summary-header-left { color: rgba(255,255,255,.85); font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+    .summary-total-monthly { color: #fff; font-size: 1.7rem; font-weight: 800; letter-spacing: -0.5px; }
+    .summary-total-annual { color: rgba(255,255,255,.75); font-size: 0.75rem; margin-top: 0.1rem; }
+    .summary-body { padding: 0.85rem 1.25rem; }
+    .summary-lines { display: flex; flex-direction: column; gap: 0.35rem; max-height: 200px; overflow-y: auto; }
+    .summary-line { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: var(--muted); }
+    .summary-line-name { flex: 1; }
+    .summary-line-qty { color: var(--muted2); width: 60px; text-align: center; font-size: 0.72rem; }
+    .summary-line-cost { font-weight: 600; color: var(--text); min-width: 70px; text-align: right; }
+    .summary-divider { height: 1px; background: var(--border); margin: 0.6rem 0; }
+    .summary-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 0.75rem; flex-wrap: wrap; gap: 0.5rem; }
+    .summary-actions { display: flex; gap: 0.5rem; }
+    .summary-note { font-size: 0.65rem; color: var(--muted2); }
+  </style>
+</head>
+<body class="lp-page">
+
+<nav class="site-nav">
+  <div class="site-nav-inner">
+    <a href="index.html" class="site-nav-brand">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      <span class="site-nav-brand-name">Abdul Basit</span>
+    </a>
+    <div class="site-nav-links">
+      <a href="index.html" class="site-nav-link">Profile</a>
+      <a href="articles.html" class="site-nav-link">Articles</a>
+      <a href="license-planner.html" class="site-nav-link active">License Planner</a>
+      <a href="contact.html" class="site-nav-link">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<div class="lp-hero">
+  <h1>Power Platform &amp; D365 <span>License Advisor</span></h1>
+  <p>Pick what you're building, define your team by role, and get an itemised licensing cost — because a 50-person team is never 50 of the same license.</p>
+  <div class="lp-disclaimer">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+    Microsoft list prices (USD) · Actual costs vary by volume agreement and region
+  </div>
+</div>
+
+<div class="wizard-wrap">
+
+  <div class="wiz-progress">
+    <div class="wiz-step active" id="wiz-step-1"><div class="wiz-step-num">1</div><span class="wiz-step-label">What you're building</span></div>
+    <div class="wiz-step-connector" id="wiz-conn-1"></div>
+    <div class="wiz-step" id="wiz-step-2"><div class="wiz-step-num">2</div><span class="wiz-step-label">Build your team</span></div>
+    <div class="wiz-step-connector" id="wiz-conn-2"></div>
+    <div class="wiz-step" id="wiz-step-3"><div class="wiz-step-num">3</div><span class="wiz-step-label">Shared add-ons</span></div>
+    <div class="wiz-step-connector" id="wiz-conn-3"></div>
+    <div class="wiz-step" id="wiz-step-4"><div class="wiz-step-num">4</div><span class="wiz-step-label">Recommendation</span></div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="wiz-panel active" id="panel-1">
+    <div class="wiz-card">
+      <div class="wiz-card-title">What Microsoft 365 base does your org run on?</div>
+      <div class="wiz-card-sub">Almost every org already has a base Microsoft 365 license — and it changes the math. E5 already includes Power BI Pro, and E3/E5 are required as a base for Microsoft 365 Copilot.</div>
+      <div class="base-pills" id="basePills"></div>
+    </div>
+    <div class="wiz-card">
+      <div class="wiz-card-title">What are you building?</div>
+      <div class="wiz-card-sub">Select one or more solution areas. Each one expands into the real-world roles that need licensing.</div>
+      <div class="sol-grid" id="solGrid"></div>
+    </div>
+    <div class="wiz-nav">
+      <div></div>
+      <button class="wiz-btn-next" id="step1Next">
+        Next: Build your team
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9,18 15,12 9,6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="wiz-panel" id="panel-2">
+    <div class="step-total">
+      <span class="step-total-label">Named-user licenses so far</span>
+      <span class="step-total-val" id="step2Total">$0/mo</span>
+    </div>
+    <div class="wiz-card">
+      <div class="wiz-card-title">Build your team</div>
+      <div class="wiz-card-sub">Set how many people fill each role. Swap the license tier from the dropdown if you want a cheaper or richer option, and enter any seats you <strong>already own</strong> so we only cost the net-new licenses.</div>
+      <div id="rolesWrap"></div>
+    </div>
+    <div class="wiz-nav">
+      <button class="wiz-btn-back" id="step2Back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15,18 9,12 15,6"/></svg> Back</button>
+      <button class="wiz-btn-next" id="step2Next">Next: Shared add-ons <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9,18 15,12 9,6"/></svg></button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="wiz-panel" id="panel-3">
+    <div class="step-total">
+      <span class="step-total-label">Shared add-ons so far</span>
+      <span class="step-total-val" id="step3Total">$0/mo</span>
+    </div>
+    <div class="wiz-card">
+      <div class="wiz-card-title">Shared infrastructure &amp; add-ons</div>
+      <div class="wiz-card-sub">These are licensed once for the whole org — not per role. Automation bots, reporting, AI/Copilots, capacity, and environments. Set the quantities you need.</div>
+      <div id="sharedWrap"></div>
+    </div>
+    <div class="wiz-nav">
+      <button class="wiz-btn-back" id="step3Back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15,18 9,12 15,6"/></svg> Back</button>
+      <button class="wiz-btn-next" id="step3Next">Get my recommendation <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9,18 15,12 9,6"/></svg></button>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="wiz-panel" id="panel-4">
+    <div class="result-summary-bar">
+      <div>
+        <div class="result-total-label">Total additional monthly cost</div>
+        <div class="result-total-monthly" id="resultMonthly">$0</div>
+        <div class="result-total-annual" id="resultAnnual">$0 / year</div>
+      </div>
+      <div class="result-meta">
+        <div class="result-meta-item" id="resultSeats"></div>
+        <div class="result-meta-item" id="resultAreas"></div>
+      </div>
+    </div>
+    <div id="resultOutput"></div>
+    <div class="result-actions">
+      <button class="btn btn--primary" id="resultCopy" style="font-size:0.78rem; padding:0.42rem 1rem;">&#x1F4CB; Copy cost summary</button>
+      <button class="btn btn--ghost" id="resultPrint" style="font-size:0.78rem; padding:0.42rem 1rem;">&#x1F5A8; Print</button>
+      <button class="btn btn--muted" id="openAdvanced" style="font-size:0.78rem; padding:0.42rem 1rem;">🔧 Open manual canvas</button>
+    </div>
+    <div style="margin-top:1.1rem; display:flex; align-items:center; justify-content:space-between;">
+      <button class="wiz-btn-back" id="step4Back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15,18 9,12 15,6"/></svg> Edit answers</button>
+      <button class="wiz-restart" id="wizRestart"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg> Start over</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ADVANCED CANVAS -->
+<div class="adv-toggle-bar">
+  <button class="adv-toggle-btn" id="advToggleBtn">
+    <span style="display:flex; align-items:center; gap:0.55rem;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      Advanced: Manual License Canvas
+    </span>
+    <span class="adv-arrow">▼</span>
+  </button>
+</div>
+<div class="adv-canvas" id="advCanvas">
+  <div class="lp-body-inner">
+    <aside class="catalog-panel">
+      <div class="catalog-header"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg> License Catalog</div>
+      <div class="catalog-search"><input type="search" id="catalogSearch" placeholder="Search licenses…" autocomplete="off"></div>
+      <div class="catalog-body" id="catalogBody"></div>
+    </aside>
+    <div class="canvas-panel">
+      <div>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem; padding:0 0.1rem;">
+          <span style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:1.1px; color:var(--muted2);">📋 Your Solution</span>
+          <button class="btn btn--muted" id="clearBtn" style="font-size:0.72rem; padding:0.3rem 0.75rem;">Clear all</button>
+        </div>
+        <div class="canvas-box" id="canvasBox">
+          <div class="canvas-empty" id="canvasEmpty">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14m-7-7h14"/></svg>
+            <p>Drag a license from the catalog, or click <strong>+</strong></p>
+          </div>
+          <div class="canvas-items" id="canvasItems"></div>
+        </div>
+      </div>
+      <div class="env-section">
+        <div class="env-section-title"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg> Environments</div>
+        <div class="env-grid" id="envGrid"></div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-header">
+          <div><div class="summary-header-left">Estimated monthly cost</div><div class="summary-total-monthly" id="summaryMonthly">$0</div></div>
+          <div style="text-align:right;"><div class="summary-total-annual" id="summaryAnnual">$0 / year</div><div style="color:rgba(255,255,255,.6); font-size:0.65rem; margin-top:0.25rem;">USD · List price</div></div>
+        </div>
+        <div class="summary-body">
+          <div class="summary-lines" id="summaryLines"><div style="font-size:0.78rem; color:var(--muted2); text-align:center; padding:0.5rem 0;">Add licenses above to see a breakdown</div></div>
+          <div class="summary-divider"></div>
+          <div class="summary-footer">
+            <div class="summary-note">⚠️ Estimates only. Consult Microsoft or a partner for exact pricing.</div>
+            <div class="summary-actions">
+              <button class="btn btn--ghost" id="copyBtn" style="font-size:0.75rem; padding:0.38rem 0.85rem;">📋 Copy summary</button>
+              <button class="btn btn--primary" id="printBtn" style="font-size:0.75rem; padding:0.38rem 0.85rem;">🖨 Print</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   LICENSE PLANNER — role-based engine + manual canvas
+   ============================================================ */
+
+const CATALOG = [
+  /* Dynamics 365 */
+  { id:'d365-sales-ent',   cat:'d365', label:'Sales Enterprise',           icon:'💼', price:95,  unit:'user/mo',   desc:'Full CRM suite for professional sellers. Seeds Power Apps & Automate.' },
+  { id:'d365-sales-pro',   cat:'d365', label:'Sales Professional',         icon:'💼', price:65,  unit:'user/mo',   desc:'Core CRM for smaller teams.' },
+  { id:'d365-sales-prem',  cat:'d365', label:'Sales Premium',              icon:'💎', price:135, unit:'user/mo',   desc:'Sales Enterprise + AI-powered Sales Insights.' },
+  { id:'d365-sales-team',  cat:'d365', label:'Sales Team Member',          icon:'👥', price:8,   unit:'user/mo',   desc:'Light read/update access for non-sellers.' },
+  { id:'d365-cs-ent',      cat:'d365', label:'Customer Service Enterprise',icon:'🎧', price:95,  unit:'user/mo',   desc:'Full omnichannel customer service.' },
+  { id:'d365-cs-pro',      cat:'d365', label:'Customer Service Professional',icon:'🎧',price:50, unit:'user/mo',   desc:'Core case management, email/phone only.' },
+  { id:'d365-fs',          cat:'d365', label:'Field Service',              icon:'🔧', price:95,  unit:'user/mo',   desc:'Work orders, scheduling, mobile technician app.' },
+  { id:'d365-fs-contractor',cat:'d365',label:'Field Service Contractor',   icon:'👷', price:50,  unit:'user/mo',   desc:'Frontline contractor — limited field access.' },
+  { id:'d365-fin',         cat:'d365', label:'Finance',                    icon:'🏦', price:180, unit:'user/mo',   desc:'Enterprise GL, AP, AR, budgeting.' },
+  { id:'d365-scm',         cat:'d365', label:'Supply Chain Management',    icon:'📦', price:180, unit:'user/mo',   desc:'Procurement, inventory, manufacturing.' },
+  { id:'d365-ops-activity',cat:'d365', label:'Operations — Activity',      icon:'✅', price:50,  unit:'user/mo',   desc:'Approvals, time/expense, light F&O transactions.' },
+  { id:'d365-ops-device',  cat:'d365', label:'Operations — Device',        icon:'🖥', price:75,  unit:'device/mo', desc:'Shared shop-floor / warehouse device license.' },
+  { id:'d365-team-mem',    cat:'d365', label:'D365 Team Members',          icon:'👥', price:8,   unit:'user/mo',   desc:'Light-use across all D365 apps.' },
+  { id:'copilot-sales',    cat:'d365', label:'Copilot for Sales',          icon:'✨', price:50,  unit:'user/mo',   desc:'AI seller assistant in Outlook/Teams + CRM sync.' },
+  { id:'copilot-service',  cat:'d365', label:'Copilot for Service',        icon:'✨', price:50,  unit:'user/mo',   desc:'AI agent assist grounded in your knowledge base.' },
+  /* Power Platform */
+  { id:'pa-premium',       cat:'pp',   label:'Power Apps Premium',         icon:'⚡', price:20,  unit:'user/mo',   desc:'Unlimited apps with Dataverse & premium connectors.' },
+  { id:'pa-per-app',       cat:'pp',   label:'Power Apps per app (pay-as-you-go)',icon:'📱', price:10, unit:'user/app/mo',desc:'Azure-metered — billed per active user per app. Replaces the retired fixed per-app plan (end of sale 2 Jan 2026; EA/CSP renewals continue).' },
+  { id:'pa-dev',           cat:'pp',   label:'Developer Plan',             icon:'🛠', price:0,   unit:'free',      desc:'Free Dataverse sandbox for individual devs.' },
+  { id:'paf-premium',      cat:'pp',   label:'Power Automate Premium',     icon:'🔄', price:15,  unit:'user/mo',   desc:'Premium connectors + attended RPA per user.' },
+  { id:'paf-process',      cat:'pp',   label:'Power Automate Process',     icon:'🤖', price:150, unit:'bot/mo',    desc:'Unattended RPA — service account automation.' },
+  { id:'paf-hosted-rpa',   cat:'pp',   label:'Hosted RPA Add-on',          icon:'🖥', price:215, unit:'bot/mo',    desc:'Cloud-hosted unattended RPA (no VM needed).' },
+  { id:'ai-builder',       cat:'pp',   label:'AI Builder credits',         icon:'🧠', price:500, unit:'1M pack/mo',desc:'AI Builder capacity (forms, OCR, prediction).' },
+  { id:'dataverse-cap',    cat:'pp',   label:'Dataverse storage',          icon:'🗄', price:40,  unit:'GB/mo',     desc:'Additional Dataverse database storage.' },
+  /* Power BI */
+  { id:'pbi-pro',          cat:'pbi',  label:'Power BI Pro',               icon:'📊', price:10,  unit:'user/mo',   desc:'Create and share reports. Included in M365 E5.' },
+  { id:'pbi-ppu',          cat:'pbi',  label:'Power BI Premium Per User',  icon:'📊', price:20,  unit:'user/mo',   desc:'Pro + paginated reports, AI, XMLA endpoint.' },
+  { id:'pbi-capacity-f64', cat:'pbi',  label:'Fabric / Power BI Capacity (F64)',icon:'📈',price:5003,unit:'capacity/mo',desc:'Dedicated capacity — report viewers need no Pro license.' },
+  /* Copilot Studio */
+  { id:'cs-base',          cat:'cs',   label:'Copilot Studio',             icon:'🤖', price:200, unit:'tenant/mo', desc:'Build bots — 25k messages/mo included.' },
+  { id:'cs-messages',      cat:'cs',   label:'Copilot Studio Messages',    icon:'💬', price:200, unit:'25k msgs',  desc:'Additional 25,000 message capacity.' },
+  { id:'cs-voice',         cat:'cs',   label:'Voice Channel Add-on',       icon:'🎙', price:60,  unit:'channel/mo',desc:'IVR/phone capability for Copilot Studio.' },
+  /* Microsoft 365 / Azure */
+  { id:'m365-copilot',     cat:'m365', label:'Microsoft 365 Copilot',      icon:'✨', price:30,  unit:'user/mo',   desc:'AI in Word, Excel, Teams, Outlook. Needs E3/E5 base.' },
+  { id:'m365-e3',          cat:'m365', label:'Microsoft 365 E3',           icon:'🏢', price:36,  unit:'user/mo',   desc:'Office, Teams, SharePoint, standard Power Apps.' },
+  { id:'m365-e5',          cat:'m365', label:'Microsoft 365 E5',           icon:'🏢', price:57,  unit:'user/mo',   desc:'E3 + Power BI Pro, advanced security, Purview.' },
+  { id:'az-func',          cat:'m365', label:'Azure Functions',            icon:'☁', price:50,  unit:'est./mo',   desc:'Serverless compute for integrations.' },
+  { id:'az-search',        cat:'m365', label:'Azure AI Search',            icon:'🔍', price:250, unit:'unit/mo',   desc:'Enterprise search / RAG for Copilot Studio bots.' },
+];
+
+const CATEGORIES = [
+  { id:'d365', label:'Dynamics 365 CRM / ERP', color:'#002050' },
+  { id:'pp',   label:'Power Platform',          color:'#742774' },
+  { id:'pbi',  label:'Power BI',                color:'#f2c811' },
+  { id:'cs',   label:'Copilot Studio',          color:'#0078d4' },
+  { id:'m365', label:'Microsoft 365 / Azure',  color:'#d13438' },
+];
+
+/* ── Solution areas ──────────────────────────────────────── */
+const SOLUTIONS = [
+  { id:'sales',     label:'Sales CRM',                icon:'💼', color:'#002050', desc:'Leads, opportunities, pipeline, forecasting.' },
+  { id:'service',   label:'Customer Service',         icon:'🎧', color:'#0078d4', desc:'Cases, omnichannel, SLAs, knowledge base.' },
+  { id:'field',     label:'Field Service',            icon:'🔧', color:'#107c10', desc:'Work orders, dispatch, mobile technicians.' },
+  { id:'finance',   label:'Finance & Operations (ERP)',icon:'🏦', color:'#5c2d91', desc:'GL, AP/AR, supply chain, manufacturing.' },
+  { id:'app',       label:'Custom Power App',         icon:'⚡', color:'#742774', desc:'Bespoke business app on Power Platform.' },
+  { id:'analytics', label:'Analytics / BI',           icon:'📊', color:'#b8960b', desc:'Power BI reports, dashboards, analysis.' },
+  { id:'chatbot',   label:'AI Chatbot',               icon:'🤖', color:'#d13438', desc:'Copilot Studio bot, knowledge Q&A, voice.' },
+];
+
+/* ── Roles per solution ──────────────────────────────────── */
+const ROLES = {
+  sales: [
+    { id:'sales-lead',    name:'Sales Leadership / VP',     icon:'👔', defaultQty:1,  desc:'Org-wide forecasting, pipeline analytics, AI insights.',       rec:'d365-sales-prem', alts:['d365-sales-ent'] },
+    { id:'sales-mgr',     name:'Sales Manager',             icon:'📊', defaultQty:3,  desc:'Team oversight, goal management, forecasting.',                rec:'d365-sales-ent',  alts:['d365-sales-prem','d365-sales-pro'] },
+    { id:'sales-ae',      name:'Account Executive / Seller',icon:'💼', defaultQty:20, desc:'Full seller — leads, opportunities, accounts, quotes.',        rec:'d365-sales-ent',  alts:['d365-sales-pro','d365-sales-prem'] },
+    { id:'sales-sdr',     name:'SDR / Inside Sales',        icon:'📞', defaultQty:8,  desc:'Lead qualification and outbound prospecting.',                 rec:'d365-sales-pro',  alts:['d365-sales-ent'] },
+    { id:'sales-support', name:'Sales Support / Coordinator',icon:'🗂', defaultQty:5, desc:'Updates records and runs reports — does not own deals.',        rec:'d365-sales-team', alts:['d365-sales-pro'] },
+    { id:'sales-exec',    name:'Executive Stakeholder (read-only)',icon:'👁',defaultQty:3,desc:'Views dashboards and records; no data entry.',             rec:'d365-sales-team', alts:['d365-sales-ent'] },
+    { id:'sales-admin',   name:'CRM Admin / Maker',         icon:'🛠', defaultQty:1,  desc:'Customises the app, builds flows, manages the solution.',      rec:'d365-sales-ent',  alts:['pa-premium'] },
+  ],
+  service: [
+    { id:'svc-mgr',      name:'Service Manager / Lead',     icon:'📊', defaultQty:1,  desc:'Team oversight, SLA management, reporting.',                   rec:'d365-cs-ent',   alts:['d365-cs-pro'] },
+    { id:'svc-agent',    name:'Customer Service Agent',     icon:'🎧', defaultQty:15, desc:'Handles cases across chat, email, phone, social.',             rec:'d365-cs-ent',   alts:['d365-cs-pro'] },
+    { id:'svc-super',    name:'Omnichannel Supervisor',     icon:'🕹', defaultQty:2,  desc:'Real-time queue monitoring and agent supervision.',            rec:'d365-cs-ent',   alts:[] },
+    { id:'svc-knowledge',name:'Knowledge Manager',          icon:'📚', defaultQty:1,  desc:'Authors and curates the knowledge base.',                      rec:'d365-cs-ent',   alts:['d365-cs-pro'] },
+    { id:'svc-readonly', name:'Read-only Stakeholder',      icon:'👁', defaultQty:2,  desc:'Views cases and dashboards; no case work.',                    rec:'d365-team-mem', alts:['d365-cs-pro'] },
+  ],
+  field: [
+    { id:'fs-dispatch',  name:'Dispatcher',                 icon:'🗺', defaultQty:2,  desc:'Schedules and assigns work orders to technicians.',            rec:'d365-fs',            alts:[] },
+    { id:'fs-tech',      name:'Field Technician',           icon:'🔧', defaultQty:20, desc:'Executes work orders via the mobile app.',                     rec:'d365-fs',            alts:['d365-fs-contractor'] },
+    { id:'fs-contractor',name:'Frontline Contractor',       icon:'👷', defaultQty:10, desc:'External / occasional field worker with limited access.',       rec:'d365-fs-contractor', alts:['d365-fs'] },
+    { id:'fs-resmgr',    name:'Resource Manager',           icon:'📋', defaultQty:1,  desc:'Optimises scheduling and resource utilisation.',               rec:'d365-fs',            alts:[] },
+  ],
+  finance: [
+    { id:'fin-full',     name:'Finance Full User',          icon:'🏦', defaultQty:8,  desc:'Full GL, AP/AR, budgeting and financial close.',               rec:'d365-fin',          alts:[] },
+    { id:'scm-full',     name:'Supply Chain Full User',     icon:'📦', defaultQty:8,  desc:'Procurement, inventory, manufacturing operations.',            rec:'d365-scm',          alts:['d365-fin'] },
+    { id:'ops-activity', name:'Activity User / Approver',   icon:'✅', defaultQty:15, desc:'Approvals, time/expense, light F&O transactions.',             rec:'d365-ops-activity', alts:['d365-team-mem'] },
+    { id:'ops-team',     name:'Team Member (light)',        icon:'👥', defaultQty:25, desc:'Read access and self-service across F&O.',                      rec:'d365-team-mem',     alts:['d365-ops-activity'] },
+    { id:'ops-device',   name:'Shop-floor Device',          icon:'🖥', defaultQty:5,  desc:'Shared warehouse / production-floor device.',                  rec:'d365-ops-device',   alts:[] },
+  ],
+  app: [
+    { id:'app-maker',     name:'App Maker / Developer',      icon:'🛠', defaultQty:2,  desc:'Builds apps, flows and Dataverse schema.',                    rec:'pa-premium',  alts:['pa-dev'] },
+    { id:'app-user-prem', name:'App End User (Premium)',     icon:'⚡', defaultQty:10, desc:'Uses apps with Dataverse and premium connectors.',             rec:'pa-premium',  alts:['pa-per-app'] },
+    { id:'app-user-single',name:'App End User (single app)', icon:'📱', defaultQty:20, desc:'Uses one specific app — billed on the pay-as-you-go meter.',     rec:'pa-per-app',  alts:['pa-premium'] },
+    { id:'app-auto',      name:'Automation User',            icon:'🔄', defaultQty:5,  desc:'Runs personal flows with premium connectors.',                 rec:'paf-premium', alts:[] },
+  ],
+  analytics: [
+    { id:'bi-author',  name:'Report Author',         icon:'✏', defaultQty:3,  desc:'Builds and publishes Power BI reports.',                          rec:'pbi-pro', alts:['pbi-ppu'] },
+    { id:'bi-analyst', name:'Advanced Analyst',      icon:'🧪', defaultQty:2,  desc:'Needs paginated reports, AI, XMLA, large models.',                rec:'pbi-ppu', alts:['pbi-pro'] },
+    { id:'bi-viewer',  name:'Report Viewer',         icon:'👁', defaultQty:50, desc:'Consumes shared reports and dashboards.',                         rec:'pbi-pro', alts:['pbi-capacity-f64'] },
+  ],
+  chatbot: [],
+};
+
+/* ── Shared add-ons ──────────────────────────────────────── */
+const SHARED = [
+  { group:'⚙️ Automation & RPA', items:[
+    { id:'paf-premium',    label:'Power Automate Premium (per user)', icon:'🔄', price:15,  unit:'user/mo', desc:'For users running personal flows with premium connectors.' },
+    { id:'paf-process',    label:'Unattended RPA bot (Process)',      icon:'🤖', price:150, unit:'bot/mo',  desc:'Service-account / background automation. 1 bot serves many flows.' },
+    { id:'paf-hosted-rpa', label:'Hosted RPA bot',                    icon:'🖥', price:215, unit:'bot/mo',  desc:'Cloud-hosted unattended RPA — no VM to manage.' },
+  ]},
+  { group:'📊 Business Intelligence', items:[
+    { id:'pbi-pro',          label:'Power BI Pro (per user)',          icon:'📊', price:10,   unit:'user/mo',    desc:'Publish & share reports. Free if user has M365 E5.' },
+    { id:'pbi-ppu',          label:'Power BI Premium Per User',        icon:'📊', price:20,   unit:'user/mo',    desc:'Pro + paginated, AI, XMLA, large datasets.' },
+    { id:'pbi-capacity-f64', label:'Fabric / BI Capacity (F64)',       icon:'📈', price:5003, unit:'capacity/mo',desc:'Dedicated capacity — viewers need no Pro license. Worth it at scale.' },
+  ]},
+  { group:'🤖 AI & Copilots', items:[
+    { id:'cs-base',         label:'Copilot Studio (tenant)',          icon:'🤖', price:200, unit:'tenant/mo', desc:'Build bots — 25k messages/mo included. One license per tenant.' },
+    { id:'cs-messages',     label:'Copilot Studio message pack',      icon:'💬', price:200, unit:'25k msgs',  desc:'Each pack ≈ 5,000–8,000 conversations/mo.' },
+    { id:'cs-voice',        label:'Voice channel add-on',             icon:'🎙', price:60,  unit:'channel/mo',desc:'IVR / phone capability for the bot.' },
+    { id:'az-search',       label:'Azure AI Search (RAG)',            icon:'🔍', price:250, unit:'unit/mo',   desc:'Document Q&A index for a knowledge bot.' },
+    { id:'az-func',         label:'Azure Functions',                  icon:'☁', price:50,  unit:'est./mo',   desc:'Serverless sync (e.g. SharePoint → AI Search).' },
+    { id:'m365-copilot',    label:'Microsoft 365 Copilot (per user)', icon:'✨', price:30,  unit:'user/mo',   desc:'AI in Word/Excel/Teams/Outlook. Needs E3/E5 base.' },
+    { id:'copilot-sales',   label:'Copilot for Sales (per user)',     icon:'✨', price:50,  unit:'user/mo',   desc:'AI seller assistant; CRM sync from Outlook/Teams.' },
+    { id:'copilot-service', label:'Copilot for Service (per user)',   icon:'✨', price:50,  unit:'user/mo',   desc:'AI agent assist grounded in your knowledge base.' },
+  ]},
+  { group:'🗄 Platform Capacity', items:[
+    { id:'ai-builder',   label:'AI Builder credits (1M pack)', icon:'🧠', price:500, unit:'pack/mo', desc:'Forms processing, OCR, prediction models.' },
+    { id:'dataverse-cap',label:'Dataverse storage (per GB)',   icon:'🗄', price:40,  unit:'GB/mo',   desc:'Additional database storage beyond seeded capacity.' },
+  ]},
+  { group:'🌐 Environments', items:[
+    { id:'env-prod', label:'Production environment', icon:'🟢', price:0,  unit:'env/mo', desc:'1 included free with any qualifying license.' },
+    { id:'env-sand', label:'Sandbox environment',    icon:'🟡', price:40, unit:'env/mo', desc:'For UAT / staging copies.' },
+    { id:'env-dev',  label:'Developer environment',  icon:'🔵', price:0,  unit:'env/mo', desc:'Free for development — no SLA.' },
+  ]},
+];
+
+/* D365 Enterprise licenses that seed Power Apps/Automate */
+const SEEDING_LICENSES = ['d365-sales-ent','d365-sales-prem','d365-cs-ent','d365-fin','d365-scm','d365-fs'];
+
+function fmt(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+function getLicense(id) { return CATALOG.find(l => l.id === id); }
+function catClass(cat) { return 'cat-' + cat; }
+
+/* ── Wizard state ────────────────────────────────────────── */
+const BASE_LICENSES = [
+  { id:'none',     name:'None / not sure',  note:'No base assumed' },
+  { id:'business', name:'M365 Business',    note:'Basic / Standard / Premium' },
+  { id:'f3',       name:'Microsoft 365 F3', note:'Frontline workers' },
+  { id:'e3',       name:'Microsoft 365 E3', note:'$36/user · no Power BI Pro' },
+  { id:'e5',       name:'Microsoft 365 E5', note:'$57/user · includes Power BI Pro' },
+];
+
+const wiz = {
+  baseLicense: 'e3',
+  solutions: new Set(),
+  roleState: {},   // roleId -> { license, qty, have }
+  shared: {},      // sharedId -> qty
+};
+
+function renderBase() {
+  document.getElementById('basePills').innerHTML = BASE_LICENSES.map(b => `
+    <div class="base-pill ${wiz.baseLicense === b.id ? 'sel' : ''}" data-base="${b.id}">
+      <span class="base-pill-name">${b.name}</span>
+      <span class="base-pill-note">${b.note}</span>
+    </div>`).join('');
+}
+document.getElementById('basePills').addEventListener('click', e => {
+  const pill = e.target.closest('.base-pill');
+  if (!pill) return;
+  wiz.baseLicense = pill.dataset.base;
+  renderBase();
+});
+
+/* ── Step navigation ─────────────────────────────────────── */
+let currentStep = 1;
+const LAST_STEP = 4;
+function goStep(n) {
+  document.getElementById(`panel-${currentStep}`).classList.remove('active');
+  document.getElementById(`wiz-step-${currentStep}`).classList.remove('active');
+  if (n > currentStep) document.getElementById(`wiz-step-${currentStep}`).classList.add('done');
+  currentStep = n;
+  document.getElementById(`panel-${n}`).classList.add('active');
+  document.getElementById(`wiz-step-${n}`).classList.add('active');
+  document.getElementById(`wiz-step-${n}`).classList.remove('done');
+  for (let i = 1; i <= LAST_STEP - 1; i++) {
+    document.getElementById(`wiz-conn-${i}`).classList.toggle('done', currentStep > i);
+  }
+  if (n === 2) { initRoleState(); renderRoles(); }
+  if (n === 3) renderShared();
+  if (n === 4) renderResults();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ── Step 1: solution tiles ──────────────────────────────── */
+function renderSolutions() {
+  document.getElementById('solGrid').innerHTML = SOLUTIONS.map(s => `
+    <div class="sol-tile ${wiz.solutions.has(s.id) ? 'sel' : ''}" data-sol="${s.id}">
+      <div class="sol-tile-icon" style="background:${s.color}1a">${s.icon}</div>
+      <div><div class="sol-tile-name">${s.label}</div><div class="sol-tile-desc">${s.desc}</div></div>
+      <div class="sol-check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></div>
+    </div>`).join('');
+}
+document.getElementById('solGrid').addEventListener('click', e => {
+  const tile = e.target.closest('.sol-tile');
+  if (!tile) return;
+  const id = tile.dataset.sol;
+  if (wiz.solutions.has(id)) wiz.solutions.delete(id); else wiz.solutions.add(id);
+  tile.classList.toggle('sel');
+  document.getElementById('step1Next').disabled = wiz.solutions.size === 0;
+});
+document.getElementById('step1Next').addEventListener('click', () => { if (wiz.solutions.size) goStep(2); });
+
+/* ── Step 2: roles ───────────────────────────────────────── */
+function initRoleState() {
+  SOLUTIONS.forEach(sol => {
+    if (!wiz.solutions.has(sol.id)) return;
+    (ROLES[sol.id] || []).forEach(role => {
+      if (!wiz.roleState[role.id]) wiz.roleState[role.id] = { license: role.rec, qty: role.defaultQty, have: 0 };
+    });
+  });
+}
+function roleNet(st) { return Math.max(0, st.qty - st.have); }
+
+function renderRoles() {
+  const wrap = document.getElementById('rolesWrap');
+  const sels = SOLUTIONS.filter(s => wiz.solutions.has(s.id));
+  if (!sels.length) { wrap.innerHTML = '<div class="role-empty">Pick at least one solution in Step 1.</div>'; updateStep2Total(); return; }
+  let html = '';
+  sels.forEach(sol => {
+    const roles = ROLES[sol.id] || [];
+    html += `<div class="role-section"><div class="role-section-title"><span style="background:${sol.color}"></span>${sol.icon} ${sol.label}</div>`;
+    if (!roles.length) {
+      html += `<div class="role-note">💡 <strong>AI Chatbot</strong> licensing is configured in Step 3 (Shared add-ons): Copilot Studio tenant + message packs, Azure AI Search for document Q&amp;A, and the voice channel add-on.</div></div>`;
+      return;
+    }
+    html += `<div class="role-grid">`;
+    roles.forEach(role => {
+      const st = wiz.roleState[role.id];
+      const tiers = [role.rec, ...(role.alts || [])];
+      const lic = getLicense(st.license);
+      const net = roleNet(st);
+      const sub = lic.price * net;
+      html += `<div class="role-card" data-role="${role.id}">
+        <div class="role-card-head">
+          <div class="role-card-icon">${role.icon}</div>
+          <div><div class="role-card-name">${role.name}</div><div class="role-card-desc">${role.desc}</div></div>
+        </div>
+        <div class="role-card-controls">
+          <label class="role-field"><span>License tier</span>
+            <select class="role-tier" data-role="${role.id}">
+              ${tiers.map(t => { const L = getLicense(t); return `<option value="${t}" ${t===st.license?'selected':''}>${L.label} — ${L.price===0?'Free':fmt(L.price)+'/'+L.unit}</option>`; }).join('')}
+            </select>
+          </label>
+          <label class="role-field"><span>Users</span>
+            <div class="num-stepper">
+              <button type="button" data-act="dec" data-field="qty" data-role="${role.id}">&#8722;</button>
+              <input class="num-input" type="number" min="0" value="${st.qty}" data-field="qty" data-role="${role.id}">
+              <button type="button" data-act="inc" data-field="qty" data-role="${role.id}">+</button>
+            </div>
+          </label>
+          <label class="role-field"><span>Already have</span>
+            <div class="num-stepper">
+              <button type="button" data-act="dec" data-field="have" data-role="${role.id}">&#8722;</button>
+              <input class="num-input" type="number" min="0" value="${st.have}" data-field="have" data-role="${role.id}">
+              <button type="button" data-act="inc" data-field="have" data-role="${role.id}">+</button>
+            </div>
+          </label>
+        </div>
+        <div class="role-card-sub">
+          <span class="role-sub-text">${net > 0 ? `${net} new × ${fmt(lic.price)}/${lic.unit}` : (st.qty > 0 ? '✓ All seats already licensed' : 'No users')}</span>
+          <strong class="role-sub-cost">${fmt(sub)}/mo</strong>
+        </div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  });
+  wrap.innerHTML = html;
+  updateStep2Total();
+}
+
+function updateRoleCard(roleId) {
+  const card = document.querySelector(`.role-card[data-role="${roleId}"]`);
+  if (!card) return;
+  const st = wiz.roleState[roleId];
+  const lic = getLicense(st.license);
+  const net = roleNet(st);
+  card.querySelector('.role-sub-text').textContent = net > 0 ? `${net} new × ${fmt(lic.price)}/${lic.unit}` : (st.qty > 0 ? '✓ All seats already licensed' : 'No users');
+  card.querySelector('.role-sub-cost').textContent = fmt(lic.price * net) + '/mo';
+}
+
+function step2Sum() {
+  let total = 0;
+  Object.entries(wiz.roleState).forEach(([id, st]) => {
+    if (!isRoleActive(id)) return;
+    total += getLicense(st.license).price * roleNet(st);
+  });
+  return total;
+}
+function isRoleActive(roleId) {
+  return SOLUTIONS.some(sol => wiz.solutions.has(sol.id) && (ROLES[sol.id] || []).some(r => r.id === roleId));
+}
+function updateStep2Total() { document.getElementById('step2Total').textContent = fmt(step2Sum()) + '/mo'; }
+
+/* ── Step 3: shared add-ons ──────────────────────────────── */
+function renderShared() {
+  const wrap = document.getElementById('sharedWrap');
+  wrap.innerHTML = SHARED.map(g => `
+    <div class="shared-group">
+      <div class="shared-group-title">${g.group}</div>
+      <div class="shared-grid">
+        ${g.items.map(it => {
+          const q = wiz.shared[it.id] || 0;
+          const cost = it.price * q;
+          return `<div class="shared-row" data-shared="${it.id}">
+            <div class="shared-row-icon">${it.icon}</div>
+            <div><div class="shared-row-name">${it.label}</div><div class="shared-row-desc">${it.desc}</div></div>
+            <div class="shared-row-price">${it.price === 0 ? 'Free' : fmt(it.price)+'/'+it.unit}</div>
+            <div class="num-stepper">
+              <button type="button" data-act="dec" data-shared="${it.id}">&#8722;</button>
+              <input class="num-input" type="number" min="0" value="${q}" data-shared="${it.id}">
+              <button type="button" data-act="inc" data-shared="${it.id}">+</button>
+            </div>
+            <div class="shared-row-cost shared-cost">${cost === 0 ? '—' : fmt(cost)+'/mo'}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`).join('');
+  updateStep3Total();
+}
+function updateSharedRow(id) {
+  const row = document.querySelector(`.shared-row[data-shared="${id}"]`);
+  if (!row) return;
+  let price = 0;
+  SHARED.forEach(g => g.items.forEach(it => { if (it.id === id) price = it.price; }));
+  const cost = price * (wiz.shared[id] || 0);
+  row.querySelector('.shared-cost').textContent = cost === 0 ? '—' : fmt(cost) + '/mo';
+}
+function step3Sum() {
+  let total = 0;
+  SHARED.forEach(g => g.items.forEach(it => { total += it.price * (wiz.shared[it.id] || 0); }));
+  return total;
+}
+function updateStep3Total() { document.getElementById('step3Total').textContent = fmt(step3Sum()) + '/mo'; }
+
+/* ── Shared listeners for steppers/inputs/selects ────────── */
+document.addEventListener('click', e => {
+  const rb = e.target.closest('.num-stepper button[data-role]');
+  if (rb) {
+    const st = wiz.roleState[rb.dataset.role];
+    const f = rb.dataset.field;
+    st[f] = Math.max(0, st[f] + (rb.dataset.act === 'inc' ? 1 : -1));
+    const inp = document.querySelector(`.num-input[data-role="${rb.dataset.role}"][data-field="${f}"]`);
+    if (inp) inp.value = st[f];
+    updateRoleCard(rb.dataset.role); updateStep2Total();
+    return;
+  }
+  const sb = e.target.closest('.num-stepper button[data-shared]');
+  if (sb) {
+    const id = sb.dataset.shared;
+    wiz.shared[id] = Math.max(0, (wiz.shared[id] || 0) + (sb.dataset.act === 'inc' ? 1 : -1));
+    const inp = document.querySelector(`.num-input[data-shared="${id}"]`);
+    if (inp) inp.value = wiz.shared[id];
+    updateSharedRow(id); updateStep3Total();
+    return;
+  }
+});
+document.addEventListener('input', e => {
+  const ri = e.target.closest('.num-input[data-role]');
+  if (ri) {
+    const v = parseInt(ri.value, 10);
+    wiz.roleState[ri.dataset.role][ri.dataset.field] = isNaN(v) ? 0 : Math.max(0, v);
+    updateRoleCard(ri.dataset.role); updateStep2Total();
+    return;
+  }
+  const si = e.target.closest('.num-input[data-shared]');
+  if (si) {
+    const v = parseInt(si.value, 10);
+    wiz.shared[si.dataset.shared] = isNaN(v) ? 0 : Math.max(0, v);
+    updateSharedRow(si.dataset.shared); updateStep3Total();
+    return;
+  }
+});
+document.addEventListener('change', e => {
+  const sel = e.target.closest('.role-tier');
+  if (sel) { wiz.roleState[sel.dataset.role].license = sel.value; updateRoleCard(sel.dataset.role); updateStep2Total(); }
+});
+
+/* ── Nav buttons ─────────────────────────────────────────── */
+document.getElementById('step2Back').addEventListener('click', () => goStep(1));
+document.getElementById('step2Next').addEventListener('click', () => goStep(3));
+document.getElementById('step3Back').addEventListener('click', () => goStep(2));
+document.getElementById('step3Next').addEventListener('click', () => goStep(4));
+document.getElementById('step4Back').addEventListener('click', () => goStep(3));
+document.getElementById('wizRestart').addEventListener('click', () => {
+  wiz.baseLicense = 'e3'; wiz.solutions.clear(); wiz.roleState = {}; wiz.shared = {};
+  renderBase(); renderSolutions();
+  document.getElementById('step1Next').disabled = true;
+  ['1','2','3'].forEach(i => { document.getElementById(`wiz-conn-${i}`).classList.remove('done'); });
+  ['1','2','3','4'].forEach(i => document.getElementById(`wiz-step-${i}`).classList.remove('done'));
+  goStep(1);
+});
+
+/* ── Recommendation engine ───────────────────────────────── */
+function computeResults() {
+  const groups = [];   // { key, icon, label, color, rows:[], subtotal }
+  const covered = [];  // { area, name, lic, qty }
+  let total = 0;
+  const usedLicenseIds = new Set();
+
+  SOLUTIONS.forEach(sol => {
+    if (!wiz.solutions.has(sol.id)) return;
+    const roles = ROLES[sol.id] || [];
+    const rows = []; let sub = 0;
+    roles.forEach(role => {
+      const st = wiz.roleState[role.id];
+      if (!st || st.qty <= 0) return;
+      const lic = getLicense(st.license);
+      const net = roleNet(st);
+      const cov = Math.min(st.qty, st.have);
+      if (cov > 0) covered.push({ area: sol.label, name: role.name, lic: lic.label, qty: cov, reason: 'Seats you already own' });
+      if (net > 0) {
+        if (lic.id === 'pbi-pro' && wiz.baseLicense === 'e5') {
+          covered.push({ area: sol.label, name: role.name, lic: lic.label, qty: net, reason: 'Included with Microsoft 365 E5' });
+        } else {
+          usedLicenseIds.add(st.license);
+          const cost = lic.price * net; sub += cost; total += cost;
+          rows.push({ icon: role.icon, name: role.name, lic: lic.label, qty: net, price: lic.price, unit: lic.unit, cost });
+        }
+      }
+    });
+    if (rows.length) groups.push({ key: sol.id, icon: sol.icon, label: sol.label, color: sol.color, rows, subtotal: sub, shared: false });
+  });
+
+  // shared add-ons
+  SHARED.forEach(g => {
+    const rows = []; let sub = 0;
+    g.items.forEach(it => {
+      const q = wiz.shared[it.id] || 0;
+      if (q <= 0) return;
+      if (it.id === 'pbi-pro' && wiz.baseLicense === 'e5') {
+        covered.push({ area: 'Business Intelligence', name: it.label, lic: '', qty: q, reason: 'Included with Microsoft 365 E5' });
+        return;
+      }
+      usedLicenseIds.add(it.id);
+      const cost = it.price * q; sub += cost; total += cost;
+      rows.push({ icon: it.icon, name: it.label, lic: '', qty: q, price: it.price, unit: it.unit, cost });
+    });
+    if (rows.length) groups.push({ key: g.group, icon: '', label: g.group, color: '#742774', rows, subtotal: sub, shared: true });
+  });
+
+  /* tips */
+  const tips = [];
+  if ([...usedLicenseIds].some(id => SEEDING_LICENSES.includes(id))) {
+    tips.push('Your D365 Enterprise licenses (Sales/Service/Finance/SCM/Field Service) <strong>seed Power Apps & Power Automate</strong> within that app context — those users usually don\'t need separate Power Platform licenses unless they build apps outside the D365 app.');
+  }
+  const usesPbiPro = [...usedLicenseIds].includes('pbi-pro');
+  if (usesPbiPro && wiz.baseLicense !== 'e5') {
+    tips.push('Power BI Pro is <strong>not</strong> included in your current base (E3/Business/F3). If any of these users are on <strong>Microsoft 365 E5</strong>, their Power BI Pro is free — set the base to E5 above to see that reflected.');
+  }
+  if (wiz.baseLicense === 'e5') {
+    tips.push('Because your base is <strong>Microsoft 365 E5</strong>, Power BI Pro is included for all users — those seats are shown under "Already covered" rather than added to the cost.');
+  }
+  if ((wiz.baseLicense === 'e3' || wiz.baseLicense === 'e5') && wiz.solutions.has('app')) {
+    tips.push('Your <strong>E3/E5 base already includes Power Apps for Microsoft 365</strong> — apps over SharePoint, OneDrive and Teams data need no extra license. Power Apps Premium is only required for Dataverse or premium/custom connectors.');
+  }
+  const viewerSt = wiz.roleState['bi-viewer'];
+  if (viewerSt && roleNet(viewerSt) >= 250 && viewerSt.license !== 'pbi-capacity-f64') {
+    tips.push(`You have ${roleNet(viewerSt)} report viewers on Power BI Pro (${fmt(roleNet(viewerSt) * 10)}/mo). At this scale a <strong>Fabric/BI Capacity (F64 ≈ ${fmt(5003)}/mo)</strong> lets viewers consume reports with no per-user license — switch the Report Viewer tier to compare.`);
+  }
+  if ((wiz.shared['m365-copilot'] || 0) > 0) {
+    if (wiz.baseLicense === 'e3' || wiz.baseLicense === 'e5') {
+      tips.push('<strong>Microsoft 365 Copilot</strong> needs an E3/E5 base — which your org already has, so only the $30/user Copilot add-on is counted here.');
+    } else {
+      tips.push('<strong>Microsoft 365 Copilot</strong> requires an M365 <strong>E3 ($36) or E5 ($57) base</strong> per user. Your selected base (' + (BASE_LICENSES.find(b => b.id === wiz.baseLicense) || {}).name + ') does not qualify — budget that base on top of the $30 Copilot add-on.');
+    }
+  }
+  if (wiz.solutions.has('chatbot') && (wiz.shared['cs-base'] || 0) === 0) {
+    tips.push('You selected <strong>AI Chatbot</strong> but haven\'t added Copilot Studio — add the Copilot Studio tenant license in Step 3 to license the bot.');
+  }
+  if ((wiz.shared['az-search'] || 0) > 0) {
+    tips.push('A document Q&A (RAG) bot typically stacks <strong>Copilot Studio + Azure AI Search + Azure Functions</strong>. Azure OpenAI embedding/generation costs are billed separately on consumption.');
+  }
+  const perAppSt = wiz.roleState['app-user-single'];
+  if (perAppSt && roleNet(perAppSt) > 0) {
+    tips.push('Microsoft <strong>retired the fixed Power Apps per-app plan on 2 Jan 2026</strong> — new customers now use the <strong>per-app pay-as-you-go meter (~$10/active user/app via Azure)</strong> or <strong>Power Apps Premium ($20, unlimited apps)</strong>. The meter only wins for 1 app per user; at 2+ apps, Premium is cheaper. (Existing EA/CSP per-app licenses can still be renewed.)');
+  }
+
+  return { groups, covered, tips, total };
+}
+
+function renderResults() {
+  const { groups, covered, tips, total } = computeResults();
+  let seats = 0;
+  groups.forEach(g => { if (!g.shared) g.rows.forEach(r => seats += r.qty); });
+  document.getElementById('resultMonthly').textContent = fmt(total);
+  document.getElementById('resultAnnual').textContent = fmt(total * 12) + ' / year';
+  const baseName = (BASE_LICENSES.find(b => b.id === wiz.baseLicense) || {}).name || '—';
+  document.getElementById('resultSeats').textContent = seats + ' net-new user seats · Base: ' + baseName;
+  const areaNames = SOLUTIONS.filter(s => wiz.solutions.has(s.id)).map(s => s.label).join(' · ');
+  document.getElementById('resultAreas').textContent = areaNames || '—';
+
+  let html = '';
+  if (!groups.length) {
+    html = `<div class="wiz-card"><div class="result-empty">
+      <div class="result-empty-icon">✅</div>
+      <div class="result-empty-title">No additional licenses needed</div>
+      <div class="result-empty-sub">Based on your roles and the seats you already own, there's nothing net-new to buy. Adjust headcounts or "already have" counts in Step 2 to explore other scenarios.</div>
+    </div></div>`;
+  } else {
+    groups.forEach(g => {
+      html += `<div class="wiz-card result-section">
+        <div class="result-group-title">
+          ${g.shared ? '' : `<span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:${g.color}"></span>`}
+          ${g.icon ? g.icon + ' ' : ''}${g.label}
+          <span class="result-group-sub">${fmt(g.subtotal)}/mo</span>
+        </div>
+        <div class="result-rows">
+          ${g.rows.map(r => {
+            const qtyStr = `${r.qty} × ${r.price === 0 ? 'Free' : fmt(r.price) + '/' + r.unit}`;
+            return `<div class="result-row ${g.shared ? 'shared' : ''}">
+              <div class="result-row-icon">${r.icon}</div>
+              <div class="result-row-body">
+                <div class="result-row-name">${r.name}</div>
+                ${r.lic ? `<div class="result-row-lic">${r.lic}</div>` : ''}
+              </div>
+              <div class="result-row-right">
+                <div class="result-row-cost">${fmt(r.cost)}<span style="font-size:0.62rem; font-weight:400; color:var(--muted);">/mo</span></div>
+                <div class="result-row-qty">${qtyStr}</div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    });
+  }
+
+  if (covered.length) {
+    html += `<div class="result-section-head covered">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+      Already covered by licenses you own</div>
+      <div class="result-rows">
+      ${covered.map(c => `<div class="result-row covered">
+        <div class="result-row-icon" style="background:rgba(16,124,16,.1)">✓</div>
+        <div class="result-row-body"><div class="result-row-name">${c.name} <span style="font-weight:400;color:var(--muted2)">· ${c.area}</span></div><div class="result-row-lic">${c.reason}${c.lic ? ' — ' + c.lic : ''}</div></div>
+        <div class="result-row-right"><div class="result-covered-label">${c.qty} seat${c.qty>1?'s':''}</div></div>
+      </div>`).join('')}
+      </div>`;
+  }
+
+  if (tips.length) {
+    html += `<div style="margin-top:1.25rem">`;
+    tips.forEach(t => { html += `<div class="result-tip"><span style="font-size:1rem;flex-shrink:0;">💡</span><span>${t}</span></div>`; });
+    html += `</div>`;
+  }
+
+  document.getElementById('resultOutput').innerHTML = html;
+  window._lastResults = { groups, covered, total, seats, areas: areaNames, base: baseName };
+}
+
+/* ── Copy / print ────────────────────────────────────────── */
+document.getElementById('resultCopy').addEventListener('click', function() {
+  const r = window._lastResults; if (!r) return;
+  const lines = ['Power Platform & D365 — License Recommendation', r.areas, 'Microsoft 365 base: ' + r.base, ''];
+  r.groups.forEach(g => {
+    lines.push(`${g.label.replace(/[^\x00-\x7F]/g,'').trim()} — ${fmt(g.subtotal)}/mo`);
+    g.rows.forEach(row => lines.push(`  + ${row.name}${row.lic?' ('+row.lic+')':''}: ${row.qty} × ${row.price===0?'Free':fmt(row.price)+'/'+row.unit} = ${fmt(row.cost)}/mo`));
+    lines.push('');
+  });
+  if (r.covered.length) {
+    lines.push('ALREADY COVERED:');
+    r.covered.forEach(c => lines.push(`  ✓ ${c.name} (${c.area}): ${c.qty} × ${c.lic}`));
+    lines.push('');
+  }
+  lines.push(`TOTAL ADDITIONAL: ${fmt(r.total)}/mo · ${fmt(r.total*12)}/yr`);
+  lines.push('Microsoft list prices (USD). Actual costs vary by agreement and region.');
+  navigator.clipboard.writeText(lines.join('\n')).catch(() => {});
+  this.textContent = '✓ Copied!';
+  setTimeout(() => { this.innerHTML = '📋 Copy cost summary'; }, 2000);
+});
+document.getElementById('resultPrint').addEventListener('click', () => window.print());
+
+/* ── Advanced canvas toggle ──────────────────────────────── */
+document.getElementById('advToggleBtn').addEventListener('click', function() {
+  const canvas = document.getElementById('advCanvas');
+  canvas.classList.toggle('open'); this.classList.toggle('open');
+  if (canvas.classList.contains('open')) {
+    canvas.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    renderCatalog(); renderEnvs(); renderCanvas(); renderSummary();
+  }
+});
+document.getElementById('openAdvanced').addEventListener('click', () => {
+  const btn = document.getElementById('advToggleBtn'), canvas = document.getElementById('advCanvas');
+  if (!canvas.classList.contains('open')) btn.click(); else canvas.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+/* ═══ MANUAL CANVAS ═══════════════════════════════════════ */
+const MANUAL_ENVS = [
+  { id:'env-prod', label:'Production', icon:'🟢', price:0,  note:'1 included free' },
+  { id:'env-sand', label:'Sandbox',    icon:'🟡', price:40, note:'Per environment/mo' },
+  { id:'env-dev',  label:'Developer',  icon:'🔵', price:0,  note:'Free for dev use' },
+];
+let canvasItems = [];
+let envQty = { 'env-prod':1, 'env-sand':0, 'env-dev':1 };
+
+function renderCatalog(filter) {
+  const body = document.getElementById('catalogBody');
+  const q = (filter || '').toLowerCase();
+  let html = '';
+  CATEGORIES.forEach(cat => {
+    const items = CATALOG.filter(l => l.cat === cat.id && (!q || l.label.toLowerCase().includes(q) || l.desc.toLowerCase().includes(q)));
+    if (!items.length) return;
+    html += `<div class="cat-group ${catClass(cat.id)}"><div class="cat-group-label"><span style="background:${cat.color}; opacity:.7;"></span>${cat.label}</div>`;
+    items.forEach(l => {
+      const priceStr = l.price === 0 ? 'Free' : fmt(l.price) + ' / ' + l.unit;
+      html += `<div class="cat-tile ${catClass(l.cat)}" draggable="true" data-id="${l.id}">
+        <div class="cat-tile-icon">${l.icon}</div>
+        <div class="cat-tile-info"><div class="cat-tile-name">${l.label}</div><div class="cat-tile-price">${priceStr}</div></div>
+        <button class="cat-tile-add" data-id="${l.id}" title="Add to solution">+</button>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  body.innerHTML = html || '<div style="padding:1rem; font-size:0.8rem; color:var(--muted2); text-align:center;">No results</div>';
+}
+function renderCanvas() {
+  const empty = document.getElementById('canvasEmpty'), items = document.getElementById('canvasItems');
+  if (!canvasItems.length) { empty.style.display = 'flex'; items.innerHTML = ''; renderSummary(); return; }
+  empty.style.display = 'none';
+  items.innerHTML = canvasItems.map((ci, idx) => {
+    const l = getLicense(ci.id); if (!l) return '';
+    return `<div class="canvas-item ${catClass(l.cat)}" data-idx="${idx}">
+      <div class="canvas-item-icon">${l.icon}</div>
+      <div class="canvas-item-info"><div class="canvas-item-name">${l.label}</div><div class="canvas-item-unit">${fmt(l.price)} / ${l.unit}</div></div>
+      <div class="qty-ctrl"><button class="qty-btn" data-action="dec" data-idx="${idx}">&#8722;</button><input class="qty-input" type="number" min="0" value="${ci.qty}" data-idx="${idx}"><button class="qty-btn" data-action="inc" data-idx="${idx}">+</button></div>
+      <div class="canvas-item-cost">${fmt(l.price*ci.qty)}<div style="font-size:0.63rem; color:var(--muted); font-weight:400;">/mo</div></div>
+      <button class="canvas-item-remove" data-idx="${idx}" title="Remove">&#x2715;</button>
+    </div>`;
+  }).join('');
+  renderSummary();
+}
+function renderEnvs() {
+  document.getElementById('envGrid').innerHTML = MANUAL_ENVS.map(e => {
+    const q = envQty[e.id] || 0, cost = e.price * q;
+    return `<div class="env-card">
+      <div class="env-card-name">${e.icon} ${e.label}</div>
+      <div class="env-card-price">${e.price === 0 ? 'Free' : fmt(e.price) + '/env/mo'}</div>
+      <div class="qty-ctrl" style="margin-top:0.35rem;"><button class="qty-btn" data-action="dec" data-env="${e.id}">&#8722;</button><input class="qty-input" type="number" min="0" value="${q}" data-env="${e.id}" style="width:38px;"><button class="qty-btn" data-action="inc" data-env="${e.id}">+</button></div>
+      <div class="env-card-cost" style="margin-top:0.3rem;">${cost === 0 ? '—' : fmt(cost) + '/mo'}</div>
+      <div class="env-note">${e.note}</div>
+    </div>`;
+  }).join('');
+}
+function renderSummary() {
+  let total = 0; const lines = [];
+  canvasItems.forEach(ci => { const l = getLicense(ci.id); if (!l || ci.qty <= 0) return; const cost = l.price * ci.qty; total += cost; lines.push({ name: l.label, qty: ci.qty, unit: l.unit, cost }); });
+  MANUAL_ENVS.forEach(e => { const q = envQty[e.id] || 0, cost = e.price * q; if (cost > 0) { total += cost; lines.push({ name: e.label + ' env.', qty: q, unit:'env', cost }); } });
+  document.getElementById('summaryMonthly').textContent = fmt(total);
+  document.getElementById('summaryAnnual').textContent = fmt(total * 12) + ' / year';
+  const el = document.getElementById('summaryLines');
+  if (!lines.length) { el.innerHTML = '<div style="font-size:0.78rem; color:var(--muted2); text-align:center; padding:0.5rem 0;">Add licenses above to see a breakdown</div>'; return; }
+  el.innerHTML = lines.map(l => `<div class="summary-line"><span class="summary-line-name">${l.name}</span><span class="summary-line-qty">${l.qty}&times; ${l.unit}</span><span class="summary-line-cost">${fmt(l.cost)}</span></div>`).join('');
+}
+function addToCanvas(id, qty) {
+  qty = qty || 1;
+  const ex = canvasItems.find(ci => ci.id === id);
+  if (ex) ex.qty += qty; else canvasItems.push({ id, qty });
+  renderCanvas();
+}
+let dragId = null;
+document.addEventListener('dragstart', e => { const t = e.target.closest('.cat-tile'); if (!t) return; dragId = t.dataset.id; t.classList.add('dragging'); });
+document.addEventListener('dragend', () => { document.querySelectorAll('.cat-tile.dragging').forEach(t => t.classList.remove('dragging')); const cb = document.getElementById('canvasBox'); if (cb) cb.classList.remove('drag-over'); });
+const canvasBox = document.getElementById('canvasBox');
+canvasBox.addEventListener('dragover', e => { e.preventDefault(); canvasBox.classList.add('drag-over'); });
+canvasBox.addEventListener('dragleave', e => { if (!canvasBox.contains(e.relatedTarget)) canvasBox.classList.remove('drag-over'); });
+canvasBox.addEventListener('drop', e => { e.preventDefault(); canvasBox.classList.remove('drag-over'); if (dragId) { addToCanvas(dragId); dragId = null; } });
+
+document.addEventListener('click', e => {
+  const addBtn = e.target.closest('.cat-tile-add'); if (addBtn) { addToCanvas(addBtn.dataset.id); return; }
+  const qtyBtn = e.target.closest('.qty-btn[data-idx]');
+  if (qtyBtn) { const i = +qtyBtn.dataset.idx; if (qtyBtn.dataset.action === 'inc') canvasItems[i].qty++; if (qtyBtn.dataset.action === 'dec') canvasItems[i].qty = Math.max(0, canvasItems[i].qty - 1); renderCanvas(); return; }
+  const rm = e.target.closest('.canvas-item-remove'); if (rm) { canvasItems.splice(+rm.dataset.idx, 1); renderCanvas(); return; }
+  const envBtn = e.target.closest('.qty-btn[data-env]');
+  if (envBtn) { const id = envBtn.dataset.env; if (envBtn.dataset.action === 'inc') envQty[id] = (envQty[id] || 0) + 1; if (envBtn.dataset.action === 'dec') envQty[id] = Math.max(0, (envQty[id] || 0) - 1); renderEnvs(); renderSummary(); return; }
+  if (e.target.closest('#clearBtn')) { canvasItems = []; envQty = { 'env-prod':1, 'env-sand':0, 'env-dev':1 }; renderCanvas(); renderEnvs(); return; }
+  if (e.target.closest('#copyBtn')) {
+    const lines = canvasItems.map(ci => { const l = getLicense(ci.id); return l ? `${l.label}: ${ci.qty} × $${l.price}/${l.unit} = ${fmt(l.price*ci.qty)}/mo` : ''; }).filter(Boolean);
+    const t = canvasItems.reduce((s, ci) => { const l = getLicense(ci.id); return s + (l ? l.price * ci.qty : 0); }, 0);
+    lines.push(`\nTotal: ${fmt(t)}/mo · ${fmt(t*12)}/yr`);
+    navigator.clipboard.writeText(lines.join('\n')).catch(() => {});
+    e.target.closest('#copyBtn').textContent = '✓ Copied!';
+    setTimeout(() => { document.getElementById('copyBtn').innerHTML = '📋 Copy summary'; }, 2000); return;
+  }
+  if (e.target.closest('#printBtn')) { window.print(); return; }
+});
+document.addEventListener('input', e => {
+  const inp = e.target.closest('.qty-input[data-idx]');
+  if (inp) { const v = parseInt(inp.value, 10); canvasItems[+inp.dataset.idx].qty = isNaN(v) ? 0 : Math.max(0, v); renderSummary(); return; }
+  const ei = e.target.closest('.qty-input[data-env]');
+  if (ei) { const v = parseInt(ei.value, 10); envQty[ei.dataset.env] = isNaN(v) ? 0 : Math.max(0, v); renderSummary(); return; }
+});
+document.getElementById('catalogSearch').addEventListener('input', e => renderCatalog(e.target.value));
+
+/* ── Init ────────────────────────────────────────────────── */
+renderBase();
+renderSolutions();
+document.getElementById('step1Next').disabled = true;
+</script>
+</body>
+</html>

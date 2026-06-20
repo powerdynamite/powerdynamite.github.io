@@ -1,0 +1,76 @@
+/* =============================================================
+   DESIGN TOKENS  —  single source of truth
+   Change a value here and it updates everywhere.
+   ============================================================= */
+
+:root {
+
+  /* ── Surfaces ──────────────────────────────────────── */
+  --bg:        #faf9f8;   /* page background — Fluent UI off-white */
+  --surface:   #f3f2f1;   /* slightly darker surface               */
+  --card:      #ffffff;   /* card background — pure white          */
+  --card2:     #f3f2f1;   /* secondary card / inset bg             */
+
+  /* ── Borders ───────────────────────────────────────── */
+  --border:    rgba(0,0,0,0.08);
+  --border2:   rgba(0,0,0,0.15);
+
+  /* ── Text ──────────────────────────────────────────── */
+  --text:      #323130;   /* primary text — Fluent UI near-black   */
+  --muted:     #605e5c;   /* body / secondary text                 */
+  --muted2:    #8a8886;   /* placeholder / tertiary text           */
+
+  /* ── Accent — Microsoft Blue ───────────────────────── */
+  --accent:    #0078d4;
+  --accent-hi: #106ebe;
+  --accent-lo: rgba(0,120,212,0.08);
+  --accent-mid:rgba(0,120,212,0.22);
+
+  /* ── Semantic colours ──────────────────────────────── */
+  --green:     #16a34a;
+  --green-lo:  rgba(22,163,74,0.10);
+  --amber:     #d97706;
+  --amber-lo:  rgba(217,119,6,0.10);
+  --rose:      #e11d48;
+  --rose-lo:   rgba(225,29,72,0.10);
+  --sky:       #0284c7;
+  --sky-lo:    rgba(2,132,199,0.10);
+
+  /* ── Brand colours ─────────────────────────────────── */
+  --brand-li:  #0a66c2;   /* LinkedIn                        */
+  --brand-yt:  #ff0000;   /* YouTube                         */
+  --brand-wa:  #25d366;   /* WhatsApp                        */
+  --brand-med: #1c1917;   /* Medium (dark on light bg)       */
+  --brand-gh:  #1c1917;   /* GitHub (dark on light bg)       */
+
+  /* ── Spacing scale ─────────────────────────────────── */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.25rem;
+  --sp-6: 1.5rem;
+  --sp-8: 2rem;
+  --sp-10:2.5rem;
+
+  /* ── Radius ────────────────────────────────────────── */
+  --radius-sm: 6px;
+  --radius-md: 11px;
+  --radius-lg: 18px;
+  --radius-full: 99px;
+
+  /* ── Typography ────────────────────────────────────── */
+  --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-size-xs:  0.65rem;
+  --font-size-sm:  0.78rem;
+  --font-size-md:  0.88rem;
+  --font-size-base: 1rem;
+  --font-size-lg:  1.1rem;
+  --font-size-xl:  1.25rem;
+  --font-size-2xl: 1.9rem;
+
+  /* ── Transitions ───────────────────────────────────── */
+  --transition-fast: .18s ease;
+  --transition-mid:  .25s ease;
+  --transition-drawer: .35s cubic-bezier(.4,0,.2,1);
+}

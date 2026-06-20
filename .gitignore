@@ -1,0 +1,12 @@
+# ── Dev tooling / editor artifacts ──
+.claude/
+*.log
+.DS_Store
+Thumbs.db
+
+# ── Old / unused pages (superseded by index.html) ──
+Abdul Basit CV.html
+non-conventional-cv.html
+
+# ── Personal documents (publish intentionally if you want a CV download) ──
+*.pdf

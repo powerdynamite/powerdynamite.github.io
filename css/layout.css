@@ -1,0 +1,59 @@
+/* =============================================================
+   LAYOUT  —  page wrapper, bento grid, responsive breakpoints
+   ============================================================= */
+
+/* ── Page scaffold ──────────────────────────────────────── */
+.page {
+  padding: var(--sp-10) var(--sp-5) 5rem;
+}
+
+.wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Bento grid ─────────────────────────────────────────── */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 0.875rem;
+}
+
+/* Column span helpers */
+.c1  { grid-column: span 1; }
+.c2  { grid-column: span 2; }
+.c3  { grid-column: span 3; }
+.c4  { grid-column: span 4; }
+.c5  { grid-column: span 5; }
+.c6  { grid-column: span 6; }
+.c7  { grid-column: span 7; }
+.c8  { grid-column: span 8; }
+.c9  { grid-column: span 9; }
+.c10 { grid-column: span 10; }
+.c11 { grid-column: span 11; }
+.c12 { grid-column: span 12; }
+
+@media (max-width: 860px) {
+  .c1,.c2,.c3,.c4,.c5,.c6,
+  .c7,.c8,.c9,.c10,.c11,.c12 { grid-column: span 12; }
+}
+
+@media (min-width: 861px) and (max-width: 1060px) {
+  .c4 { grid-column: span 6; }
+  .c5 { grid-column: span 6; }
+  .c7 { grid-column: span 8; }
+  .c8 { grid-column: span 8; }
+}
+
+/* ── Standard section gap ───────────────────────────────── */
+.section-gap { margin-top: var(--sp-10); }
+
+/* ── Footer ─────────────────────────────────────────────── */
+.footer {
+  text-align: center;
+  margin-top: var(--sp-8);
+  font-size: var(--font-size-xs);
+  color: var(--muted2);
+}
