@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Power Automate Flow Run Estimator — Free Tool · Abdul Basit</title>
+  <meta name="description" content="Estimate monthly Power Automate cloud flow runs and whether you need the Process licence or can stay on seeded per-user capacity. Free tool by @PowerDynamite.">
+
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://abdul-basit-545.github.io/power-automate.html">
+  <meta property="og:title" content="Power Automate Flow Run Estimator — Free Tool">
+  <meta property="og:description" content="Estimate monthly Power Automate flow runs and get a licence recommendation. Free tool by @PowerDynamite.">
+  <meta property="og:image" content="https://abdul-basit-545.github.io/og-image.svg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Abdul Basit · PowerDynamite">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Power Automate Flow Run Estimator — Free Tool">
+  <meta name="twitter:description" content="Estimate monthly Power Automate flow runs and get a licence recommendation.">
+  <meta name="twitter:image" content="https://abdul-basit-545.github.io/og-image.svg">
+  <link rel="canonical" href="https://abdul-basit-545.github.io/power-automate.html">
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <style>
+    .tools-page { padding: 0 0 5rem; background: var(--bg); }
+    .tools-hero { background: linear-gradient(135deg, #f0f6ff 0%, #e8f1fb 100%); border-bottom: 1px solid var(--border); padding: 2.25rem 1.25rem 2rem; text-align: center; }
+    .tools-hero-badge { display: inline-flex; align-items: center; gap: 0.45rem; background: var(--accent-lo); border: 1px solid var(--accent-mid); color: var(--accent); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px; padding: 0.28rem 0.85rem; border-radius: var(--radius-full); margin-bottom: 1rem; }
+    .tools-hero h1 { font-size: clamp(1.6rem,3vw,2.4rem); font-weight: 800; color: var(--text); letter-spacing: -1px; margin-bottom: 0.45rem; }
+    .tools-hero h1 span { color: var(--accent); }
+    .tools-hero p { font-size: 0.9rem; color: var(--muted); max-width: 560px; margin: 0 auto; line-height: 1.6; }
+    .tools-wrap { max-width: 800px; margin: 2rem auto; padding: 0 1.25rem; display: flex; flex-direction: column; gap: 2rem; }
+    .tool-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .tool-card-header { display: flex; align-items: center; gap: 1rem; padding: 1.25rem 1.4rem; border-bottom: 1px solid var(--border); background: linear-gradient(135deg, var(--accent-lo) 0%, transparent 100%); }
+    .tool-card-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+    .tool-card-meta { flex: 1; }
+    .tool-card-name { font-size: 1.1rem; font-weight: 800; color: var(--text); letter-spacing: -0.4px; }
+    .tool-card-desc { font-size: 0.82rem; color: var(--muted); margin-top: 0.2rem; line-height: 1.5; }
+    .tool-free-badge { display: inline-flex; align-items: center; gap: 0.3rem; background: #dcfce7; border: 1px solid #86efac; color: #16a34a; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.4px; padding: 0.22rem 0.65rem; border-radius: var(--radius-full); white-space: nowrap; }
+    .tool-card-body { padding: 1.4rem; }
+    .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 600px) { .calc-grid { grid-template-columns: 1fr; } }
+    .calc-field { display: flex; flex-direction: column; gap: 0.35rem; }
+    .calc-label { font-size: 0.76rem; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 0.4rem; }
+    .calc-hint { font-size: 0.7rem; color: var(--muted); font-weight: 400; }
+    .calc-input, .calc-select { border: 1.5px solid var(--border2); border-radius: var(--radius-md); padding: 0.5rem 0.7rem; font-size: 0.88rem; color: var(--text); background: var(--bg); font-family: inherit; width: 100%; transition: border-color .15s; }
+    .calc-input:focus, .calc-select:focus { outline: none; border-color: var(--accent); }
+    .calc-result { margin-top: 1.2rem; padding: 1rem 1.2rem; background: var(--accent-lo); border: 1.5px solid var(--accent-mid); border-radius: var(--radius-md); display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+    .calc-result-item { display: flex; flex-direction: column; gap: 0.15rem; }
+    .calc-result-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted2); }
+    .calc-result-value { font-size: 1.3rem; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; }
+    .calc-result-note { font-size: 0.75rem; color: var(--muted); flex: 1; min-width: 180px; line-height: 1.5; }
+    .tool-divider { height: 1px; background: var(--border); margin: 1.2rem 0; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; color: var(--muted); text-decoration: none; transition: color .15s; }
+    .back-link:hover { color: var(--accent); }
+  </style>
+</head>
+<body class="tools-page">
+
+<nav class="site-nav">
+  <div class="site-nav-inner">
+    <a href="index.html" class="site-nav-brand">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      <span class="site-nav-brand-name">Abdul Basit</span>
+    </a>
+    <div class="site-nav-links">
+      <a href="index.html" class="site-nav-link">Profile</a>
+      <a href="articles.html" class="site-nav-link">Articles</a>
+    </div>
+    <div class="site-nav-right">
+      <div class="site-nav-dropdown" id="navToolsDropdown">
+        <button class="site-nav-dropdown-toggle active" aria-haspopup="true" aria-expanded="false">
+          Tools
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="site-nav-dropdown-menu" role="menu">
+          <a href="license-planner.html" class="site-nav-dropdown-item" role="menuitem">
+            <span class="site-nav-dropdown-item-icon">📋</span> License Planner
+          </a>
+          <div class="site-nav-dropdown-divider"></div>
+          <a href="copilot-studio.html" class="site-nav-dropdown-item" role="menuitem">
+            <span class="site-nav-dropdown-item-icon">🤖</span> Copilot Studio Messages
+          </a>
+          <a href="dataverse.html" class="site-nav-dropdown-item" role="menuitem">
+            <span class="site-nav-dropdown-item-icon">🗄️</span> Dataverse Storage
+          </a>
+          <a href="power-automate.html" class="site-nav-dropdown-item active" role="menuitem">
+            <span class="site-nav-dropdown-item-icon">⚡</span> Power Automate Runs
+          </a>
+          <a href="power-bi.html" class="site-nav-dropdown-item" role="menuitem">
+            <span class="site-nav-dropdown-item-icon">📊</span> Power BI Licensing
+          </a>
+          <a href="power-pages.html" class="site-nav-dropdown-item" role="menuitem">
+            <span class="site-nav-dropdown-item-icon">🌐</span> Power Pages Capacity
+          </a>
+          <a href="roi-calculator.html" class="site-nav-dropdown-item" role="menuitem">
+            <span class="site-nav-dropdown-item-icon">💰</span> ROI Calculator
+          </a>
+          <a href="alm-checklist.html" class="site-nav-dropdown-item" role="menuitem">
+            <span class="site-nav-dropdown-item-icon">✅</span> ALM Checklist
+          </a>
+        </div>
+      </div>
+      <a href="contact.html" class="site-nav-link">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<div class="tools-hero">
+  <div class="tools-hero-badge">⚡ Power Automate</div>
+  <h1>Flow Run <span>Estimator</span></h1>
+  <p>Estimate monthly cloud flow runs and whether you need the Process licence or can stay on seeded per-user capacity.</p>
+</div>
+
+<div class="tools-wrap">
+  <a href="tools.html" class="back-link">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    All tools
+  </a>
+
+  <div class="tool-card">
+    <div class="tool-card-header">
+      <div class="tool-card-icon">⚡</div>
+      <div class="tool-card-meta">
+        <div class="tool-card-name">Power Automate Flow Run Estimator</div>
+        <div class="tool-card-desc">Estimate monthly cloud flow runs and whether you need the Process licence or can stay on seeded per-user capacity.</div>
+      </div>
+      <div class="tool-free-badge">✦ Free</div>
+    </div>
+    <div class="tool-card-body">
+      <div class="calc-grid">
+        <div class="calc-field">
+          <label class="calc-label" for="pa-flows">Number of flows</label>
+          <input class="calc-input" type="number" id="pa-flows" value="10" min="1">
+        </div>
+        <div class="calc-field">
+          <label class="calc-label" for="pa-trigger">Average trigger frequency</label>
+          <select class="calc-select" id="pa-trigger">
+            <option value="30">Once a day per flow</option>
+            <option value="150" selected>~5× per day per flow</option>
+            <option value="300">~10× per day per flow</option>
+            <option value="900">~30× per day per flow</option>
+            <option value="4320">Every 10 minutes (max)</option>
+          </select>
+        </div>
+        <div class="calc-field">
+          <label class="calc-label" for="pa-actions">Actions per run <span class="calc-hint">avg steps</span></label>
+          <input class="calc-input" type="number" id="pa-actions" value="8" min="1" max="500">
+        </div>
+        <div class="calc-field">
+          <label class="calc-label" for="pa-licence">Current licence</label>
+          <select class="calc-select" id="pa-licence">
+            <option value="6000">M365 seeded (6 k runs/user/mo)</option>
+            <option value="15000" selected>Power Automate per-user (15 k runs/mo)</option>
+            <option value="250000">Power Automate Process (250 k runs/mo)</option>
+          </select>
+        </div>
+        <div class="calc-field">
+          <label class="calc-label" for="pa-rpa">RPA / desktop flows?</label>
+          <select class="calc-select" id="pa-rpa">
+            <option value="no" selected>No</option>
+            <option value="attended">Yes — attended (needs per-user RPA)</option>
+            <option value="unattended">Yes — unattended (needs Process + unattended add-on)</option>
+          </select>
+        </div>
+        <div class="calc-field">
+          <label class="calc-label" for="pa-premium">Premium connectors?</label>
+          <select class="calc-select" id="pa-premium">
+            <option value="no" selected>No — standard connectors only</option>
+            <option value="yes">Yes — at least one premium connector</option>
+          </select>
+        </div>
+      </div>
+      <div class="calc-result">
+        <div class="calc-result-item">
+          <div class="calc-result-label">Runs / mo</div>
+          <div class="calc-result-value" id="pa-runs">—</div>
+        </div>
+        <div class="calc-result-item">
+          <div class="calc-result-label">Actions / mo</div>
+          <div class="calc-result-value" id="pa-act">—</div>
+        </div>
+        <div class="calc-result-item">
+          <div class="calc-result-label">Licence needed</div>
+          <div class="calc-result-value" id="pa-rec" style="font-size:1rem">—</div>
+        </div>
+        <div class="calc-result-note" id="pa-note">Fill in the fields above.</div>
+      </div>
+      <div class="tool-divider"></div>
+      <div style="font-size:0.76rem; color:var(--muted); line-height:1.6;">
+        <strong>Licence caps (June 2026):</strong> M365 seeded = 6 k cloud flow runs/user/mo (standard connectors only) · Per-user Plan = 15 k runs/mo · Process = 250 k runs/mo per flow.
+        Premium connectors always require Per-user or Process.
+        <a href="https://learn.microsoft.com/en-us/power-platform/admin/api-request-limits-allocations" target="_blank" rel="noopener" style="color:var(--accent);">Microsoft docs ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:linear-gradient(135deg,#000 0%,#1a1a1a 100%); border-radius:var(--radius-lg); padding:2rem; color:#fff; display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
+    <div style="flex:1; min-width:220px;">
+      <div style="font-size:1.2rem; font-weight:800; margin-bottom:0.35rem; letter-spacing:-0.5px;">Need a second opinion on your architecture?</div>
+      <div style="font-size:0.86rem; color:rgba(255,255,255,.72); line-height:1.6;">These tools surface the right questions. For the answers specific to your environment, book a 1:1 call.</div>
+    </div>
+    <a href="contact.html" style="display:inline-flex; align-items:center; gap:0.5rem; background:#fff; color:#000; font-size:0.85rem; font-weight:700; padding:0.7rem 1.4rem; border-radius:var(--radius-md); text-decoration:none; white-space:nowrap;">
+      Book a call
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17 17 7M7 7h10v10"/></svg>
+    </a>
+  </div>
+</div>
+
+<script>
+function fmt(n){if(n>=1000000)return(n/1000000).toFixed(1)+'M';if(n>=1000)return(n/1000).toFixed(1)+'k';return n.toLocaleString();}
+function calcPA() {
+  const flows=parseInt(document.getElementById('pa-flows').value)||0;
+  const trigger=parseInt(document.getElementById('pa-trigger').value)||0;
+  const actions=parseInt(document.getElementById('pa-actions').value)||0;
+  const cap=parseInt(document.getElementById('pa-licence').value)||0;
+  const rpa=document.getElementById('pa-rpa').value;
+  const premium=document.getElementById('pa-premium').value;
+  const runs=flows*trigger;
+  const actTotal=runs*actions;
+  document.getElementById('pa-runs').textContent=fmt(runs);
+  document.getElementById('pa-act').textContent=fmt(actTotal);
+  let rec='',note='';
+  if(rpa==='unattended'){rec='Process + Unattended RPA';note='Unattended RPA requires a Process licence per flow plus the Unattended RPA add-on ($150/bot/mo).';}
+  else if(rpa==='attended'){rec='Per-User + RPA add-on';note='Attended RPA requires the Per-User with RPA plan ($40/user/mo).';}
+  else if(runs>cap){rec=runs>250000?'Multiple Process licences':'Process licence';note=`Your ${fmt(runs)} runs/mo exceed the ${fmt(cap)} cap. A Process licence ($150/mo) covers one automated flow.`;}
+  else if(premium==='yes'&&cap===6000){rec='Per-User Plan required';note='Premium connectors require at minimum a Per-User Power Automate plan ($15/user/mo).';}
+  else{rec='Current licence sufficient';note=`Your ${fmt(runs)} runs/mo fit within the ${fmt(cap)} cap with ${fmt(cap-runs)} headroom.`;}
+  document.getElementById('pa-rec').textContent=rec;
+  document.getElementById('pa-note').textContent=note;
+}
+['pa-flows','pa-actions'].forEach(id=>document.getElementById(id).addEventListener('input',calcPA));
+['pa-trigger','pa-licence','pa-rpa','pa-premium'].forEach(id=>document.getElementById(id).addEventListener('change',calcPA));
+calcPA();
+</script>
+<script src="js/nav.js"></script>
+</body>
+</html>
