@@ -157,3 +157,31 @@
   transition: color var(--transition-fast);
 }
 .back-link:hover { color: var(--accent); }
+
+
+/* ── More tools cross-link bar ───────────────────────────── */
+.more-tools-bar {
+  max-width: 800px; margin: 1.5rem auto 0; padding: 0 1.25rem;
+  display: flex; align-items: baseline; gap: 0.9rem; flex-wrap: wrap;
+}
+.more-tools-label {
+  font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.8px; color: var(--muted2); white-space: nowrap; flex-shrink: 0;
+}
+.more-tools-links { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; flex: 1; }
+.more-tools-link {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  font-size: 0.8rem; color: var(--muted); text-decoration: none;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-full); padding: 0.25rem 0.75rem;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+.more-tools-link:hover { border-color: var(--accent); color: var(--accent); }
+.more-tools-name { font-weight: 600; color: var(--text); }
+.more-tools-hint { color: var(--muted2); font-size: 0.75rem; }
+.more-tools-all {
+  font-size: 0.78rem; font-weight: 600; color: var(--accent);
+  text-decoration: none; margin-left: auto; white-space: nowrap;
+}
+.more-tools-all:hover { text-decoration: underline; }
+@media (max-width: 600px) { .more-tools-hint { display: none; } }
