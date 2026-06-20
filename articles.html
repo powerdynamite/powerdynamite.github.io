@@ -75,22 +75,25 @@
     }
     .art-section-title { font-size: 1.1rem; font-weight: 800; color: var(--text); letter-spacing: -0.4px; margin-bottom: 1rem; }
 
-    /* Topic cards */
-    .topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.9rem; }
-    .topic-card {
+    /* Article list */
+    .article-list { display: flex; flex-direction: column; gap: 0.75rem; }
+    .article-card {
       background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
-      padding: 1.2rem; text-decoration: none; color: inherit;
-      display: flex; flex-direction: column; gap: 0.55rem;
+      padding: 1.1rem 1.25rem; text-decoration: none; color: inherit;
+      display: flex; align-items: flex-start; gap: 1rem;
       transition: border-color .15s, transform .15s;
     }
-    .topic-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-    .topic-card-icon {
-      width: 42px; height: 42px; border-radius: 11px; background: var(--accent-lo);
-      display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+    .article-card:hover { border-color: var(--accent); transform: translateX(3px); }
+    .article-card-num {
+      font-size: 0.72rem; font-weight: 800; color: var(--accent); opacity: .5;
+      min-width: 22px; padding-top: 0.15rem; letter-spacing: -0.5px;
     }
-    .topic-card-name { font-size: 0.95rem; font-weight: 700; color: var(--text); }
-    .topic-card-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.55; flex: 1; }
-    .topic-card-link { font-size: 0.76rem; font-weight: 600; color: var(--accent); display: flex; align-items: center; gap: 0.3rem; }
+    .article-card-body { flex: 1; }
+    .article-card-title { font-size: 0.95rem; font-weight: 700; color: var(--text); line-height: 1.45; margin-bottom: 0.3rem; }
+    .article-card-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.55; }
+    .article-card-meta { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.5rem; }
+    .article-card-date { font-size: 0.72rem; color: var(--muted2); }
+    .article-card-read { font-size: 0.72rem; font-weight: 600; color: var(--accent); margin-left: auto; display: flex; align-items: center; gap: 0.25rem; }
 
     /* Channels */
     .channels { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.8rem; }
@@ -180,47 +183,132 @@
     </div>
   </div>
 
-  <!-- Topics -->
+  <!-- Recent articles -->
   <div>
-    <div class="art-section-label">What I write about</div>
-    <div class="art-section-title">Topics &amp; series</div>
-    <div class="topic-grid">
-      <a href="https://medium.com/@powerdynamite" target="_blank" rel="noopener" class="topic-card">
-        <div class="topic-card-icon">🤖</div>
-        <div class="topic-card-name">Copilot Studio</div>
-        <div class="topic-card-desc">Building agents, knowledge grounding, generative answers, multi-agent patterns and real deployment lessons.</div>
-        <div class="topic-card-link">Read on Medium →</div>
+    <div class="art-section-label">Recent articles</div>
+    <div class="art-section-title">Latest from Medium</div>
+    <div class="article-list">
+
+      <a href="https://powerdynamite.medium.com/microsoft-scout-your-ai-colleague-has-arrived-and-it-already-read-your-emails-e7e41138c71b" target="_blank" rel="noopener" class="article-card">
+        <div class="article-card-num">01</div>
+        <div class="article-card-body">
+          <div class="article-card-title">Microsoft Scout: Your AI Colleague Has Arrived — and It Already Read Your Emails</div>
+          <div class="article-card-desc">The era of reactive AI is over. Microsoft's new always-on agent doesn't wait to be asked.</div>
+          <div class="article-card-meta">
+            <span class="article-card-date">Jun 2026</span>
+            <span class="article-card-read">Read on Medium →</span>
+          </div>
+        </div>
       </a>
-      <a href="https://medium.com/@powerdynamite" target="_blank" rel="noopener" class="topic-card">
-        <div class="topic-card-icon">🗄️</div>
-        <div class="topic-card-name">Dataverse &amp; Schema</div>
-        <div class="topic-card-desc">Table design, relationships, security roles, and modelling patterns for scalable model-driven apps.</div>
-        <div class="topic-card-link">Read on Medium →</div>
+
+      <a href="https://powerdynamite.medium.com/i-taught-my-form-engine-to-talk-configuring-dynamics-365-forms-in-plain-english-ca61760505a2" target="_blank" rel="noopener" class="article-card">
+        <div class="article-card-num">02</div>
+        <div class="article-card-body">
+          <div class="article-card-title">I Taught My Form Engine to Talk: Configuring Dynamics 365 Forms in Plain English</div>
+          <div class="article-card-desc">Part 2 of the Configurable Form Engine story — where config records meet a Copilot.</div>
+          <div class="article-card-meta">
+            <span class="article-card-date">Jun 13, 2026</span>
+            <span class="article-card-read">Read on Medium →</span>
+          </div>
+        </div>
       </a>
-      <a href="https://medium.com/@powerdynamite" target="_blank" rel="noopener" class="topic-card">
-        <div class="topic-card-icon">🔄</div>
-        <div class="topic-card-name">ALM &amp; Pipelines</div>
-        <div class="topic-card-desc">Solution layering, managed vs unmanaged, deployment pipelines and source control for Power Platform.</div>
-        <div class="topic-card-link">Read on Medium →</div>
+
+      <a href="https://powerdynamite.medium.com/your-crm-doesnt-need-another-chatbot-it-needs-an-agent-4af7179113be" target="_blank" rel="noopener" class="article-card">
+        <div class="article-card-num">03</div>
+        <div class="article-card-body">
+          <div class="article-card-title">Your CRM Doesn't Need Another Chatbot. It Needs an Agent.</div>
+          <div class="article-card-desc">How event-triggered Copilot agents are quietly changing what automation means in Dynamics 365.</div>
+          <div class="article-card-meta">
+            <span class="article-card-date">Jun 10, 2026</span>
+            <span class="article-card-read">Read on Medium →</span>
+          </div>
+        </div>
       </a>
-      <a href="https://medium.com/@powerdynamite" target="_blank" rel="noopener" class="topic-card">
-        <div class="topic-card-icon">⚡</div>
-        <div class="topic-card-name">Power Automate</div>
-        <div class="topic-card-desc">Cloud flows, RPA, integration patterns and the licensing decisions that come with them.</div>
-        <div class="topic-card-link">Read on Medium →</div>
+
+      <a href="https://powerdynamite.medium.com/stop-writing-form-javascript-forever-how-a-configurable-form-engine-transforms-dynamics-365-4987ca282af3" target="_blank" rel="noopener" class="article-card">
+        <div class="article-card-num">04</div>
+        <div class="article-card-body">
+          <div class="article-card-title">Stop Writing Form JavaScript Forever: How a Configurable Form Engine Transforms Dynamics 365</div>
+          <div class="article-card-desc">The dirty secret of every Dynamics 365 project: you're rewriting the same JavaScript, over and over again.</div>
+          <div class="article-card-meta">
+            <span class="article-card-date">Jun 9, 2026</span>
+            <span class="article-card-read">Read on Medium →</span>
+          </div>
+        </div>
       </a>
-      <a href="https://medium.com/@powerdynamite" target="_blank" rel="noopener" class="topic-card">
-        <div class="topic-card-icon">🧠</div>
-        <div class="topic-card-name">AI Agents &amp; RAG</div>
-        <div class="topic-card-desc">Azure AI Search, retrieval-augmented generation, and grounding agents in enterprise knowledge.</div>
-        <div class="topic-card-link">Read on Medium →</div>
+
+      <a href="https://powerdynamite.medium.com/i-built-an-ai-architects-second-brain-for-power-platform-here-s-why-it-starts-by-saying-stop-c4410cd40455" target="_blank" rel="noopener" class="article-card">
+        <div class="article-card-num">05</div>
+        <div class="article-card-body">
+          <div class="article-card-title">I Built an AI Architect's Second Brain for Power Platform — Here's Why It Starts by Saying "Stop"</div>
+          <div class="article-card-desc">Most AI coding tools have the same instinct: you describe what you want, they start building.</div>
+          <div class="article-card-meta">
+            <span class="article-card-date">Jun 8, 2026</span>
+            <span class="article-card-read">Read on Medium →</span>
+          </div>
+        </div>
       </a>
-      <a href="https://medium.com/@powerdynamite" target="_blank" rel="noopener" class="topic-card">
-        <div class="topic-card-icon">🏗️</div>
-        <div class="topic-card-name">Solution Architecture</div>
-        <div class="topic-card-desc">PL-600 level decisions — designing, costing and delivering enterprise Microsoft solutions.</div>
-        <div class="topic-card-link">Read on Medium →</div>
+
+      <a href="https://powerdynamite.medium.com/unlocking-context-how-mcp-servers-supercharge-microsoft-365-copilot-19d18a3366bb" target="_blank" rel="noopener" class="article-card">
+        <div class="article-card-num">06</div>
+        <div class="article-card-body">
+          <div class="article-card-title">Unlocking Context: How MCP Servers Supercharge Microsoft 365 Copilot</div>
+          <div class="article-card-desc">Microsoft 365 Copilot is powerful on its own — MCP takes it further by wiring it into your real data.</div>
+          <div class="article-card-meta">
+            <span class="article-card-date">Jul 25, 2025</span>
+            <span class="article-card-read">Read on Medium →</span>
+          </div>
+        </div>
       </a>
+
+      <a href="https://powerdynamite.medium.com/connect-to-dataverse-with-model-context-protocol-mcp-preview-34059e7789f3" target="_blank" rel="noopener" class="article-card">
+        <div class="article-card-num">07</div>
+        <div class="article-card-body">
+          <div class="article-card-title">Connect to Dataverse with Model Context Protocol (MCP) — Preview</div>
+          <div class="article-card-desc">A practical guide to integrating Microsoft Dataverse with Large Language Models via MCP.</div>
+          <div class="article-card-meta">
+            <span class="article-card-date">Jul 8, 2025</span>
+            <span class="article-card-read">Read on Medium →</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="https://powerdynamite.medium.com/managed-environments-in-power-platform-a-developers-guide-to-governance-and-lifecycle-management-71b35291f8ce" target="_blank" rel="noopener" class="article-card">
+        <div class="article-card-num">08</div>
+        <div class="article-card-body">
+          <div class="article-card-title">Managed Environments in Power Platform: A Developer's Guide to Governance and Lifecycle Management</div>
+          <div class="article-card-desc">Everything you need to know about governance and lifecycle management in Power Platform.</div>
+          <div class="article-card-meta">
+            <span class="article-card-date">Jul 8, 2025</span>
+            <span class="article-card-read">Read on Medium →</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="https://powerdynamite.medium.com/model-context-protocol-mcp-microsofts-standard-for-ai-integration-92d359130448" target="_blank" rel="noopener" class="article-card">
+        <div class="article-card-num">09</div>
+        <div class="article-card-body">
+          <div class="article-card-title">Model Context Protocol (MCP): Microsoft's Standard for AI Integration</div>
+          <div class="article-card-desc">How MCP is becoming the de-facto standard for connecting AI models to enterprise data and tools.</div>
+          <div class="article-card-meta">
+            <span class="article-card-date">Jul 4, 2025</span>
+            <span class="article-card-read">Read on Medium →</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="https://powerdynamite.medium.com/model-driven-app-copilot-customization-capabilities-and-future-enhancements-a40e68fe05fe" target="_blank" rel="noopener" class="article-card">
+        <div class="article-card-num">10</div>
+        <div class="article-card-body">
+          <div class="article-card-title">Model-Driven App Copilot: Customization, Capabilities, and Future Enhancements</div>
+          <div class="article-card-desc">A deep-dive into what you can and can't customize in the Model-Driven App Copilot experience today.</div>
+          <div class="article-card-meta">
+            <span class="article-card-date">Jun 30, 2025</span>
+            <span class="article-card-read">Read on Medium →</span>
+          </div>
+        </div>
+      </a>
+
     </div>
   </div>
 
