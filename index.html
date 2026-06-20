@@ -50,8 +50,39 @@
     <div class="site-nav-links">
       <a href="index.html" class="site-nav-link active">Profile</a>
       <a href="articles.html" class="site-nav-link">Articles</a>
-      <a href="license-planner.html" class="site-nav-link">License Planner</a>
-      <a href="tools.html" class="site-nav-link">Tools</a>
+      <div class="site-nav-dropdown" id="navToolsDropdown">
+        <button class="site-nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+          Tools
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="site-nav-dropdown-menu" role="menu">
+          <a href="license-planner.html" class="site-nav-dropdown-item" role="menuitem">
+            <span class="site-nav-dropdown-item-icon">📋</span> License Planner
+          </a>
+          <div class="site-nav-dropdown-divider"></div>
+          <a href="tools.html#copilot-studio" class="site-nav-dropdown-item" role="menuitem">
+            <span class="site-nav-dropdown-item-icon">🤖</span> Copilot Studio Messages
+          </a>
+          <a href="tools.html#dataverse" class="site-nav-dropdown-item" role="menuitem">
+            <span class="site-nav-dropdown-item-icon">🗄️</span> Dataverse Storage
+          </a>
+          <a href="tools.html#power-automate" class="site-nav-dropdown-item" role="menuitem">
+            <span class="site-nav-dropdown-item-icon">⚡</span> Power Automate Runs
+          </a>
+          <a href="tools.html#power-bi" class="site-nav-dropdown-item" role="menuitem">
+            <span class="site-nav-dropdown-item-icon">📊</span> Power BI Licensing
+          </a>
+          <a href="tools.html#power-pages" class="site-nav-dropdown-item" role="menuitem">
+            <span class="site-nav-dropdown-item-icon">🌐</span> Power Pages Capacity
+          </a>
+          <a href="tools.html#roi" class="site-nav-dropdown-item" role="menuitem">
+            <span class="site-nav-dropdown-item-icon">💰</span> ROI Calculator
+          </a>
+          <a href="tools.html#alm" class="site-nav-dropdown-item" role="menuitem">
+            <span class="site-nav-dropdown-item-icon">✅</span> ALM Checklist
+          </a>
+        </div>
+      </div>
       <a href="contact.html" class="site-nav-link">Contact</a>
     </div>
   </div>
@@ -536,5 +567,6 @@
   document.getElementById('drawerClose').addEventListener('click', closeDrawer);
   document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
 </script>
+<script src="js/nav.js"></script>
 </body>
 </html>
