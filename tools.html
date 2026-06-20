@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Free Power Platform Tools — Abdul Basit · PowerDynamite</title>
-  <meta name="description" content="Free calculators and checklists for Power Platform architects. Copilot Studio message estimator, Dataverse capacity planner, and ALM readiness checklist.">
+  <meta name="description" content="Free Power Platform calculators: Copilot Studio messages, Dataverse storage, Power Automate runs, Power BI licensing, Power Pages capacity, ROI calculator, and ALM readiness checklist.">
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -406,6 +406,297 @@
     </div>
   </div>
 
+  <!-- ── Tool 4: Power Automate Flow Run Estimator ── -->
+  <div>
+    <div class="tools-section-label">Power Automate</div>
+    <div class="tools-section-title">Flow run estimator</div>
+    <div class="tool-card">
+      <div class="tool-card-header">
+        <div class="tool-card-icon">⚡</div>
+        <div class="tool-card-meta">
+          <div class="tool-card-name">Power Automate Flow Run Estimator</div>
+          <div class="tool-card-desc">Estimate monthly cloud flow runs and whether you need the Process licence or can stay on seeded per-user capacity.</div>
+        </div>
+        <div class="tool-free-badge">✦ Free</div>
+      </div>
+      <div class="tool-card-body">
+        <div class="calc-grid">
+          <div class="calc-field">
+            <label class="calc-label" for="pa-flows">Number of flows</label>
+            <input class="calc-input" type="number" id="pa-flows" value="10" min="1">
+          </div>
+          <div class="calc-field">
+            <label class="calc-label" for="pa-trigger">Average trigger frequency</label>
+            <select class="calc-select" id="pa-trigger">
+              <option value="30">Once a day per flow</option>
+              <option value="150" selected>~5× per day per flow</option>
+              <option value="300">~10× per day per flow</option>
+              <option value="900">~30× per day per flow</option>
+              <option value="4320">Every 10 minutes (max)</option>
+            </select>
+          </div>
+          <div class="calc-field">
+            <label class="calc-label" for="pa-actions">Actions per run <span class="calc-hint">avg steps</span></label>
+            <input class="calc-input" type="number" id="pa-actions" value="8" min="1" max="500">
+          </div>
+          <div class="calc-field">
+            <label class="calc-label" for="pa-licence">Current licence</label>
+            <select class="calc-select" id="pa-licence">
+              <option value="6000">M365 seeded (6 k runs/user/mo)</option>
+              <option value="15000" selected>Power Automate per-user (15 k runs/mo)</option>
+              <option value="250000">Power Automate Process (250 k runs/mo)</option>
+            </select>
+          </div>
+          <div class="calc-field">
+            <label class="calc-label" for="pa-rpa">RPA / desktop flows?</label>
+            <select class="calc-select" id="pa-rpa">
+              <option value="no" selected>No</option>
+              <option value="attended">Yes — attended (needs per-user RPA)</option>
+              <option value="unattended">Yes — unattended (needs Process + unattended add-on)</option>
+            </select>
+          </div>
+          <div class="calc-field">
+            <label class="calc-label" for="pa-premium">Premium connectors?</label>
+            <select class="calc-select" id="pa-premium">
+              <option value="no" selected>No — standard connectors only</option>
+              <option value="yes">Yes — at least one premium connector</option>
+            </select>
+          </div>
+        </div>
+        <div class="calc-result" id="pa-result">
+          <div class="calc-result-item">
+            <div class="calc-result-label">Runs / mo</div>
+            <div class="calc-result-value" id="pa-runs">—</div>
+          </div>
+          <div class="calc-result-item">
+            <div class="calc-result-label">Actions / mo</div>
+            <div class="calc-result-value" id="pa-act">—</div>
+          </div>
+          <div class="calc-result-item">
+            <div class="calc-result-label">Licence needed</div>
+            <div class="calc-result-value" id="pa-rec" style="font-size:1rem">—</div>
+          </div>
+          <div class="calc-result-note" id="pa-note">Fill in the fields above.</div>
+        </div>
+        <div class="tool-divider"></div>
+        <div style="font-size:0.76rem; color:var(--muted); line-height:1.6;">
+          <strong>Licence caps (June 2026):</strong> M365 seeded = 6 k cloud flow runs/user/mo (standard connectors only) · Per-user Plan = 15 k runs/mo · Process = 250 k runs/mo per flow.
+          Premium connectors always require Per-user or Process.
+          <a href="https://learn.microsoft.com/en-us/power-platform/admin/api-request-limits-allocations" target="_blank" rel="noopener" style="color:var(--accent);">Microsoft docs ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Tool 5: Power BI Licensing Advisor ── -->
+  <div>
+    <div class="tools-section-label">Power BI</div>
+    <div class="tools-section-title">Licensing tier advisor</div>
+    <div class="tool-card">
+      <div class="tool-card-header">
+        <div class="tool-card-icon">📊</div>
+        <div class="tool-card-meta">
+          <div class="tool-card-name">Power BI Licensing Advisor</div>
+          <div class="tool-card-desc">Answer a few questions about your team and get a clear recommendation: Free, Pro, PPU, or Premium Capacity.</div>
+        </div>
+        <div class="tool-free-badge">✦ Free</div>
+      </div>
+      <div class="tool-card-body">
+        <div class="calc-grid">
+          <div class="calc-field">
+            <label class="calc-label" for="bi-authors">Report authors <span class="calc-hint">people who build</span></label>
+            <input class="calc-input" type="number" id="bi-authors" value="5" min="0">
+          </div>
+          <div class="calc-field">
+            <label class="calc-label" for="bi-viewers">Report viewers <span class="calc-hint">people who consume</span></label>
+            <input class="calc-input" type="number" id="bi-viewers" value="80" min="0">
+          </div>
+          <div class="calc-field">
+            <label class="calc-label" for="bi-embed">Embed reports externally?</label>
+            <select class="calc-select" id="bi-embed">
+              <option value="no" selected>No — internal only</option>
+              <option value="customers">Yes — for customers / partners</option>
+            </select>
+          </div>
+          <div class="calc-field">
+            <label class="calc-label" for="bi-refresh">Refresh frequency needed</label>
+            <select class="calc-select" id="bi-refresh">
+              <option value="daily" selected>Daily (8× / day max)</option>
+              <option value="hourly">Hourly or near-real-time</option>
+              <option value="streaming">Streaming / push datasets</option>
+            </select>
+          </div>
+          <div class="calc-field">
+            <label class="calc-label" for="bi-model">Largest semantic model size</label>
+            <select class="calc-select" id="bi-model">
+              <option value="small" selected>Under 1 GB</option>
+              <option value="medium">1–25 GB</option>
+              <option value="large">25–100 GB (needs Premium)</option>
+            </select>
+          </div>
+          <div class="calc-field">
+            <label class="calc-label" for="bi-m365">M365 licence held?</label>
+            <select class="calc-select" id="bi-m365">
+              <option value="e5" selected>E5 (Power BI Pro included)</option>
+              <option value="e3">E3 / E1 (no Power BI included)</option>
+              <option value="none">No M365 licence</option>
+            </select>
+          </div>
+        </div>
+        <div class="calc-result" id="bi-result">
+          <div class="calc-result-item" style="min-width:160px">
+            <div class="calc-result-label">Recommended tier</div>
+            <div class="calc-result-value" id="bi-tier">—</div>
+          </div>
+          <div class="calc-result-item">
+            <div class="calc-result-label">Est. monthly cost</div>
+            <div class="calc-result-value" id="bi-cost">—</div>
+          </div>
+          <div class="calc-result-note" id="bi-note">Fill in the fields above.</div>
+        </div>
+        <div class="tool-divider"></div>
+        <div style="font-size:0.76rem; color:var(--muted); line-height:1.6;">
+          <strong>Pricing (June 2026):</strong> Pro = $10/user/mo · PPU = $20/user/mo · Premium P1 = $4,995/mo (capacity).
+          E5 includes Pro for all licensed users. External embedding requires Premium or Embedded SKU.
+          <a href="https://powerbi.microsoft.com/en-us/pricing/" target="_blank" rel="noopener" style="color:var(--accent);">Microsoft pricing ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Tool 6: Power Pages Capacity Estimator ── -->
+  <div>
+    <div class="tools-section-label">Power Pages</div>
+    <div class="tools-section-title">Capacity &amp; cost estimator</div>
+    <div class="tool-card">
+      <div class="tool-card-header">
+        <div class="tool-card-icon">🌐</div>
+        <div class="tool-card-meta">
+          <div class="tool-card-name">Power Pages Capacity Estimator</div>
+          <div class="tool-card-desc">Estimate monthly authenticated and anonymous page-view consumption and whether you need add-on capacity.</div>
+        </div>
+        <div class="tool-free-badge">✦ Free</div>
+      </div>
+      <div class="tool-card-body">
+        <div class="calc-grid">
+          <div class="calc-field">
+            <label class="calc-label" for="pp-auth-users">Authenticated users / mo <span class="calc-hint">logged-in visitors</span></label>
+            <input class="calc-input" type="number" id="pp-auth-users" value="200" min="0">
+          </div>
+          <div class="calc-field">
+            <label class="calc-label" for="pp-auth-pages">Pages per auth session</label>
+            <input class="calc-input" type="number" id="pp-auth-pages" value="10" min="1">
+          </div>
+          <div class="calc-field">
+            <label class="calc-label" for="pp-anon-users">Anonymous visitors / mo</label>
+            <input class="calc-input" type="number" id="pp-anon-users" value="1000" min="0">
+          </div>
+          <div class="calc-field">
+            <label class="calc-label" for="pp-anon-pages">Pages per anon session</label>
+            <input class="calc-input" type="number" id="pp-anon-pages" value="4" min="1">
+          </div>
+          <div class="calc-field">
+            <label class="calc-label" for="pp-licence">Included capacity</label>
+            <select class="calc-select" id="pp-licence">
+              <option value="0,0">Trial / none</option>
+              <option value="100,500" selected>Power Pages (100 auth logins + 500 anon views/day)</option>
+              <option value="500,5000">Power Pages + capacity add-ons</option>
+            </select>
+          </div>
+        </div>
+        <div class="calc-result" id="pp-result">
+          <div class="calc-result-item">
+            <div class="calc-result-label">Auth page views / mo</div>
+            <div class="calc-result-value" id="pp-auth-views">—</div>
+          </div>
+          <div class="calc-result-item">
+            <div class="calc-result-label">Anon page views / mo</div>
+            <div class="calc-result-value" id="pp-anon-views">—</div>
+          </div>
+          <div class="calc-result-item">
+            <div class="calc-result-label">Daily auth logins</div>
+            <div class="calc-result-value" id="pp-daily-auth">—</div>
+          </div>
+          <div class="calc-result-note" id="pp-note">Fill in the fields above.</div>
+        </div>
+        <div class="tool-divider"></div>
+        <div style="font-size:0.76rem; color:var(--muted); line-height:1.6;">
+          <strong>Licensing model:</strong> Power Pages is metered on authenticated logins (100/day base) and anonymous page views (500/day base).
+          Add-on packs: $200/mo for +100 auth logins/day or +500 anon views/day.
+          <a href="https://learn.microsoft.com/en-us/power-pages/admin/licensing/power-pages-licensing" target="_blank" rel="noopener" style="color:var(--accent);">Microsoft docs ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Tool 7: Power Platform ROI Calculator ── -->
+  <div>
+    <div class="tools-section-label">Business case</div>
+    <div class="tools-section-title">Implementation ROI calculator</div>
+    <div class="tool-card">
+      <div class="tool-card-header">
+        <div class="tool-card-icon">💰</div>
+        <div class="tool-card-meta">
+          <div class="tool-card-name">Power Platform ROI Calculator</div>
+          <div class="tool-card-desc">Build a quick business case by estimating time saved against implementation and licence costs.</div>
+        </div>
+        <div class="tool-free-badge">✦ Free</div>
+      </div>
+      <div class="tool-card-body">
+        <div class="calc-grid">
+          <div class="calc-field">
+            <label class="calc-label" for="roi-users">Users affected</label>
+            <input class="calc-input" type="number" id="roi-users" value="50" min="1">
+          </div>
+          <div class="calc-field">
+            <label class="calc-label" for="roi-hours">Hours saved per user / mo <span class="calc-hint">manual tasks automated</span></label>
+            <input class="calc-input" type="number" id="roi-hours" value="4" min="0" step="0.5">
+          </div>
+          <div class="calc-field">
+            <label class="calc-label" for="roi-rate">Average hourly cost <span class="calc-hint">salary + overheads</span></label>
+            <input class="calc-input" type="number" id="roi-rate" value="35" min="1">
+          </div>
+          <div class="calc-field">
+            <label class="calc-label" for="roi-errors">Error / rework reduction <span class="calc-hint">% of manual errors prevented</span></label>
+            <input class="calc-input" type="number" id="roi-errors" value="30" min="0" max="100">
+          </div>
+          <div class="calc-field">
+            <label class="calc-label" for="roi-impl">Implementation cost ($) <span class="calc-hint">one-off project cost</span></label>
+            <input class="calc-input" type="number" id="roi-impl" value="15000" min="0">
+          </div>
+          <div class="calc-field">
+            <label class="calc-label" for="roi-licence">Monthly licence cost ($)</label>
+            <input class="calc-input" type="number" id="roi-licence" value="500" min="0">
+          </div>
+        </div>
+        <div class="calc-result" id="roi-result">
+          <div class="calc-result-item">
+            <div class="calc-result-label">Monthly saving</div>
+            <div class="calc-result-value" id="roi-monthly">—</div>
+          </div>
+          <div class="calc-result-item">
+            <div class="calc-result-label">Annual saving</div>
+            <div class="calc-result-value" id="roi-annual">—</div>
+          </div>
+          <div class="calc-result-item">
+            <div class="calc-result-label">Payback period</div>
+            <div class="calc-result-value" id="roi-payback">—</div>
+          </div>
+          <div class="calc-result-item">
+            <div class="calc-result-label">3-year ROI</div>
+            <div class="calc-result-value" id="roi-3yr">—</div>
+          </div>
+          <div class="calc-result-note" id="roi-note">Fill in the fields above.</div>
+        </div>
+        <div class="tool-divider"></div>
+        <div style="font-size:0.76rem; color:var(--muted); line-height:1.6;">
+          Saving = (users × hours/mo × hourly rate) + (error reduction benefit estimated at 20% of labour saving).
+          Does not include productivity gains from faster processes or reduced IT support load — actual ROI is typically higher.
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- CTA -->
   <div style="background:linear-gradient(135deg,#000 0%,#1a1a1a 100%); border-radius:var(--radius-lg); padding:2rem; color:#fff; display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
     <div style="flex:1; min-width:220px;">
@@ -539,6 +830,169 @@ document.getElementById('alm-reset').addEventListener('click', () => {
 });
 
 updateProgress();
+
+// ── Power Automate estimator ──
+function calcPA() {
+  const flows   = parseInt(document.getElementById('pa-flows').value) || 0;
+  const trigger = parseInt(document.getElementById('pa-trigger').value) || 0;
+  const actions = parseInt(document.getElementById('pa-actions').value) || 0;
+  const cap     = parseInt(document.getElementById('pa-licence').value) || 0;
+  const rpa     = document.getElementById('pa-rpa').value;
+  const premium = document.getElementById('pa-premium').value;
+
+  const runs    = flows * trigger; // per month (trigger already = runs/mo)
+  const actTotal= runs * actions;
+
+  document.getElementById('pa-runs').textContent = fmt(runs);
+  document.getElementById('pa-act').textContent  = fmt(actTotal);
+
+  let rec = '', note = '';
+  if (rpa === 'unattended') {
+    rec = 'Process + Unattended RPA';
+    note = 'Unattended RPA requires a Process licence per flow plus the Unattended RPA add-on ($150/bot/mo). Premium connectors included.';
+  } else if (rpa === 'attended') {
+    rec = 'Per-User + RPA add-on';
+    note = 'Attended RPA requires the Per-User with RPA plan ($40/user/mo). Premium connectors included.';
+  } else if (runs > cap) {
+    rec = runs > 250000 ? 'Multiple Process licences' : 'Process licence';
+    note = `Your ${fmt(runs)} runs/mo exceed the ${fmt(cap)} cap. A Process licence ($150/mo, 250 k runs) covers one automated flow. Add one per high-volume flow.`;
+  } else if (premium === 'yes' && cap === 6000) {
+    rec = 'Per-User Plan required';
+    note = 'Premium connectors require at minimum a Per-User Power Automate plan ($15/user/mo). M365 seeded licences are limited to standard connectors.';
+  } else {
+    rec = 'Current licence sufficient';
+    note = `Your ${fmt(runs)} runs/mo fit within the ${fmt(cap)} cap with ${fmt(cap - runs)} headroom. No upgrade needed today.`;
+  }
+
+  document.getElementById('pa-rec').textContent  = rec;
+  document.getElementById('pa-note').textContent = note;
+}
+
+['pa-flows','pa-actions'].forEach(id =>
+  document.getElementById(id).addEventListener('input', calcPA));
+['pa-trigger','pa-licence','pa-rpa','pa-premium'].forEach(id =>
+  document.getElementById(id).addEventListener('change', calcPA));
+calcPA();
+
+// ── Power BI advisor ──
+function calcBI() {
+  const authors  = parseInt(document.getElementById('bi-authors').value) || 0;
+  const viewers  = parseInt(document.getElementById('bi-viewers').value) || 0;
+  const embed    = document.getElementById('bi-embed').value;
+  const refresh  = document.getElementById('bi-refresh').value;
+  const model    = document.getElementById('bi-model').value;
+  const m365     = document.getElementById('bi-m365').value;
+
+  let tier = '', cost = 0, note = '';
+
+  if (embed === 'customers' || model === 'large') {
+    tier = 'Premium P1 Capacity';
+    cost = 4995;
+    note = embed === 'customers'
+      ? 'External embedding (customers/partners) requires Premium Capacity or Embedded SKU. All internal users are then covered at no extra per-user cost.'
+      : 'Semantic models over 25 GB require Premium Capacity. P1 at $4,995/mo covers unlimited internal users.';
+  } else if (refresh === 'hourly' || refresh === 'streaming') {
+    tier = 'Premium Per User (PPU)';
+    const ppu = (authors + viewers) * 20;
+    cost = m365 === 'e5' ? viewers * 20 : ppu;
+    note = `Near-real-time refresh and paginated reports require PPU ($20/user/mo). ${m365 === 'e5' ? 'Authors already covered by E5 Pro — only viewers need PPU.' : 'All authors and viewers need PPU.'}`;
+  } else if (viewers > 0 || authors > 0) {
+    if (m365 === 'e5') {
+      tier = 'Included with E5';
+      cost = 0;
+      note = 'Power BI Pro is included with Microsoft 365 E5. No additional licence needed for standard reports and dashboards with daily refresh.';
+    } else {
+      tier = 'Power BI Pro';
+      cost = (authors + viewers) * 10;
+      note = `Pro at $10/user/mo covers all ${authors + viewers} users (authors + viewers). For ${viewers}+ view-only users, compare Pro vs PPU vs Premium P1.`;
+    }
+  } else {
+    tier = 'Power BI Free';
+    cost = 0;
+    note = 'Free tier supports personal use and exploring data. Sharing reports with colleagues requires Pro.';
+  }
+
+  document.getElementById('bi-tier').textContent = tier;
+  document.getElementById('bi-cost').textContent = cost === 0 ? '$0 / mo' : '$' + cost.toLocaleString() + ' / mo';
+  document.getElementById('bi-note').textContent = note;
+}
+
+['bi-authors','bi-viewers'].forEach(id =>
+  document.getElementById(id).addEventListener('input', calcBI));
+['bi-embed','bi-refresh','bi-model','bi-m365'].forEach(id =>
+  document.getElementById(id).addEventListener('change', calcBI));
+calcBI();
+
+// ── Power Pages estimator ──
+function calcPP() {
+  const authUsers   = parseInt(document.getElementById('pp-auth-users').value) || 0;
+  const authPages   = parseInt(document.getElementById('pp-auth-pages').value) || 1;
+  const anonUsers   = parseInt(document.getElementById('pp-anon-users').value) || 0;
+  const anonPages   = parseInt(document.getElementById('pp-anon-pages').value) || 1;
+  const licRaw      = document.getElementById('pp-licence').value;
+  const [authCap, anonCap] = licRaw.split(',').map(Number);
+
+  const authViews   = authUsers * authPages;
+  const anonViews   = anonUsers * anonPages;
+  const dailyAuth   = Math.ceil(authUsers / 30);
+
+  document.getElementById('pp-auth-views').textContent = fmt(authViews);
+  document.getElementById('pp-anon-views').textContent = fmt(anonViews);
+  document.getElementById('pp-daily-auth').textContent = dailyAuth + ' logins/day';
+
+  const authCapMo = authCap * 30;
+  const anonCapMo = anonCap * 30;
+  const authOver  = Math.max(0, dailyAuth - authCap);
+  const anonOver  = Math.max(0, anonViews / 30 - anonCap);
+  const addOns    = Math.ceil(authOver / 100) + Math.ceil(anonOver / 500);
+  const addOnCost = addOns * 200;
+
+  const note = authOver <= 0 && anonOver <= 0
+    ? `Your ${dailyAuth} auth logins/day and ${fmt(Math.round(anonViews/30))} anon views/day fit within the included capacity. No add-ons needed.`
+    : `You need ~${addOns} capacity add-on pack${addOns > 1 ? 's' : ''} (~$${addOnCost}/mo) to cover ${authOver > 0 ? authOver + ' extra auth logins/day' : ''} ${anonOver > 0 ? Math.ceil(anonOver) + ' extra anon views/day' : ''}.`.trim();
+  document.getElementById('pp-note').textContent = note;
+}
+
+['pp-auth-users','pp-auth-pages','pp-anon-users','pp-anon-pages'].forEach(id =>
+  document.getElementById(id).addEventListener('input', calcPP));
+document.getElementById('pp-licence').addEventListener('change', calcPP);
+calcPP();
+
+// ── ROI Calculator ──
+function calcROI() {
+  const users   = parseInt(document.getElementById('roi-users').value) || 0;
+  const hours   = parseFloat(document.getElementById('roi-hours').value) || 0;
+  const rate    = parseFloat(document.getElementById('roi-rate').value) || 0;
+  const errPct  = parseFloat(document.getElementById('roi-errors').value) || 0;
+  const impl    = parseFloat(document.getElementById('roi-impl').value) || 0;
+  const licence = parseFloat(document.getElementById('roi-licence').value) || 0;
+
+  const labourSaving  = users * hours * rate;
+  const errorSaving   = labourSaving * (errPct / 100) * 0.2;
+  const monthlySaving = labourSaving + errorSaving;
+  const annualSaving  = monthlySaving * 12;
+  const annualCost    = licence * 12;
+  const totalCost3yr  = impl + annualCost * 3;
+  const totalSave3yr  = annualSaving * 3;
+  const roi3yr        = totalCost3yr > 0 ? ((totalSave3yr - totalCost3yr) / totalCost3yr * 100) : 0;
+  const netMonthly    = monthlySaving - licence;
+  const paybackMo     = netMonthly > 0 ? impl / netMonthly : Infinity;
+
+  document.getElementById('roi-monthly').textContent = '$' + Math.round(monthlySaving).toLocaleString();
+  document.getElementById('roi-annual').textContent  = '$' + Math.round(annualSaving).toLocaleString();
+  document.getElementById('roi-payback').textContent = paybackMo === Infinity ? 'N/A' :
+    paybackMo < 1 ? '< 1 month' : Math.ceil(paybackMo) + ' months';
+  document.getElementById('roi-3yr').textContent     = roi3yr > 0 ? '+' + Math.round(roi3yr) + '%' : Math.round(roi3yr) + '%';
+
+  const note = netMonthly <= 0
+    ? 'Monthly licence cost exceeds the estimated saving. Review hours saved or increase scope.'
+    : `$${Math.round(annualSaving).toLocaleString()} annual saving against $${Math.round(annualCost + impl/3).toLocaleString()} blended annual cost (licence + amortised implementation). Share this with your sponsor.`;
+  document.getElementById('roi-note').textContent = note;
+}
+
+['roi-users','roi-hours','roi-rate','roi-errors','roi-impl','roi-licence'].forEach(id =>
+  document.getElementById(id).addEventListener('input', calcROI));
+calcROI();
 </script>
 </body>
 </html>
