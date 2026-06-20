@@ -30,7 +30,7 @@
   <rect x="520" y="340" width="230" height="42" rx="21" fill="#0078d4" opacity=".1"/>
   <text x="635" y="368" font-family="Segoe UI, system-ui, sans-serif" font-size="18" font-weight="700" fill="#0078d4" text-anchor="middle">Available Globally</text>
   <!-- URL -->
-  <text x="82" y="460" font-family="Segoe UI, system-ui, sans-serif" font-size="22" fill="#888">abdul-basit-545.github.io</text>
+  <text x="82" y="460" font-family="Segoe UI, system-ui, sans-serif" font-size="22" fill="#888">powerdynamite.github.io</text>
   <!-- Decorative dots -->
   <circle cx="950" cy="180" r="120" fill="#0078d4" opacity=".05"/>
   <circle cx="1100" cy="450" r="80" fill="#0078d4" opacity=".07"/>
