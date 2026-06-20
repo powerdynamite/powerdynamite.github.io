@@ -102,19 +102,20 @@ const projects = {
   },
 
   auditdash: {
-    tag: { text: 'Personal Project · Coming Soon', cls: 'tag-amb' },
-    title: 'Dataverse Audit Insights Dashboard',
-    subtitle: 'Concept · In Planning',
-    overview: 'A Power BI dashboard solution that transforms Dataverse audit logs from a passive investigation tool into an active governance and adoption intelligence layer. Most organisations enable Dataverse auditing for compliance but never extract actionable insights from it — this project changes that.',
+    tag: { text: 'Personal Project · Open Source', cls: 'tag-grn' },
+    title: 'Dataverse Audit Insights',
+    subtitle: 'Power BI Developer · Power Apps Builder',
+    overview: 'Turns the Dataverse audit table into an active governance and adoption intelligence layer — a 4-page Power BI dashboard plus a Canvas App for record-level diff and restore. Free stack only (Power BI + Dataverse + Power Apps), portable across environments via a single parameter. The audit table is not exposed via the standard Dataverse connector so the model uses the Web API OData endpoint directly.',
     highlights: [
-      'Surfaces most active users across Dataverse — identifying power users, adoption leaders, and potential training needs without any manual analysis.',
-      'Tracks most modified tables — revealing which parts of the system are seeing the highest activity, helping prioritise performance optimisation and data quality efforts.',
-      'Visualises record creation trends over time — enabling teams to correlate platform adoption with business events, training rollouts, or seasonal patterns.',
-      'Identifies data quality indicators from audit patterns — repeated updates to the same field, bulk corrections, and abnormal modification frequencies signal data entry or process issues.',
-      'Delivers governance and compliance metrics — user access patterns, after-hours activity, bulk deletes, and sensitive field changes surfaced in a compliance-ready format.',
+      '4-page Power BI report — User Activity, Tables, Trends, and Compliance — sourced from the Dataverse Web API (/api/data/v9.2/audits) with a parameterised environment URL for easy redeployment.',
+      'Star schema built in Power Query — changedata JSON from the audit table is parsed and shaped into a clean semantic model with DAX measures for all key governance metrics.',
+      'Canvas App for record-level restore — uses the RetrieveRecordChangeHistory API via a custom connector to surface a before/after diff for any audited record and enable selective field restore.',
+      'Free stack throughout — no premium connectors, no additional licences beyond what a standard Power Platform environment already includes.',
+      'Single-parameter portability — switch the DataverseEnvironmentUrl parameter in Power BI Desktop to point the entire report at any environment.',
       'Reframes audit logs from a break-glass investigation tool into a continuous operational intelligence feed for Dynamics 365 and Power Platform admins.'
     ],
-    tech: ['Power BI', 'Dataverse', 'Audit Logs API', 'Power Query', 'DAX', 'Dynamics 365', 'Power Platform Admin', 'Data Governance']
+    tech: ['Power BI', 'Dataverse Web API', 'Power Query', 'DAX', 'Canvas Apps', 'Custom Connector', 'RetrieveRecordChangeHistory', 'OData', 'Data Governance', 'Open Source'],
+    github: 'https://github.com/powerdynamite/dataverse-audit-insights'
   },
 
   azsearch: {
