@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="ado-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0099BC"/>
+      <stop offset="100%" stop-color="#0078D4"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="7" fill="url(#ado-bg)"/>
+  <!-- Azure DevOps infinity-like pipeline icon -->
+  <!-- left triangle / arrow -->
+  <path d="M6 10 L6 22 L15 16z" fill="white" opacity="0.95"/>
+  <!-- right side fork -->
+  <path d="M15 10 L26 7 L26 15 L15 16z" fill="white" opacity="0.9"/>
+  <path d="M15 16 L26 17 L26 25 L15 22z" fill="white" opacity="0.7"/>
+</svg>

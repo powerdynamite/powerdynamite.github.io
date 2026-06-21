@@ -244,26 +244,26 @@ const CATALOG = [
   { id:'copilot-sales',    cat:'d365', label:'Copilot for Sales',          icon:'✨', price:50,  unit:'user/mo',   desc:'AI seller assistant in Outlook/Teams + CRM sync.' },
   { id:'copilot-service',  cat:'d365', label:'Copilot for Service',        icon:'✨', price:50,  unit:'user/mo',   desc:'AI agent assist grounded in your knowledge base.' },
   /* Power Platform */
-  { id:'pa-premium',       cat:'pp',   label:'Power Apps Premium',         icon:'⚡', price:20,  unit:'user/mo',   desc:'Unlimited apps with Dataverse & premium connectors.' },
-  { id:'pa-per-app',       cat:'pp',   label:'Power Apps per app (pay-as-you-go)',icon:'📱', price:10, unit:'user/app/mo',desc:'Azure-metered — billed per active user per app. Replaces the retired fixed per-app plan (end of sale 2 Jan 2026; EA/CSP renewals continue).' },
-  { id:'pa-dev',           cat:'pp',   label:'Developer Plan',             icon:'🛠', price:0,   unit:'free',      desc:'Free Dataverse sandbox for individual devs.' },
-  { id:'paf-premium',      cat:'pp',   label:'Power Automate Premium',     icon:'🔄', price:15,  unit:'user/mo',   desc:'Premium connectors + attended RPA per user.' },
-  { id:'paf-process',      cat:'pp',   label:'Power Automate Process',     icon:'🤖', price:150, unit:'bot/mo',    desc:'Unattended RPA — service account automation.' },
-  { id:'paf-hosted-rpa',   cat:'pp',   label:'Hosted RPA Add-on',          icon:'🖥', price:215, unit:'bot/mo',    desc:'Cloud-hosted unattended RPA (no VM needed).' },
+  { id:'pa-premium',       cat:'pp',   label:'Power Apps Premium',         icon:'<img src="img/icons/ms-power-apps.svg" alt="Power Apps" class="lp-icon">', price:20,  unit:'user/mo',   desc:'Unlimited apps with Dataverse & premium connectors.' },
+  { id:'pa-per-app',       cat:'pp',   label:'Power Apps per app (pay-as-you-go)',icon:'<img src="img/icons/ms-power-apps.svg" alt="Power Apps" class="lp-icon">', price:10, unit:'user/app/mo',desc:'Azure-metered — billed per active user per app. Replaces the retired fixed per-app plan (end of sale 2 Jan 2026; EA/CSP renewals continue).' },
+  { id:'pa-dev',           cat:'pp',   label:'Developer Plan',             icon:'<img src="img/icons/ms-power-apps.svg" alt="Power Apps" class="lp-icon">', price:0,   unit:'free',      desc:'Free Dataverse sandbox for individual devs.' },
+  { id:'paf-premium',      cat:'pp',   label:'Power Automate Premium',     icon:'<img src="img/icons/ms-power-automate.svg" alt="Power Automate" class="lp-icon">', price:15,  unit:'user/mo',   desc:'Premium connectors + attended RPA per user.' },
+  { id:'paf-process',      cat:'pp',   label:'Power Automate Process',     icon:'<img src="img/icons/ms-power-automate.svg" alt="Power Automate" class="lp-icon">', price:150, unit:'bot/mo',    desc:'Unattended RPA — service account automation.' },
+  { id:'paf-hosted-rpa',   cat:'pp',   label:'Hosted RPA Add-on',          icon:'<img src="img/icons/ms-power-automate.svg" alt="Power Automate" class="lp-icon">', price:215, unit:'bot/mo',    desc:'Cloud-hosted unattended RPA (no VM needed).' },
   { id:'ai-builder',       cat:'pp',   label:'AI Builder credits',         icon:'🧠', price:500, unit:'1M pack/mo',desc:'AI Builder capacity (forms, OCR, prediction).' },
-  { id:'dataverse-cap',    cat:'pp',   label:'Dataverse storage',          icon:'🗄', price:40,  unit:'GB/mo',     desc:'Additional Dataverse database storage.' },
+  { id:'dataverse-cap',    cat:'pp',   label:'Dataverse storage',          icon:'<img src="img/icons/ms-dataverse.svg" alt="Dataverse" class="lp-icon">', price:40,  unit:'GB/mo',     desc:'Additional Dataverse database storage.' },
   /* Power BI */
-  { id:'pbi-pro',          cat:'pbi',  label:'Power BI Pro',               icon:'📊', price:10,  unit:'user/mo',   desc:'Create and share reports. Included in M365 E5.' },
-  { id:'pbi-ppu',          cat:'pbi',  label:'Power BI Premium Per User',  icon:'📊', price:20,  unit:'user/mo',   desc:'Pro + paginated reports, AI, XMLA endpoint.' },
+  { id:'pbi-pro',          cat:'pbi',  label:'Power BI Pro',               icon:'<img src="img/icons/ms-power-bi.svg" alt="Power BI" class="lp-icon">', price:10,  unit:'user/mo',   desc:'Create and share reports. Included in M365 E5.' },
+  { id:'pbi-ppu',          cat:'pbi',  label:'Power BI Premium Per User',  icon:'<img src="img/icons/ms-power-bi.svg" alt="Power BI" class="lp-icon">', price:20,  unit:'user/mo',   desc:'Pro + paginated reports, AI, XMLA endpoint.' },
   { id:'pbi-capacity-f64', cat:'pbi',  label:'Fabric / Power BI Capacity (F64)',icon:'📈',price:5003,unit:'capacity/mo',desc:'Dedicated capacity — report viewers need no Pro license.' },
   /* Copilot Studio */
-  { id:'cs-base',          cat:'cs',   label:'Copilot Studio',             icon:'🤖', price:200, unit:'tenant/mo', desc:'Build bots — 25k messages/mo included.' },
-  { id:'cs-messages',      cat:'cs',   label:'Copilot Studio Messages',    icon:'💬', price:200, unit:'25k msgs',  desc:'Additional 25,000 message capacity.' },
+  { id:'cs-base',          cat:'cs',   label:'Copilot Studio',             icon:'<img src="img/icons/ms-copilot-studio.svg" alt="Copilot Studio" class="lp-icon">', price:200, unit:'tenant/mo', desc:'Build bots — 25k messages/mo included.' },
+  { id:'cs-messages',      cat:'cs',   label:'Copilot Studio Messages',    icon:'<img src="img/icons/ms-copilot-studio.svg" alt="Copilot Studio" class="lp-icon">', price:200, unit:'25k msgs',  desc:'Additional 25,000 message capacity.' },
   { id:'cs-voice',         cat:'cs',   label:'Voice Channel Add-on',       icon:'🎙', price:60,  unit:'channel/mo',desc:'IVR/phone capability for Copilot Studio.' },
   /* Microsoft 365 / Azure */
   { id:'m365-copilot',     cat:'m365', label:'Microsoft 365 Copilot',      icon:'✨', price:30,  unit:'user/mo',   desc:'AI in Word, Excel, Teams, Outlook. Needs E3/E5 base.' },
-  { id:'m365-e3',          cat:'m365', label:'Microsoft 365 E3',           icon:'🏢', price:36,  unit:'user/mo',   desc:'Office, Teams, SharePoint, standard Power Apps.' },
-  { id:'m365-e5',          cat:'m365', label:'Microsoft 365 E5',           icon:'🏢', price:57,  unit:'user/mo',   desc:'E3 + Power BI Pro, advanced security, Purview.' },
+  { id:'m365-e3',          cat:'m365', label:'Microsoft 365 E3',           icon:'<img src="img/icons/ms-m365.svg" alt="Microsoft 365" class="lp-icon">', price:36,  unit:'user/mo',   desc:'Office, Teams, SharePoint, standard Power Apps.' },
+  { id:'m365-e5',          cat:'m365', label:'Microsoft 365 E5',           icon:'<img src="img/icons/ms-m365.svg" alt="Microsoft 365" class="lp-icon">', price:57,  unit:'user/mo',   desc:'E3 + Power BI Pro, advanced security, Purview.' },
   { id:'az-func',          cat:'m365', label:'Azure Functions',            icon:'☁', price:50,  unit:'est./mo',   desc:'Serverless compute for integrations.' },
   { id:'az-search',        cat:'m365', label:'Azure AI Search',            icon:'🔍', price:250, unit:'unit/mo',   desc:'Enterprise search / RAG for Copilot Studio bots.' },
 ];
@@ -282,9 +282,9 @@ const SOLUTIONS = [
   { id:'service',   label:'Customer Service',         icon:'🎧', color:'#0078d4', desc:'Cases, omnichannel, SLAs, knowledge base.' },
   { id:'field',     label:'Field Service',            icon:'🔧', color:'#107c10', desc:'Work orders, dispatch, mobile technicians.' },
   { id:'finance',   label:'Finance & Operations (ERP)',icon:'🏦', color:'#5c2d91', desc:'GL, AP/AR, supply chain, manufacturing.' },
-  { id:'app',       label:'Custom Power App',         icon:'⚡', color:'#742774', desc:'Bespoke business app on Power Platform.' },
-  { id:'analytics', label:'Analytics / BI',           icon:'📊', color:'#b8960b', desc:'Power BI reports, dashboards, analysis.' },
-  { id:'chatbot',   label:'AI Chatbot',               icon:'🤖', color:'#d13438', desc:'Copilot Studio bot, knowledge Q&A, voice.' },
+  { id:'app',       label:'Custom Power App',         icon:'<img src="img/icons/ms-power-apps.svg" alt="Power Apps" class="lp-icon">', color:'#742774', desc:'Bespoke business app on Power Platform.' },
+  { id:'analytics', label:'Analytics / BI',           icon:'<img src="img/icons/ms-power-bi.svg" alt="Power BI" class="lp-icon">', color:'#b8960b', desc:'Power BI reports, dashboards, analysis.' },
+  { id:'chatbot',   label:'AI Chatbot',               icon:'<img src="img/icons/ms-copilot-studio.svg" alt="Copilot Studio" class="lp-icon">', color:'#d13438', desc:'Copilot Studio bot, knowledge Q&A, voice.' },
 ];
 
 /* ── Roles per solution ──────────────────────────────────── */

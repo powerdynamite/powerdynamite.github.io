@@ -9,6 +9,36 @@
 .tools-page { padding: 0 0 5rem; background: var(--bg); }
 
 
+/* ── Microsoft product icon images ───────────────────────── */
+.tool-hub-icon img,
+.tool-card-icon img {
+  width: 100%; height: 100%;
+  border-radius: inherit;
+  display: block;
+  object-fit: cover;
+}
+
+/* remove emoji-only background when real icon is present */
+.tool-hub-icon:has(img)  { background: transparent; font-size: 0; }
+.tool-card-icon:has(img) { background: transparent; font-size: 0; }
+
+.page-hero-badge img {
+  width: 20px; height: 20px;
+  border-radius: 4px;
+  vertical-align: middle;
+  margin-right: 0.1rem;
+  display: inline-block;
+}
+
+.more-tools-icon {
+  width: 18px; height: 18px;
+  border-radius: 4px;
+  vertical-align: middle;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+
 /* ── Individual tool page wrap ───────────────────────────── */
 .tools-wrap {
   max-width: 800px;
