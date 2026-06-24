@@ -81,6 +81,10 @@
       <div class="tool-free-badge">✦ Free</div>
     </div>
     <div class="tool-card-body">
+      <div class="calc-actions">
+        <button class="calc-reset-btn" id="dv-reset">Reset defaults</button>
+        <button class="copy-btn" id="dv-copy">Copy result</button>
+      </div>
       <div class="calc-grid">
         <div class="calc-field">
           <label class="calc-label" for="dv-users">Licensed users <span class="calc-hint">D365 / Power Apps</span></label>
@@ -115,7 +119,7 @@
           </select>
         </div>
       </div>
-      <div class="calc-result">
+      <div class="calc-result" id="dv-result">
         <div class="calc-result-item">
           <div class="calc-result-label">Included (DB)</div>
           <div class="calc-result-value" id="dv-included">—</div>
@@ -133,6 +137,7 @@
           <div class="calc-result-value" id="dv-log">—</div>
         </div>
         <div class="calc-result-note" id="dv-note">Fill in the fields above to see your estimate.</div>
+        <div class="result-bar"><div class="result-bar-fill" id="dv-bar"></div></div>
       </div>
       <div class="tool-divider"></div>
       <div style="font-size:0.76rem; color:var(--muted); line-height:1.6;">
@@ -164,6 +169,7 @@
   </div>
 </div>
 
+<script src="js/tool-utils.js"></script>
 <script>
 function calcDV() {
   const users=parseInt(document.getElementById('dv-users').value)||0;
@@ -187,9 +193,24 @@ function calcDV() {
   const fileOverage=Math.max(0,fileNeededGB-includedFile);
   const addOnCost=dbOverage*40+fileOverage*2+logGB*10;
   document.getElementById('dv-note').textContent=dbOverage<=0&&fileOverage<=0?`Your included ${fmtGB(includedDB)} DB and ${fmtGB(includedFile)} file storage cover the estimate — no add-ons needed now.`:`Estimated add-on cost: ~$${addOnCost.toFixed(0)}/mo ($40/GB DB · $2/GB file · $10/GB log). Purchase in the Power Platform admin centre.`;
+  const usagePct=includedDB>0?Math.min(100,(dbNeededGB/includedDB)*100):100;
+  renderBar(document.getElementById('dv-bar'),usagePct);
+  const headroom=(includedDB-dbNeededGB)/includedDB;
+  const status=dbOverage>0||fileOverage>0?'danger':headroom<0.2?'warn':'ok';
+  setResultStatus(document.getElementById('dv-result'),status);
 }
+const DV_DEFAULTS=[{id:'dv-users',value:50},{id:'dv-records',value:500},{id:'dv-attachments',value:0.5},{id:'dv-years',value:3}];
 ['dv-users','dv-records','dv-attachments','dv-years'].forEach(id=>document.getElementById(id).addEventListener('input',calcDV));
 ['dv-d365-type','dv-audit'].forEach(id=>document.getElementById(id).addEventListener('change',calcDV));
+document.getElementById('dv-reset').addEventListener('click',function(){resetForm(DV_DEFAULTS);document.getElementById('dv-d365-type').value='250';document.getElementById('dv-audit').value='1.3';calcDV();});
+document.getElementById('dv-copy').addEventListener('click',function(){
+  var inc=document.getElementById('dv-included').textContent;
+  var db=document.getElementById('dv-db').textContent;
+  var file=document.getElementById('dv-file').textContent;
+  var log=document.getElementById('dv-log').textContent;
+  var note=document.getElementById('dv-note').textContent;
+  copyToClipboard('Dataverse Storage Estimate\nIncluded (DB): '+inc+'\nEst. DB needed: '+db+'\nFile storage: '+file+'\nLog storage: '+log+'\n'+note,this);
+});
 calcDV();
 </script>
 </main>

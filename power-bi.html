@@ -81,6 +81,10 @@
       <div class="tool-free-badge">✦ Free</div>
     </div>
     <div class="tool-card-body">
+      <div class="calc-actions">
+        <button class="calc-reset-btn" id="bi-reset">Reset defaults</button>
+        <button class="copy-btn" id="bi-copy">Copy result</button>
+      </div>
       <div class="calc-grid">
         <div class="calc-field">
           <label class="calc-label" for="bi-authors">Report authors <span class="calc-hint">people who build</span></label>
@@ -122,7 +126,7 @@
           </select>
         </div>
       </div>
-      <div class="calc-result">
+      <div class="calc-result" id="bi-result">
         <div class="calc-result-item" style="min-width:160px">
           <div class="calc-result-label">Recommended tier</div>
           <div class="calc-result-value" id="bi-tier">—</div>
@@ -163,6 +167,7 @@
   </div>
 </div>
 
+<script src="js/tool-utils.js"></script>
 <script>
 function calcBI() {
   const authors=parseInt(document.getElementById('bi-authors').value)||0;
@@ -171,17 +176,26 @@ function calcBI() {
   const refresh=document.getElementById('bi-refresh').value;
   const model=document.getElementById('bi-model').value;
   const m365=document.getElementById('bi-m365').value;
-  let tier='',cost=0,note='';
-  if(embed==='customers'||model==='large'){tier='Premium P1 Capacity';cost=4995;note=embed==='customers'?'External embedding requires Premium Capacity. All internal users covered at no extra per-user cost.':'Models over 25 GB require Premium Capacity. P1 at $4,995/mo covers unlimited internal users.';}
-  else if(refresh==='hourly'||refresh==='streaming'){tier='Premium Per User (PPU)';const ppu=(authors+viewers)*20;cost=m365==='e5'?viewers*20:ppu;note=`Near-real-time refresh requires PPU ($20/user/mo). ${m365==='e5'?'Authors covered by E5 — only viewers need PPU.':'All users need PPU.'}`;}
-  else if(viewers>0||authors>0){if(m365==='e5'){tier='Included with E5';cost=0;note='Power BI Pro is included with Microsoft 365 E5. No additional licence needed.';}else{tier='Power BI Pro';cost=(authors+viewers)*10;note=`Pro at $10/user/mo covers all ${authors+viewers} users.`;}}
-  else{tier='Power BI Free';cost=0;note='Free tier for personal use. Sharing requires Pro.';}
+  let tier='',cost=0,note='',status='ok';
+  if(embed==='customers'||model==='large'){tier='Premium P1 Capacity';cost=4995;note=embed==='customers'?'External embedding requires Premium Capacity. All internal users covered at no extra per-user cost.':'Models over 25 GB require Premium Capacity. P1 at $4,995/mo covers unlimited internal users.';status='warn';}
+  else if(refresh==='hourly'||refresh==='streaming'){tier='Premium Per User (PPU)';const ppu=(authors+viewers)*20;cost=m365==='e5'?viewers*20:ppu;note=`Near-real-time refresh requires PPU ($20/user/mo). ${m365==='e5'?'Authors covered by E5 — only viewers need PPU.':'All users need PPU.'}`;status='warn';}
+  else if(viewers>0||authors>0){if(m365==='e5'){tier='Included with E5';cost=0;note='Power BI Pro is included with Microsoft 365 E5. No additional licence needed.';status='ok';}else{tier='Power BI Pro';cost=(authors+viewers)*10;note=`Pro at $10/user/mo covers all ${authors+viewers} users.`;status='warn';}}
+  else{tier='Power BI Free';cost=0;note='Free tier for personal use. Sharing requires Pro.';status='ok';}
   document.getElementById('bi-tier').textContent=tier;
   document.getElementById('bi-cost').textContent=cost===0?'$0 / mo':'$'+cost.toLocaleString()+' / mo';
   document.getElementById('bi-note').textContent=note;
+  setResultStatus(document.getElementById('bi-result'),status);
 }
+const BI_DEFAULTS=[{id:'bi-authors',value:5},{id:'bi-viewers',value:80}];
 ['bi-authors','bi-viewers'].forEach(id=>document.getElementById(id).addEventListener('input',calcBI));
 ['bi-embed','bi-refresh','bi-model','bi-m365'].forEach(id=>document.getElementById(id).addEventListener('change',calcBI));
+document.getElementById('bi-reset').addEventListener('click',function(){resetForm(BI_DEFAULTS);document.getElementById('bi-embed').value='no';document.getElementById('bi-refresh').value='daily';document.getElementById('bi-model').value='small';document.getElementById('bi-m365').value='e5';calcBI();});
+document.getElementById('bi-copy').addEventListener('click',function(){
+  var tier=document.getElementById('bi-tier').textContent;
+  var cost=document.getElementById('bi-cost').textContent;
+  var note=document.getElementById('bi-note').textContent;
+  copyToClipboard('Power BI Licensing Recommendation\nTier: '+tier+'\nEst. monthly cost: '+cost+'\n'+note,this);
+});
 calcBI();
 </script>
 </main>

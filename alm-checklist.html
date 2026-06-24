@@ -53,6 +53,11 @@
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/pages/tools.css">
+  <style>
+    .alm-cat-toggle { background:none; border:none; cursor:pointer; font-family:inherit; font-size:inherit; font-weight:inherit; color:inherit; padding:0; display:flex; align-items:center; gap:0.4rem; width:100%; text-align:left; }
+    .alm-cat-chev { transition: transform 0.2s ease; flex-shrink:0; }
+    .alm-cat-toggle img { flex-shrink:0; }
+  </style>
 </head>
 <body class="tools-page">
 
@@ -84,13 +89,14 @@
       <div class="alm-progress-row">
         <div class="alm-progress-bar"><div class="alm-progress-fill" id="alm-fill" style="width:0%"></div></div>
         <div class="alm-progress-label" id="alm-pct">0%</div>
+        <button class="copy-btn" id="alm-copy">Copy summary</button>
         <span class="alm-reset" id="alm-reset">Reset</span>
       </div>
       <div style="height:1rem"></div>
       <div class="alm-cats">
 
         <div class="alm-cat">
-          <div class="alm-cat-title">🏗️ Solution design</div>
+          <div class="alm-cat-title"><button class="alm-cat-toggle" data-cat="sol">🏗️ Solution design <svg class="alm-cat-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6,9 12,15 18,9"/></svg></button></div>
           <div class="alm-items">
             <div class="alm-item" data-id="a1"><div class="alm-check"></div><div><div class="alm-item-text">All customisations are inside a managed solution (no default solution changes)</div></div></div>
             <div class="alm-item" data-id="a2"><div class="alm-check"></div><div><div class="alm-item-text">Solution layers are defined: Base → Extension → Config</div><div class="alm-item-sub">Prevents upgrade conflicts across environments</div></div></div>
@@ -101,7 +107,7 @@
         </div>
 
         <div class="alm-cat">
-          <div class="alm-cat-title">🔄 Source control &amp; pipelines</div>
+          <div class="alm-cat-title"><button class="alm-cat-toggle" data-cat="src">🔄 Source control &amp; pipelines <svg class="alm-cat-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6,9 12,15 18,9"/></svg></button></div>
           <div class="alm-items">
             <div class="alm-item" data-id="b1"><div class="alm-check"></div><div><div class="alm-item-text">Solution unpacked and committed to source control (Azure DevOps / GitHub)</div></div></div>
             <div class="alm-item" data-id="b2"><div class="alm-check"></div><div><div class="alm-item-text">CI pipeline: export → unpack → commit on every change</div></div></div>
@@ -112,7 +118,7 @@
         </div>
 
         <div class="alm-cat">
-          <div class="alm-cat-title">🔐 Security &amp; governance</div>
+          <div class="alm-cat-title"><button class="alm-cat-toggle" data-cat="sec">🔐 Security &amp; governance <svg class="alm-cat-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6,9 12,15 18,9"/></svg></button></div>
           <div class="alm-items">
             <div class="alm-item" data-id="c1"><div class="alm-check"></div><div><div class="alm-item-text">Security roles follow principle of least privilege — no Business Unit Owner for all users</div></div></div>
             <div class="alm-item" data-id="c2"><div class="alm-check"></div><div><div class="alm-item-text">Service account / Service Principal used for integrations (not a named user)</div></div></div>
@@ -123,7 +129,7 @@
         </div>
 
         <div class="alm-cat">
-          <div class="alm-cat-title">🧪 Testing</div>
+          <div class="alm-cat-title"><button class="alm-cat-toggle" data-cat="tst">🧪 Testing <svg class="alm-cat-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6,9 12,15 18,9"/></svg></button></div>
           <div class="alm-items">
             <div class="alm-item" data-id="d1"><div class="alm-check"></div><div><div class="alm-item-text">UAT sign-off completed by a business user (not just IT)</div></div></div>
             <div class="alm-item" data-id="d2"><div class="alm-check"></div><div><div class="alm-item-text">Business process flows tested end-to-end including all stages</div></div></div>
@@ -133,7 +139,7 @@
         </div>
 
         <div class="alm-cat">
-          <div class="alm-cat-title"><img src="img/icons/ms-power-platform.svg" alt="" class="more-tools-icon"> Go-live prep</div>
+          <div class="alm-cat-title"><button class="alm-cat-toggle" data-cat="go"><img src="img/icons/ms-power-platform.svg" alt="" class="more-tools-icon"> Go-live prep <svg class="alm-cat-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6,9 12,15 18,9"/></svg></button></div>
           <div class="alm-items">
             <div class="alm-item" data-id="e1"><div class="alm-check"></div><div><div class="alm-item-text">Data migration validated — record count, key field values, relationship integrity</div></div></div>
             <div class="alm-item" data-id="e2"><div class="alm-check"></div><div><div class="alm-item-text">User training completed and quick-reference guides distributed</div></div></div>
@@ -167,12 +173,77 @@
   </div>
 </div>
 
+<script src="js/tool-utils.js"></script>
 <script>
 const almState={};
 const total=document.querySelectorAll('.alm-item').length;
-function updateProgress(){const done=Object.values(almState).filter(Boolean).length;const pct=Math.round((done/total)*100);document.getElementById('alm-fill').style.width=pct+'%';document.getElementById('alm-pct').textContent=pct+'%';}
-document.querySelectorAll('.alm-item').forEach(item=>{item.addEventListener('click',()=>{const id=item.dataset.id;almState[id]=!almState[id];item.classList.toggle('checked',almState[id]);updateProgress();});});
-document.getElementById('alm-reset').addEventListener('click',()=>{document.querySelectorAll('.alm-item').forEach(item=>{almState[item.dataset.id]=false;item.classList.remove('checked');});updateProgress();});
+
+function updateProgress(){
+  const done=Object.values(almState).filter(Boolean).length;
+  const pct=Math.round((done/total)*100);
+  document.getElementById('alm-fill').style.width=pct+'%';
+  document.getElementById('alm-pct').textContent=pct+'%';
+  saveState('alm-checklist',{checked:Object.keys(almState).filter(k=>almState[k])});
+}
+
+/* restore from localStorage */
+(function(){
+  const saved=loadState('alm-checklist');
+  if(saved&&saved.checked){
+    saved.checked.forEach(function(id){almState[id]=true;});
+    document.querySelectorAll('.alm-item').forEach(function(item){
+      if(almState[item.dataset.id])item.classList.add('checked');
+    });
+  }
+})();
+
+document.querySelectorAll('.alm-item').forEach(function(item){
+  item.addEventListener('click',function(){
+    var id=item.dataset.id;
+    almState[id]=!almState[id];
+    item.classList.toggle('checked',almState[id]);
+    updateProgress();
+  });
+});
+
+document.getElementById('alm-reset').addEventListener('click',function(){
+  if(!confirm('Clear all progress?'))return;
+  document.querySelectorAll('.alm-item').forEach(function(item){almState[item.dataset.id]=false;item.classList.remove('checked');});
+  updateProgress();
+});
+
+document.getElementById('alm-copy').addEventListener('click',function(){
+  var cats=document.querySelectorAll('.alm-cat');
+  var lines=['ALM Readiness Checklist',''];
+  cats.forEach(function(cat){
+    var title=cat.querySelector('.alm-cat-toggle')||cat.querySelector('.alm-cat-title');
+    var titleText=(title.textContent||'').trim().replace(/\s+/g,' ');
+    lines.push('## '+titleText,'');
+    cat.querySelectorAll('.alm-item').forEach(function(item){
+      var done=!!almState[item.dataset.id];
+      var text=item.querySelector('.alm-item-text').textContent.trim();
+      lines.push((done?'✅ ':'☐  ')+text);
+    });
+    lines.push('');
+  });
+  var done=Object.values(almState).filter(Boolean).length;
+  lines.push('Progress: '+done+'/'+total+' ('+Math.round((done/total)*100)+'%)');
+  copyToClipboard(lines.join('\n'),this);
+});
+
+/* collapsible categories */
+document.querySelectorAll('.alm-cat-toggle').forEach(function(btn){
+  btn.addEventListener('click',function(e){
+    e.stopPropagation();
+    var cat=btn.closest('.alm-cat');
+    var items=cat.querySelector('.alm-items');
+    var chev=btn.querySelector('.alm-cat-chev');
+    var collapsed=cat.classList.toggle('alm-cat-collapsed');
+    items.style.display=collapsed?'none':'';
+    chev.style.transform=collapsed?'rotate(-90deg)':'';
+  });
+});
+
 updateProgress();
 </script>
 </main>

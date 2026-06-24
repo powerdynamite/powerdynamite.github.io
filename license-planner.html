@@ -73,6 +73,14 @@
 
 <div class="wizard-wrap">
 
+  <div class="lp-restore-banner" id="lpRestoreBanner" style="display:none; background:var(--amber-lo); border:1px solid rgba(217,119,6,.25); border-radius:var(--radius-md); padding:0.75rem 1rem; margin-bottom:1rem; font-size:0.83rem; color:var(--text); display:flex; align-items:center; justify-content:space-between; gap:0.75rem; flex-wrap:wrap;">
+    <span>You have a saved session — restore it?</span>
+    <div style="display:flex;gap:0.5rem;">
+      <button class="copy-btn" id="lpRestoreYes">Restore</button>
+      <button class="calc-reset-btn" id="lpRestoreNo">Discard</button>
+    </div>
+  </div>
+
   <div class="wiz-progress">
     <div class="wiz-step active" id="wiz-step-1"><div class="wiz-step-num">1</div><span class="wiz-step-label">What you're building</span></div>
     <div class="wiz-step-connector" id="wiz-conn-1"></div>
@@ -113,6 +121,12 @@
     <div class="wiz-card">
       <div class="wiz-card-title">Build your team</div>
       <div class="wiz-card-sub">Set how many people fill each role. Swap the license tier from the dropdown if you want a cheaper or richer option, and enter any seats you <strong>already own</strong> so we only cost the net-new licenses.</div>
+      <div class="calc-actions" style="margin-bottom:0.5rem;">
+        <span style="font-size:0.72rem;color:var(--muted2);font-weight:700;text-transform:uppercase;letter-spacing:0.8px;">Team preset:</span>
+        <button class="copy-btn" id="preset-small">Small (1–10)</button>
+        <button class="copy-btn" id="preset-medium">Medium (10–50)</button>
+        <button class="copy-btn" id="preset-large">Large (50+)</button>
+      </div>
       <div id="rolesWrap"></div>
     </div>
     <div class="wiz-nav">
@@ -221,6 +235,7 @@
   </div>
 </div>
 
+<script src="js/tool-utils.js"></script>
 <script>
 /* ============================================================
    LICENSE PLANNER — role-based engine + manual canvas
@@ -623,11 +638,13 @@ document.getElementById('step3Back').addEventListener('click', () => goStep(2));
 document.getElementById('step3Next').addEventListener('click', () => goStep(4));
 document.getElementById('step4Back').addEventListener('click', () => goStep(3));
 document.getElementById('wizRestart').addEventListener('click', () => {
+  if (!confirm('Start over? Your current selections will be lost.')) return;
   wiz.baseLicense = 'e3'; wiz.solutions.clear(); wiz.roleState = {}; wiz.shared = {};
   renderBase(); renderSolutions();
   document.getElementById('step1Next').disabled = true;
   ['1','2','3'].forEach(i => { document.getElementById(`wiz-conn-${i}`).classList.remove('done'); });
   ['1','2','3','4'].forEach(i => document.getElementById(`wiz-step-${i}`).classList.remove('done'));
+  try { localStorage.removeItem('license-planner'); } catch(e) {}
   goStep(1);
 });
 
@@ -935,6 +952,88 @@ document.getElementById('catalogSearch').addEventListener('input', e => renderCa
 renderBase();
 renderSolutions();
 document.getElementById('step1Next').disabled = true;
+
+/* ── Team size presets ───────────────────────────────────── */
+function applyPreset(multiplier) {
+  var cards = document.querySelectorAll('#rolesWrap .role-card');
+  cards.forEach(function(card) {
+    var inp = card.querySelector('.num-input[data-field="qty"]');
+    if (!inp) return;
+    var roleId = inp.dataset.role;
+    var st = wiz.roleState[roleId];
+    if (!st) return;
+    /* use the ROLES default as the base so each preset is absolute, not cumulative */
+    var defaultQty = 1;
+    SOLUTIONS.forEach(function(sol) {
+      (ROLES[sol.id] || []).forEach(function(r) {
+        if (r.id === roleId) defaultQty = r.defaultQty;
+      });
+    });
+    var newVal = Math.max(1, Math.round(defaultQty * multiplier));
+    st.qty = newVal;
+    inp.value = newVal;
+    updateRoleCard(roleId);
+  });
+  updateStep2Total();
+  try { applySave(); } catch(e) {}
+}
+
+document.addEventListener('click', function(e) {
+  if (e.target.id === 'preset-small')  { applyPreset(0.25); return; }
+  if (e.target.id === 'preset-medium') { applyPreset(1);    return; }
+  if (e.target.id === 'preset-large')  { applyPreset(3);    return; }
+});
+
+/* ── localStorage save/restore ──────────────────────────────────────────── */
+function buildSnapshot() {
+  return {
+    base: wiz.baseLicense,
+    solutions: Array.from(wiz.solutions),
+    roles: JSON.parse(JSON.stringify(wiz.roleState)),
+    shared: JSON.parse(JSON.stringify(wiz.shared))
+  };
+}
+
+function applySave() {
+  try { saveState('license-planner', buildSnapshot()); } catch(e) {}
+}
+
+/* patch goStep to auto-save on every navigation */
+var _origGoStep = goStep;
+goStep = function(n) {
+  _origGoStep(n);
+  try { applySave(); } catch(e) {}
+};
+
+/* also save on every role / shared input change */
+document.addEventListener('input', function() {
+  try { applySave(); } catch(e) {}
+}, true);
+document.addEventListener('change', function() {
+  try { applySave(); } catch(e) {}
+}, true);
+
+(function checkRestore() {
+  var saved;
+  try { saved = loadState('license-planner'); } catch(e) { return; }
+  var banner = document.getElementById('lpRestoreBanner');
+  if (!saved || !banner) return;
+  banner.style.display = 'flex';
+  document.getElementById('lpRestoreYes').addEventListener('click', function() {
+    banner.style.display = 'none';
+    if (saved.base)      wiz.baseLicense = saved.base;
+    if (saved.solutions) wiz.solutions   = new Set(saved.solutions);
+    if (saved.roles)     wiz.roleState   = saved.roles;
+    if (saved.shared)    wiz.shared      = saved.shared;
+    renderBase();
+    renderSolutions();
+    document.getElementById('step1Next').disabled = wiz.solutions.size === 0;
+  });
+  document.getElementById('lpRestoreNo').addEventListener('click', function() {
+    banner.style.display = 'none';
+    try { localStorage.removeItem('license-planner'); } catch(e) {}
+  });
+})();
 </script>
 </main>
 </body>

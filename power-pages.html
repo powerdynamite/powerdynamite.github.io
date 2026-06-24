@@ -81,6 +81,10 @@
       <div class="tool-free-badge">✦ Free</div>
     </div>
     <div class="tool-card-body">
+      <div class="calc-actions">
+        <button class="calc-reset-btn" id="pp-reset">Reset defaults</button>
+        <button class="copy-btn" id="pp-copy">Copy result</button>
+      </div>
       <div class="calc-grid">
         <div class="calc-field">
           <label class="calc-label" for="pp-auth-users">Authenticated users / mo <span class="calc-hint">logged-in visitors</span></label>
@@ -107,7 +111,7 @@
           </select>
         </div>
       </div>
-      <div class="calc-result">
+      <div class="calc-result" id="pp-result">
         <div class="calc-result-item">
           <div class="calc-result-label">Auth page views / mo</div>
           <div class="calc-result-value" id="pp-auth-views">—</div>
@@ -121,6 +125,7 @@
           <div class="calc-result-value" id="pp-daily-auth">—</div>
         </div>
         <div class="calc-result-note" id="pp-note">Fill in the fields above.</div>
+        <div class="result-bar"><div class="result-bar-fill" id="pp-bar"></div></div>
       </div>
       <div class="tool-divider"></div>
       <div style="font-size:0.76rem; color:var(--muted); line-height:1.6;">
@@ -152,6 +157,7 @@
   </div>
 </div>
 
+<script src="js/tool-utils.js"></script>
 <script>
 function fmt(n){if(n>=1000000)return(n/1000000).toFixed(1)+'M';if(n>=1000)return(n/1000).toFixed(1)+'k';return n.toLocaleString();}
 function calcPP() {
@@ -172,9 +178,23 @@ function calcPP() {
   const addOns=Math.ceil(authOver/100)+Math.ceil(anonOver/500);
   const addOnCost=addOns*200;
   document.getElementById('pp-note').textContent=authOver<=0&&anonOver<=0?`Your ${dailyAuth} auth logins/day and ${fmt(Math.round(anonViews/30))} anon views/day fit within included capacity. No add-ons needed.`:`~${addOns} capacity add-on pack${addOns>1?'s':''} needed (~$${addOnCost}/mo).`;
+  const authUsagePct=authCap>0?Math.min(100,(dailyAuth/authCap)*100):100;
+  renderBar(document.getElementById('pp-bar'),authUsagePct);
+  const headroom=authCap>0?(authCap-dailyAuth)/authCap:0;
+  const status=authOver>0||anonOver>0?'danger':headroom<0.2?'warn':'ok';
+  setResultStatus(document.getElementById('pp-result'),status);
 }
+const PP_DEFAULTS=[{id:'pp-auth-users',value:200},{id:'pp-auth-pages',value:10},{id:'pp-anon-users',value:1000},{id:'pp-anon-pages',value:4}];
 ['pp-auth-users','pp-auth-pages','pp-anon-users','pp-anon-pages'].forEach(id=>document.getElementById(id).addEventListener('input',calcPP));
 document.getElementById('pp-licence').addEventListener('change',calcPP);
+document.getElementById('pp-reset').addEventListener('click',function(){resetForm(PP_DEFAULTS);document.getElementById('pp-licence').value='100,500';calcPP();});
+document.getElementById('pp-copy').addEventListener('click',function(){
+  var authV=document.getElementById('pp-auth-views').textContent;
+  var anonV=document.getElementById('pp-anon-views').textContent;
+  var daily=document.getElementById('pp-daily-auth').textContent;
+  var note=document.getElementById('pp-note').textContent;
+  copyToClipboard('Power Pages Capacity Estimate\nAuth page views/mo: '+authV+'\nAnon page views/mo: '+anonV+'\nDaily auth logins: '+daily+'\n'+note,this);
+});
 calcPP();
 </script>
 </main>

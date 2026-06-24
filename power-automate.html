@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -81,6 +81,10 @@
       <div class="tool-free-badge">✦ Free</div>
     </div>
     <div class="tool-card-body">
+      <div class="calc-actions">
+        <button class="calc-reset-btn" id="pa-reset">Reset defaults</button>
+        <button class="copy-btn" id="pa-copy">Copy result</button>
+      </div>
       <div class="calc-grid">
         <div class="calc-field">
           <label class="calc-label" for="pa-flows">Number of flows</label>
@@ -124,7 +128,7 @@
           </select>
         </div>
       </div>
-      <div class="calc-result">
+      <div class="calc-result" id="pa-result">
         <div class="calc-result-item">
           <div class="calc-result-label">Runs / mo</div>
           <div class="calc-result-value" id="pa-runs">—</div>
@@ -169,6 +173,7 @@
   </div>
 </div>
 
+<script src="js/tool-utils.js"></script>
 <script>
 function fmt(n){if(n>=1000000)return(n/1000000).toFixed(1)+'M';if(n>=1000)return(n/1000).toFixed(1)+'k';return n.toLocaleString();}
 function calcPA() {
@@ -182,17 +187,27 @@ function calcPA() {
   const actTotal=runs*actions;
   document.getElementById('pa-runs').textContent=fmt(runs);
   document.getElementById('pa-act').textContent=fmt(actTotal);
-  let rec='',note='';
-  if(rpa==='unattended'){rec='Process + Unattended RPA';note='Unattended RPA requires a Process licence per flow plus the Unattended RPA add-on ($150/bot/mo).';}
-  else if(rpa==='attended'){rec='Per-User + RPA add-on';note='Attended RPA requires the Per-User with RPA plan ($40/user/mo).';}
-  else if(runs>cap){rec=runs>250000?'Multiple Process licences':'Process licence';note=`Your ${fmt(runs)} runs/mo exceed the ${fmt(cap)} cap. A Process licence ($150/mo) covers one automated flow.`;}
-  else if(premium==='yes'&&cap===6000){rec='Per-User Plan required';note='Premium connectors require at minimum a Per-User Power Automate plan ($15/user/mo).';}
-  else{rec='Current licence sufficient';note=`Your ${fmt(runs)} runs/mo fit within the ${fmt(cap)} cap with ${fmt(cap-runs)} headroom.`;}
+  let rec='',note='',status='ok';
+  if(rpa==='unattended'){rec='Process + Unattended RPA';note='Unattended RPA requires a Process licence per flow plus the Unattended RPA add-on ($150/bot/mo).';status='warn';}
+  else if(rpa==='attended'){rec='Per-User + RPA add-on';note='Attended RPA requires the Per-User with RPA plan ($40/user/mo).';status='warn';}
+  else if(runs>cap){rec=runs>250000?'Multiple Process licences':'Process licence';note=`Your ${fmt(runs)} runs/mo exceed the ${fmt(cap)} cap. A Process licence ($150/mo) covers one automated flow.`;status='danger';}
+  else if(premium==='yes'&&cap===6000){rec='Per-User Plan required';note='Premium connectors require at minimum a Per-User Power Automate plan ($15/user/mo).';status='warn';}
+  else{rec='Current licence sufficient';note=`Your ${fmt(runs)} runs/mo fit within the ${fmt(cap)} cap with ${fmt(cap-runs)} headroom.`;status='ok';}
   document.getElementById('pa-rec').textContent=rec;
   document.getElementById('pa-note').textContent=note;
+  setResultStatus(document.getElementById('pa-result'),status);
 }
+const PA_DEFAULTS=[{id:'pa-flows',value:10},{id:'pa-actions',value:8}];
 ['pa-flows','pa-actions'].forEach(id=>document.getElementById(id).addEventListener('input',calcPA));
 ['pa-trigger','pa-licence','pa-rpa','pa-premium'].forEach(id=>document.getElementById(id).addEventListener('change',calcPA));
+document.getElementById('pa-reset').addEventListener('click',function(){resetForm(PA_DEFAULTS);document.getElementById('pa-trigger').value='150';document.getElementById('pa-licence').value='15000';document.getElementById('pa-rpa').value='no';document.getElementById('pa-premium').value='no';calcPA();});
+document.getElementById('pa-copy').addEventListener('click',function(){
+  var runs=document.getElementById('pa-runs').textContent;
+  var act=document.getElementById('pa-act').textContent;
+  var rec=document.getElementById('pa-rec').textContent;
+  var note=document.getElementById('pa-note').textContent;
+  copyToClipboard('Power Automate Flow Run Estimate\nRuns/mo: '+runs+'\nActions/mo: '+act+'\nLicence needed: '+rec+'\n'+note,this);
+});
 calcPA();
 </script>
 </main>

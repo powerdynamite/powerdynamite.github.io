@@ -81,6 +81,10 @@
       <div class="tool-free-badge">✦ Free</div>
     </div>
     <div class="tool-card-body">
+      <div class="calc-actions">
+        <button class="calc-reset-btn" id="cs-reset">Reset defaults</button>
+        <button class="copy-btn" id="cs-copy">Copy result</button>
+      </div>
       <div class="calc-grid">
         <div class="calc-field">
           <label class="calc-label" for="cs-users">Monthly active users <span class="calc-hint">users/mo</span></label>
@@ -120,7 +124,7 @@
           </select>
         </div>
       </div>
-      <div class="calc-result">
+      <div class="calc-result" id="cs-result">
         <div class="calc-result-item">
           <div class="calc-result-label">Messages / mo</div>
           <div class="calc-result-value" id="cs-msgs">—</div>
@@ -170,10 +174,12 @@
   </div>
 </div>
 
+<script src="js/tool-utils.js"></script>
 <script>
 const PAYG_RATE = { USD: 0.01, GBP: 0.008, EUR: 0.009 };
 const CURRENCY_SYM = { USD: '$', GBP: '£', EUR: '€' };
 const MULTIPLIER = { classic: 1, generative: 2, plugin: 3 };
+const CS_DEFAULTS = [{id:'cs-users',value:200},{id:'cs-sessions',value:8},{id:'cs-turns',value:5}];
 function fmt(n) { if(n>=1000000)return(n/1000000).toFixed(1)+'M'; if(n>=1000)return(n/1000).toFixed(1)+'k'; return n.toLocaleString(); }
 function calcCS() {
   const users=parseInt(document.getElementById('cs-users').value)||0;
@@ -190,10 +196,23 @@ function calcCS() {
   document.getElementById('cs-included').textContent=fmt(included);
   document.getElementById('cs-overage').textContent=fmt(overage);
   document.getElementById('cs-cost').textContent=overage===0?'Within capacity':sym+cost.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
-  document.getElementById('cs-note').textContent=overage>0?`You need ${fmt(overage)} additional messages (${sym}${cost.toFixed(2)}/mo PAYG). Consider an extra Tenant licence at ${sym==='$'?'$200':'~'+sym+'165'}/mo for ${fmt(50000)} msgs.`:`Your ${fmt(included)} included messages cover your estimate with ${fmt(included-msgs)} headroom.`;
+  const noteText=overage>0?`You need ${fmt(overage)} additional messages (${sym}${cost.toFixed(2)}/mo PAYG). Consider an extra Tenant licence at ${sym==='$'?'$200':'~'+sym+'165'}/mo for ${fmt(50000)} msgs.`:`Your ${fmt(included)} included messages cover your estimate with ${fmt(included-msgs)} headroom.`;
+  document.getElementById('cs-note').textContent=noteText;
+  const headroom=included>0?(included-msgs)/included:1;
+  const status=overage>0?'danger':headroom<0.2?'warn':'ok';
+  setResultStatus(document.getElementById('cs-result'),status);
 }
 ['cs-users','cs-sessions','cs-turns'].forEach(id=>document.getElementById(id).addEventListener('input',calcCS));
 ['cs-type','cs-license','cs-currency'].forEach(id=>document.getElementById(id).addEventListener('change',calcCS));
+document.getElementById('cs-reset').addEventListener('click',function(){resetForm(CS_DEFAULTS);document.getElementById('cs-type').value='generative';document.getElementById('cs-license').value='50000';document.getElementById('cs-currency').value='USD';calcCS();});
+document.getElementById('cs-copy').addEventListener('click',function(){
+  var msgs=document.getElementById('cs-msgs').textContent;
+  var included=document.getElementById('cs-included').textContent;
+  var overage=document.getElementById('cs-overage').textContent;
+  var cost=document.getElementById('cs-cost').textContent;
+  var note=document.getElementById('cs-note').textContent;
+  copyToClipboard('Copilot Studio Message Estimate\nMessages/mo: '+msgs+'\nIncluded: '+included+'\nOverage: '+overage+'\nEst. PAYG cost: '+cost+'\n'+note,this);
+});
 calcCS();
 </script>
 </main>

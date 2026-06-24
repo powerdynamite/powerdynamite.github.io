@@ -215,3 +215,72 @@
 }
 .more-tools-all:hover { text-decoration: underline; }
 @media (max-width: 600px) { .more-tools-hint { display: none; } }
+
+
+/* ── Result status variants ──────────────────────────────── */
+.calc-result--ok {
+  background: var(--success-lo);
+  border-color: rgba(16,124,16,.25);
+}
+.calc-result--ok .calc-result-value { color: var(--success); }
+
+.calc-result--warn {
+  background: var(--amber-lo);
+  border-color: rgba(217,119,6,.25);
+}
+.calc-result--warn .calc-result-value { color: var(--amber); }
+
+.calc-result--danger {
+  background: rgba(225,29,72,.08);
+  border-color: rgba(225,29,72,.25);
+}
+.calc-result--danger .calc-result-value { color: var(--rose); }
+
+
+/* ── Capacity bar ────────────────────────────────────────── */
+.result-bar {
+  width: 100%; height: 8px;
+  background: var(--border2);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  flex-basis: 100%;
+  margin-top: 0.25rem;
+}
+.result-bar-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: var(--radius-full);
+  background: var(--accent);
+  transition: width 0.4s ease;
+}
+.calc-result--ok   .result-bar-fill { background: var(--success); }
+.calc-result--warn .result-bar-fill { background: var(--amber); }
+.calc-result--danger .result-bar-fill { background: var(--rose); }
+
+
+/* ── Utility buttons ─────────────────────────────────────── */
+.calc-actions {
+  display: flex; align-items: center; gap: 0.6rem;
+  margin-bottom: 0.75rem; flex-wrap: wrap;
+}
+
+.calc-reset-btn {
+  background: none; border: none; cursor: pointer;
+  font-family: inherit; font-size: 0.78rem;
+  color: var(--muted); padding: 0;
+  text-decoration: underline; text-underline-offset: 2px;
+  transition: color var(--transition-fast);
+}
+.calc-reset-btn:hover { color: var(--accent); }
+
+.copy-btn {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-family: inherit; font-size: 0.75rem; font-weight: 600;
+  color: var(--muted); cursor: pointer;
+  padding: 0.28rem 0.7rem;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+.copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+.copy-btn.copied { border-color: var(--success); color: var(--success); }

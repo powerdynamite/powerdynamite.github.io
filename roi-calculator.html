@@ -81,6 +81,10 @@
       <div class="tool-free-badge">✦ Free</div>
     </div>
     <div class="tool-card-body">
+      <div class="calc-actions">
+        <button class="calc-reset-btn" id="roi-reset">Reset defaults</button>
+        <button class="copy-btn" id="roi-copy">Copy result</button>
+      </div>
       <div class="calc-grid">
         <div class="calc-field">
           <label class="calc-label" for="roi-users">Users affected</label>
@@ -107,7 +111,7 @@
           <input class="calc-input" type="number" id="roi-licence" value="500" min="0">
         </div>
       </div>
-      <div class="calc-result">
+      <div class="calc-result" id="roi-result">
         <div class="calc-result-item">
           <div class="calc-result-label">Monthly saving</div>
           <div class="calc-result-value" id="roi-monthly">—</div>
@@ -125,6 +129,7 @@
           <div class="calc-result-value" id="roi-3yr">—</div>
         </div>
         <div class="calc-result-note" id="roi-note">Fill in the fields above.</div>
+        <div class="calc-result-note" id="roi-breakdown" style="font-size:0.7rem;"></div>
       </div>
       <div class="tool-divider"></div>
       <div style="font-size:0.76rem; color:var(--muted); line-height:1.6;">
@@ -155,6 +160,7 @@
   </div>
 </div>
 
+<script src="js/tool-utils.js"></script>
 <script>
 function calcROI() {
   const users=parseInt(document.getElementById('roi-users').value)||0;
@@ -178,8 +184,23 @@ function calcROI() {
   document.getElementById('roi-payback').textContent=paybackMo===Infinity?'N/A':paybackMo<1?'< 1 month':Math.ceil(paybackMo)+' months';
   document.getElementById('roi-3yr').textContent=roi3yr>0?'+'+Math.round(roi3yr)+'%':Math.round(roi3yr)+'%';
   document.getElementById('roi-note').textContent=netMonthly<=0?'Monthly licence cost exceeds the estimated saving.':'$'+Math.round(annualSaving).toLocaleString()+' annual saving against $'+Math.round(annualCost+impl/3).toLocaleString()+' blended annual cost. Share this with your sponsor.';
+  const amortMonthly=paybackMo!==Infinity&&paybackMo>0?'Impl. cost amortised over payback: $'+Math.round(impl/paybackMo).toLocaleString()+'/mo':'';
+  document.getElementById('roi-breakdown').textContent=amortMonthly;
+  const status=roi3yr<0||netMonthly<=0?'danger':paybackMo>18?'warn':'ok';
+  setResultStatus(document.getElementById('roi-result'),status);
 }
+const ROI_DEFAULTS=[{id:'roi-users',value:50},{id:'roi-hours',value:4},{id:'roi-rate',value:35},{id:'roi-errors',value:30},{id:'roi-impl',value:15000},{id:'roi-licence',value:500}];
 ['roi-users','roi-hours','roi-rate','roi-errors','roi-impl','roi-licence'].forEach(id=>document.getElementById(id).addEventListener('input',calcROI));
+document.getElementById('roi-reset').addEventListener('click',function(){resetForm(ROI_DEFAULTS);calcROI();});
+document.getElementById('roi-copy').addEventListener('click',function(){
+  var monthly=document.getElementById('roi-monthly').textContent;
+  var annual=document.getElementById('roi-annual').textContent;
+  var payback=document.getElementById('roi-payback').textContent;
+  var yr3=document.getElementById('roi-3yr').textContent;
+  var note=document.getElementById('roi-note').textContent;
+  var breakdown=document.getElementById('roi-breakdown').textContent;
+  copyToClipboard('Power Platform ROI Estimate\nMonthly saving: '+monthly+'\nAnnual saving: '+annual+'\nPayback period: '+payback+'\n3-year ROI: '+yr3+'\n'+note+(breakdown?'\n'+breakdown:''),this);
+});
 calcROI();
 </script>
 </main>
