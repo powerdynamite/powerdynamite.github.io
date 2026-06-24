@@ -111,6 +111,36 @@
           <input class="calc-input" type="number" id="roi-licence" value="500" min="0">
         </div>
       </div>
+      <details class="calc-advanced" id="roi-advanced">
+        <summary>Advanced options <svg class="calc-advanced-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6,9 12,15 18,9"/></svg></summary>
+        <div class="calc-advanced-body">
+          <p class="calc-advanced-hint">These inputs produce a more realistic business case — especially the benefit ramp-up, which is the most common reason sponsors reject early ROI estimates.</p>
+          <div class="calc-grid">
+            <div class="calc-field">
+              <label class="calc-label" for="roi-maint">Annual maintenance cost ($) <span class="calc-hint">BAU support post go-live</span></label>
+              <input class="calc-input" type="number" id="roi-maint" value="0" min="0">
+            </div>
+            <div class="calc-field">
+              <label class="calc-label" for="roi-training">Training cost ($) <span class="calc-hint">one-off, added to impl cost</span></label>
+              <input class="calc-input" type="number" id="roi-training" value="0" min="0">
+            </div>
+            <div class="calc-field">
+              <label class="calc-label" for="roi-ramp">Benefit ramp-up <span class="calc-hint">months to reach full savings</span></label>
+              <div class="calc-range-wrap">
+                <input class="calc-range" type="range" id="roi-ramp" min="0" max="12" step="1" value="0">
+                <span class="calc-range-val" id="roi-ramp-val">0 mo</span>
+              </div>
+            </div>
+            <div class="calc-field">
+              <label class="calc-label" for="roi-productivity">Productivity gain <span class="calc-hint">% faster — beyond hours saved</span></label>
+              <div class="calc-range-wrap">
+                <input class="calc-range" type="range" id="roi-productivity" min="0" max="50" step="5" value="0">
+                <span class="calc-range-val" id="roi-productivity-val">0%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
       <div class="calc-result" id="roi-result">
         <div class="calc-result-item">
           <div class="calc-result-label">Monthly saving</div>
@@ -163,44 +193,107 @@
 <script src="js/tool-utils.js"></script>
 <script>
 function calcROI() {
-  const users=parseInt(document.getElementById('roi-users').value)||0;
-  const hours=parseFloat(document.getElementById('roi-hours').value)||0;
-  const rate=parseFloat(document.getElementById('roi-rate').value)||0;
-  const errPct=parseFloat(document.getElementById('roi-errors').value)||0;
-  const impl=parseFloat(document.getElementById('roi-impl').value)||0;
-  const licence=parseFloat(document.getElementById('roi-licence').value)||0;
-  const labourSaving=users*hours*rate;
-  const errorSaving=labourSaving*(errPct/100)*0.2;
-  const monthlySaving=labourSaving+errorSaving;
-  const annualSaving=monthlySaving*12;
-  const annualCost=licence*12;
-  const totalCost3yr=impl+annualCost*3;
-  const totalSave3yr=annualSaving*3;
-  const roi3yr=totalCost3yr>0?((totalSave3yr-totalCost3yr)/totalCost3yr*100):0;
-  const netMonthly=monthlySaving-licence;
-  const paybackMo=netMonthly>0?impl/netMonthly:Infinity;
-  document.getElementById('roi-monthly').textContent='$'+Math.round(monthlySaving).toLocaleString();
-  document.getElementById('roi-annual').textContent='$'+Math.round(annualSaving).toLocaleString();
-  document.getElementById('roi-payback').textContent=paybackMo===Infinity?'N/A':paybackMo<1?'< 1 month':Math.ceil(paybackMo)+' months';
-  document.getElementById('roi-3yr').textContent=roi3yr>0?'+'+Math.round(roi3yr)+'%':Math.round(roi3yr)+'%';
-  document.getElementById('roi-note').textContent=netMonthly<=0?'Monthly licence cost exceeds the estimated saving.':'$'+Math.round(annualSaving).toLocaleString()+' annual saving against $'+Math.round(annualCost+impl/3).toLocaleString()+' blended annual cost. Share this with your sponsor.';
-  const amortMonthly=paybackMo!==Infinity&&paybackMo>0?'Impl. cost amortised over payback: $'+Math.round(impl/paybackMo).toLocaleString()+'/mo':'';
-  document.getElementById('roi-breakdown').textContent=amortMonthly;
-  const status=roi3yr<0||netMonthly<=0?'danger':paybackMo>18?'warn':'ok';
-  setResultStatus(document.getElementById('roi-result'),status);
+  const users   = parseInt(document.getElementById('roi-users').value)    || 0;
+  const hours   = parseFloat(document.getElementById('roi-hours').value)  || 0;
+  const rate    = parseFloat(document.getElementById('roi-rate').value)   || 0;
+  const errPct  = parseFloat(document.getElementById('roi-errors').value) || 0;
+  const impl    = parseFloat(document.getElementById('roi-impl').value)   || 0;
+  const licence = parseFloat(document.getElementById('roi-licence').value)|| 0;
+
+  // advanced
+  const maint       = parseFloat(document.getElementById('roi-maint').value)       || 0;
+  const training    = parseFloat(document.getElementById('roi-training').value)    || 0;
+  const rampMonths  = parseInt(document.getElementById('roi-ramp').value)          || 0;
+  const prodGainPct = parseFloat(document.getElementById('roi-productivity').value)|| 0;
+
+  const labourSaving  = users * hours * rate;
+  const errorSaving   = labourSaving * (errPct / 100) * 0.2;
+  const prodSaving    = labourSaving * (prodGainPct / 100);
+  const fullMonthSave = labourSaving + errorSaving + prodSaving;
+
+  // ramp: savings start at 0 and reach 100% linearly over rampMonths
+  // over 12 months: sum of monthly savings accounting for ramp then plateau
+  function annualSavingWithRamp(fullMonthly, ramp) {
+    if (ramp === 0) return fullMonthly * 12;
+    let total = 0;
+    for (let m = 1; m <= 12; m++) {
+      const factor = m <= ramp ? m / ramp : 1;
+      total += fullMonthly * factor;
+    }
+    return total;
+  }
+
+  const annualSaving  = annualSavingWithRamp(fullMonthSave, rampMonths);
+  const monthlySaving = annualSaving / 12; // effective average
+  const annualCost    = (licence + maint / 12) * 12;
+  const totalImpl     = impl + training;
+  const totalCost3yr  = totalImpl + annualCost * 3;
+  const totalSave3yr  = annualSavingWithRamp(fullMonthSave, rampMonths) * 3 - (rampMonths > 0 ? fullMonthSave * rampMonths * 0.5 * 2 : 0);
+  const roi3yr        = totalCost3yr > 0 ? ((totalSave3yr - totalCost3yr) / totalCost3yr * 100) : 0;
+  const netMonthly    = fullMonthSave - licence - maint / 12;
+  const paybackMo     = netMonthly > 0 ? totalImpl / netMonthly : Infinity;
+
+  document.getElementById('roi-monthly').textContent  = '$' + Math.round(monthlySaving).toLocaleString();
+  document.getElementById('roi-annual').textContent   = '$' + Math.round(annualSaving).toLocaleString();
+  document.getElementById('roi-payback').textContent  = paybackMo === Infinity ? 'N/A' : paybackMo < 1 ? '< 1 month' : Math.ceil(paybackMo) + ' months';
+  document.getElementById('roi-3yr').textContent      = roi3yr > 0 ? '+' + Math.round(roi3yr) + '%' : Math.round(roi3yr) + '%';
+
+  const blendedAnnual = annualCost + totalImpl / 3;
+  let noteText = netMonthly <= 0
+    ? 'Monthly costs exceed the estimated saving — review licence or maintenance spend.'
+    : '$' + Math.round(annualSaving).toLocaleString() + ' annual saving against $' + Math.round(blendedAnnual).toLocaleString() + ' blended annual cost. Share this with your sponsor.';
+  if (rampMonths > 0) noteText += ` Saving ramps to full value over ${rampMonths} month${rampMonths > 1 ? 's' : ''}.`;
+  document.getElementById('roi-note').textContent = noteText;
+
+  const amortMonthly = paybackMo !== Infinity && paybackMo > 0
+    ? 'Impl. cost amortised over payback: $' + Math.round(totalImpl / paybackMo).toLocaleString() + '/mo'
+    : '';
+  document.getElementById('roi-breakdown').textContent = amortMonthly;
+
+  const status = roi3yr < 0 || netMonthly <= 0 ? 'danger' : paybackMo > 18 ? 'warn' : 'ok';
+  setResultStatus(document.getElementById('roi-result'), status);
 }
-const ROI_DEFAULTS=[{id:'roi-users',value:50},{id:'roi-hours',value:4},{id:'roi-rate',value:35},{id:'roi-errors',value:30},{id:'roi-impl',value:15000},{id:'roi-licence',value:500}];
-['roi-users','roi-hours','roi-rate','roi-errors','roi-impl','roi-licence'].forEach(id=>document.getElementById(id).addEventListener('input',calcROI));
-document.getElementById('roi-reset').addEventListener('click',function(){resetForm(ROI_DEFAULTS);calcROI();});
-document.getElementById('roi-copy').addEventListener('click',function(){
-  var monthly=document.getElementById('roi-monthly').textContent;
-  var annual=document.getElementById('roi-annual').textContent;
-  var payback=document.getElementById('roi-payback').textContent;
-  var yr3=document.getElementById('roi-3yr').textContent;
-  var note=document.getElementById('roi-note').textContent;
-  var breakdown=document.getElementById('roi-breakdown').textContent;
-  copyToClipboard('Power Platform ROI Estimate\nMonthly saving: '+monthly+'\nAnnual saving: '+annual+'\nPayback period: '+payback+'\n3-year ROI: '+yr3+'\n'+note+(breakdown?'\n'+breakdown:''),this);
+
+const ROI_DEFAULTS = [
+  { id: 'roi-users', value: 50 }, { id: 'roi-hours', value: 4 },
+  { id: 'roi-rate', value: 35 },  { id: 'roi-errors', value: 30 },
+  { id: 'roi-impl', value: 15000 }, { id: 'roi-licence', value: 500 },
+  { id: 'roi-maint', value: 0 }, { id: 'roi-training', value: 0 }
+];
+['roi-users','roi-hours','roi-rate','roi-errors','roi-impl','roi-licence','roi-maint','roi-training'].forEach(id =>
+  document.getElementById(id).addEventListener('input', calcROI));
+
+document.getElementById('roi-ramp').addEventListener('input', function() {
+  document.getElementById('roi-ramp-val').textContent = this.value + ' mo';
+  calcROI();
 });
+document.getElementById('roi-productivity').addEventListener('input', function() {
+  document.getElementById('roi-productivity-val').textContent = this.value + '%';
+  calcROI();
+});
+
+document.getElementById('roi-reset').addEventListener('click', function() {
+  resetForm(ROI_DEFAULTS);
+  document.getElementById('roi-ramp').value = 0;        document.getElementById('roi-ramp-val').textContent = '0 mo';
+  document.getElementById('roi-productivity').value = 0; document.getElementById('roi-productivity-val').textContent = '0%';
+  calcROI();
+});
+
+document.getElementById('roi-copy').addEventListener('click', function() {
+  const monthly  = document.getElementById('roi-monthly').textContent;
+  const annual   = document.getElementById('roi-annual').textContent;
+  const payback  = document.getElementById('roi-payback').textContent;
+  const yr3      = document.getElementById('roi-3yr').textContent;
+  const note     = document.getElementById('roi-note').textContent;
+  const breakdown = document.getElementById('roi-breakdown').textContent;
+  copyToClipboard(
+    'Power Platform ROI Estimate\nMonthly saving: ' + monthly +
+    '\nAnnual saving: ' + annual + '\nPayback period: ' + payback +
+    '\n3-year ROI: ' + yr3 + '\n' + note + (breakdown ? '\n' + breakdown : ''),
+    this
+  );
+});
+
 calcROI();
 </script>
 </main>

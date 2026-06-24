@@ -284,3 +284,54 @@
 }
 .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
 .copy-btn.copied { border-color: var(--success); color: var(--success); }
+
+
+/* ── Advanced options collapsible ────────────────────────── */
+.calc-advanced {
+  margin-top: 1rem;
+  border: 1.5px solid var(--border2);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.calc-advanced summary {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.78rem; font-weight: 600; color: var(--muted);
+  cursor: pointer; list-style: none; user-select: none;
+  background: var(--card2);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+.calc-advanced summary::-webkit-details-marker { display: none; }
+.calc-advanced summary:hover { color: var(--accent); background: var(--accent-lo); }
+
+.calc-advanced-chev {
+  flex-shrink: 0;
+  transition: transform 0.22s ease;
+}
+.calc-advanced[open] .calc-advanced-chev { transform: rotate(180deg); }
+
+.calc-advanced-body {
+  padding: 1rem;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.calc-advanced-hint {
+  font-size: 0.72rem; color: var(--muted2);
+  margin-bottom: 0.75rem; line-height: 1.5;
+}
+
+/* range slider inputs */
+.calc-range-wrap {
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.calc-range {
+  flex: 1; height: 4px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.calc-range-val {
+  font-size: 0.82rem; font-weight: 700; color: var(--accent);
+  min-width: 3rem; text-align: right;
+}

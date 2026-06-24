@@ -111,6 +111,32 @@
           </select>
         </div>
       </div>
+      <details class="calc-advanced" id="pp-advanced">
+        <summary>Advanced options <svg class="calc-advanced-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6,9 12,15 18,9"/></svg></summary>
+        <div class="calc-advanced-body">
+          <p class="calc-advanced-hint">Multiple sites each have their own capacity pool. A peak multiplier accounts for seasonal spikes.</p>
+          <div class="calc-grid">
+            <div class="calc-field">
+              <label class="calc-label" for="pp-sites">Number of sites <span class="calc-hint">each gets its own pool</span></label>
+              <input class="calc-input" type="number" id="pp-sites" value="1" min="1" max="20">
+            </div>
+            <div class="calc-field">
+              <label class="calc-label" for="pp-peak">Peak month multiplier <span class="calc-hint">seasonal traffic spike</span></label>
+              <div class="calc-range-wrap">
+                <input class="calc-range" type="range" id="pp-peak" min="1" max="5" step="0.5" value="1">
+                <span class="calc-range-val" id="pp-peak-val">1.0×</span>
+              </div>
+            </div>
+            <div class="calc-field">
+              <label class="calc-label" for="pp-bot">Copilot / bot on portal?</label>
+              <select class="calc-select" id="pp-bot">
+                <option value="no" selected>No</option>
+                <option value="yes">Yes — adds Copilot Studio messages</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </details>
       <div class="calc-result" id="pp-result">
         <div class="calc-result-item">
           <div class="calc-result-label">Auth page views / mo</div>
@@ -159,42 +185,97 @@
 
 <script src="js/tool-utils.js"></script>
 <script>
-function fmt(n){if(n>=1000000)return(n/1000000).toFixed(1)+'M';if(n>=1000)return(n/1000).toFixed(1)+'k';return n.toLocaleString();}
-function calcPP() {
-  const authUsers=parseInt(document.getElementById('pp-auth-users').value)||0;
-  const authPages=parseInt(document.getElementById('pp-auth-pages').value)||1;
-  const anonUsers=parseInt(document.getElementById('pp-anon-users').value)||0;
-  const anonPages=parseInt(document.getElementById('pp-anon-pages').value)||1;
-  const licRaw=document.getElementById('pp-licence').value;
-  const [authCap,anonCap]=licRaw.split(',').map(Number);
-  const authViews=authUsers*authPages;
-  const anonViews=anonUsers*anonPages;
-  const dailyAuth=Math.ceil(authUsers/30);
-  document.getElementById('pp-auth-views').textContent=fmt(authViews);
-  document.getElementById('pp-anon-views').textContent=fmt(anonViews);
-  document.getElementById('pp-daily-auth').textContent=dailyAuth+' logins/day';
-  const authOver=Math.max(0,dailyAuth-authCap);
-  const anonOver=Math.max(0,(anonViews/30)-anonCap);
-  const addOns=Math.ceil(authOver/100)+Math.ceil(anonOver/500);
-  const addOnCost=addOns*200;
-  document.getElementById('pp-note').textContent=authOver<=0&&anonOver<=0?`Your ${dailyAuth} auth logins/day and ${fmt(Math.round(anonViews/30))} anon views/day fit within included capacity. No add-ons needed.`:`~${addOns} capacity add-on pack${addOns>1?'s':''} needed (~$${addOnCost}/mo).`;
-  const authUsagePct=authCap>0?Math.min(100,(dailyAuth/authCap)*100):100;
-  renderBar(document.getElementById('pp-bar'),authUsagePct);
-  const headroom=authCap>0?(authCap-dailyAuth)/authCap:0;
-  const status=authOver>0||anonOver>0?'danger':headroom<0.2?'warn':'ok';
-  setResultStatus(document.getElementById('pp-result'),status);
+function fmt(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000)    return (n / 1000).toFixed(1) + 'k';
+  return n.toLocaleString();
 }
-const PP_DEFAULTS=[{id:'pp-auth-users',value:200},{id:'pp-auth-pages',value:10},{id:'pp-anon-users',value:1000},{id:'pp-anon-pages',value:4}];
-['pp-auth-users','pp-auth-pages','pp-anon-users','pp-anon-pages'].forEach(id=>document.getElementById(id).addEventListener('input',calcPP));
-document.getElementById('pp-licence').addEventListener('change',calcPP);
-document.getElementById('pp-reset').addEventListener('click',function(){resetForm(PP_DEFAULTS);document.getElementById('pp-licence').value='100,500';calcPP();});
-document.getElementById('pp-copy').addEventListener('click',function(){
-  var authV=document.getElementById('pp-auth-views').textContent;
-  var anonV=document.getElementById('pp-anon-views').textContent;
-  var daily=document.getElementById('pp-daily-auth').textContent;
-  var note=document.getElementById('pp-note').textContent;
-  copyToClipboard('Power Pages Capacity Estimate\nAuth page views/mo: '+authV+'\nAnon page views/mo: '+anonV+'\nDaily auth logins: '+daily+'\n'+note,this);
+
+function calcPP() {
+  const authUsers  = parseInt(document.getElementById('pp-auth-users').value)  || 0;
+  const authPages  = parseInt(document.getElementById('pp-auth-pages').value)  || 1;
+  const anonUsers  = parseInt(document.getElementById('pp-anon-users').value)  || 0;
+  const anonPages  = parseInt(document.getElementById('pp-anon-pages').value)  || 1;
+  const licRaw     = document.getElementById('pp-licence').value;
+  const [authCap, anonCap] = licRaw.split(',').map(Number);
+
+  // advanced
+  const sites     = parseInt(document.getElementById('pp-sites').value)  || 1;
+  const peakMult  = parseFloat(document.getElementById('pp-peak').value) || 1;
+  const bot       = document.getElementById('pp-bot').value;
+
+  const authViews  = Math.round(authUsers * authPages * peakMult);
+  const anonViews  = Math.round(anonUsers * anonPages * peakMult);
+  const dailyAuth  = Math.ceil(authUsers / 30);
+
+  document.getElementById('pp-auth-views').textContent = fmt(authViews);
+  document.getElementById('pp-anon-views').textContent = fmt(anonViews);
+  document.getElementById('pp-daily-auth').textContent = dailyAuth + ' logins/day';
+
+  // each site has its own pool, so effective cap scales with site count
+  const effectiveAuthCap = authCap * sites;
+  const effectiveAnonCap = anonCap * sites;
+
+  const authOver = Math.max(0, dailyAuth - effectiveAuthCap);
+  const anonOver = Math.max(0, (anonViews / 30) - effectiveAnonCap);
+  const addOns   = Math.ceil(authOver / 100) + Math.ceil(anonOver / 500);
+  const addOnCost = addOns * 200;
+
+  let noteText = authOver <= 0 && anonOver <= 0
+    ? `Your ${dailyAuth} auth logins/day and ${fmt(Math.round(anonViews / 30))} anon views/day fit within the ${sites > 1 ? sites + '-site' : ''} included capacity. No add-ons needed.`
+    : `~${addOns} capacity add-on pack${addOns > 1 ? 's' : ''} needed (~$${addOnCost}/mo).`;
+
+  if (bot === 'yes') {
+    const botMsgs = Math.round((authUsers + anonUsers) * 3);
+    noteText += ` Portal bot adds ~${fmt(botMsgs)} Copilot Studio messages/mo (estimate at 3 msgs/session).`;
+  }
+
+  document.getElementById('pp-note').textContent = noteText;
+
+  const authUsagePct = effectiveAuthCap > 0 ? Math.min(100, (dailyAuth / effectiveAuthCap) * 100) : 100;
+  renderBar(document.getElementById('pp-bar'), authUsagePct);
+
+  const headroom = effectiveAuthCap > 0 ? (effectiveAuthCap - dailyAuth) / effectiveAuthCap : 0;
+  const status   = authOver > 0 || anonOver > 0 ? 'danger' : headroom < 0.2 ? 'warn' : 'ok';
+  setResultStatus(document.getElementById('pp-result'), status);
+}
+
+const PP_DEFAULTS = [
+  { id: 'pp-auth-users', value: 200 }, { id: 'pp-auth-pages', value: 10 },
+  { id: 'pp-anon-users', value: 1000 }, { id: 'pp-anon-pages', value: 4 },
+  { id: 'pp-sites', value: 1 }
+];
+['pp-auth-users','pp-auth-pages','pp-anon-users','pp-anon-pages','pp-sites'].forEach(id =>
+  document.getElementById(id).addEventListener('input', calcPP));
+['pp-licence','pp-bot'].forEach(id =>
+  document.getElementById(id).addEventListener('change', calcPP));
+
+document.getElementById('pp-peak').addEventListener('input', function() {
+  document.getElementById('pp-peak-val').textContent = parseFloat(this.value).toFixed(1) + '×';
+  calcPP();
 });
+
+document.getElementById('pp-reset').addEventListener('click', function() {
+  resetForm(PP_DEFAULTS);
+  document.getElementById('pp-licence').value = '100,500';
+  document.getElementById('pp-bot').value     = 'no';
+  document.getElementById('pp-peak').value    = 1;
+  document.getElementById('pp-peak-val').textContent = '1.0×';
+  calcPP();
+});
+
+document.getElementById('pp-copy').addEventListener('click', function() {
+  const authV  = document.getElementById('pp-auth-views').textContent;
+  const anonV  = document.getElementById('pp-anon-views').textContent;
+  const daily  = document.getElementById('pp-daily-auth').textContent;
+  const note   = document.getElementById('pp-note').textContent;
+  copyToClipboard(
+    'Power Pages Capacity Estimate\nAuth page views/mo: ' + authV +
+    '\nAnon page views/mo: ' + anonV + '\nDaily auth logins: ' + daily + '\n' + note,
+    this
+  );
+});
+
 calcPP();
 </script>
 </main>

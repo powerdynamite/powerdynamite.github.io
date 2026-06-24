@@ -126,6 +126,32 @@
           </select>
         </div>
       </div>
+      <details class="calc-advanced" id="bi-advanced">
+        <summary>Advanced options <svg class="calc-advanced-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6,9 12,15 18,9"/></svg></summary>
+        <div class="calc-advanced-body">
+          <p class="calc-advanced-hint">These features force a higher licence tier regardless of user count.</p>
+          <div class="calc-grid">
+            <div class="calc-field">
+              <label class="calc-label" for="bi-paginated">Paginated reports needed?</label>
+              <select class="calc-select" id="bi-paginated">
+                <option value="no" selected>No</option>
+                <option value="yes">Yes — pixel-perfect / print reports</option>
+              </select>
+            </div>
+            <div class="calc-field">
+              <label class="calc-label" for="bi-external">External / guest users <span class="calc-hint">outside your tenant</span></label>
+              <input class="calc-input" type="number" id="bi-external" value="0" min="0">
+            </div>
+            <div class="calc-field">
+              <label class="calc-label" for="bi-fabric">Fabric / Lakehouse integration?</label>
+              <select class="calc-select" id="bi-fabric">
+                <option value="no" selected>No</option>
+                <option value="yes">Yes — OneLake / Fabric items</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </details>
       <div class="calc-result" id="bi-result">
         <div class="calc-result-item" style="min-width:160px">
           <div class="calc-result-label">Recommended tier</div>
@@ -170,32 +196,93 @@
 <script src="js/tool-utils.js"></script>
 <script>
 function calcBI() {
-  const authors=parseInt(document.getElementById('bi-authors').value)||0;
-  const viewers=parseInt(document.getElementById('bi-viewers').value)||0;
-  const embed=document.getElementById('bi-embed').value;
-  const refresh=document.getElementById('bi-refresh').value;
-  const model=document.getElementById('bi-model').value;
-  const m365=document.getElementById('bi-m365').value;
-  let tier='',cost=0,note='',status='ok';
-  if(embed==='customers'||model==='large'){tier='Premium P1 Capacity';cost=4995;note=embed==='customers'?'External embedding requires Premium Capacity. All internal users covered at no extra per-user cost.':'Models over 25 GB require Premium Capacity. P1 at $4,995/mo covers unlimited internal users.';status='warn';}
-  else if(refresh==='hourly'||refresh==='streaming'){tier='Premium Per User (PPU)';const ppu=(authors+viewers)*20;cost=m365==='e5'?viewers*20:ppu;note=`Near-real-time refresh requires PPU ($20/user/mo). ${m365==='e5'?'Authors covered by E5 — only viewers need PPU.':'All users need PPU.'}`;status='warn';}
-  else if(viewers>0||authors>0){if(m365==='e5'){tier='Included with E5';cost=0;note='Power BI Pro is included with Microsoft 365 E5. No additional licence needed.';status='ok';}else{tier='Power BI Pro';cost=(authors+viewers)*10;note=`Pro at $10/user/mo covers all ${authors+viewers} users.`;status='warn';}}
-  else{tier='Power BI Free';cost=0;note='Free tier for personal use. Sharing requires Pro.';status='ok';}
-  document.getElementById('bi-tier').textContent=tier;
-  document.getElementById('bi-cost').textContent=cost===0?'$0 / mo':'$'+cost.toLocaleString()+' / mo';
-  document.getElementById('bi-note').textContent=note;
-  setResultStatus(document.getElementById('bi-result'),status);
+  const authors  = parseInt(document.getElementById('bi-authors').value)  || 0;
+  const viewers  = parseInt(document.getElementById('bi-viewers').value)  || 0;
+  const embed    = document.getElementById('bi-embed').value;
+  const refresh  = document.getElementById('bi-refresh').value;
+  const model    = document.getElementById('bi-model').value;
+  const m365     = document.getElementById('bi-m365').value;
+
+  // advanced
+  const paginated = document.getElementById('bi-paginated').value;
+  const external  = parseInt(document.getElementById('bi-external').value) || 0;
+  const fabric    = document.getElementById('bi-fabric').value;
+
+  let tier = '', cost = 0, note = '', status = 'ok';
+
+  if (embed === 'customers' || model === 'large' || fabric === 'yes') {
+    tier = fabric === 'yes' ? 'Microsoft Fabric (F64+)' : 'Premium P1 Capacity';
+    cost = 5003;
+    note = fabric === 'yes'
+      ? 'Fabric / OneLake integration requires a Fabric capacity SKU (F64 ~$5,003/mo).'
+      : embed === 'customers'
+        ? 'External embedding requires Premium Capacity. All internal users covered at no extra per-user cost.'
+        : 'Models over 25 GB require Premium Capacity.';
+    status = 'warn';
+  } else if (refresh === 'hourly' || refresh === 'streaming' || paginated === 'yes') {
+    tier = 'Premium Per User (PPU)';
+    const ppuUsers = m365 === 'e5' ? viewers + external : authors + viewers + external;
+    cost = ppuUsers * 20;
+    note = paginated === 'yes'
+      ? `Paginated reports require PPU or Premium. ${ppuUsers} users × $20/mo.`
+      : `Near-real-time refresh requires PPU ($20/user/mo). ${ppuUsers} users need PPU.`;
+    status = 'warn';
+  } else if (viewers > 0 || authors > 0 || external > 0) {
+    if (m365 === 'e5' && external === 0) {
+      tier = 'Included with E5';
+      cost = 0;
+      note = 'Power BI Pro is included with Microsoft 365 E5. No additional licence needed.';
+      status = 'ok';
+    } else {
+      tier = 'Power BI Pro';
+      const proUsers = (m365 === 'e5' ? 0 : authors + viewers) + external;
+      cost = proUsers * 10;
+      note = external > 0
+        ? `Pro at $10/user/mo. ${external} external guest user${external > 1 ? 's' : ''} need their own Pro licence.`
+        : `Pro at $10/user/mo covers all ${authors + viewers} users.`;
+      status = 'warn';
+    }
+  } else {
+    tier   = 'Power BI Free';
+    cost   = 0;
+    note   = 'Free tier for personal use. Sharing requires Pro.';
+    status = 'ok';
+  }
+
+  document.getElementById('bi-tier').textContent = tier;
+  document.getElementById('bi-cost').textContent = cost === 0 ? '$0 / mo' : '$' + cost.toLocaleString() + ' / mo';
+  document.getElementById('bi-note').textContent = note;
+  setResultStatus(document.getElementById('bi-result'), status);
 }
-const BI_DEFAULTS=[{id:'bi-authors',value:5},{id:'bi-viewers',value:80}];
-['bi-authors','bi-viewers'].forEach(id=>document.getElementById(id).addEventListener('input',calcBI));
-['bi-embed','bi-refresh','bi-model','bi-m365'].forEach(id=>document.getElementById(id).addEventListener('change',calcBI));
-document.getElementById('bi-reset').addEventListener('click',function(){resetForm(BI_DEFAULTS);document.getElementById('bi-embed').value='no';document.getElementById('bi-refresh').value='daily';document.getElementById('bi-model').value='small';document.getElementById('bi-m365').value='e5';calcBI();});
-document.getElementById('bi-copy').addEventListener('click',function(){
-  var tier=document.getElementById('bi-tier').textContent;
-  var cost=document.getElementById('bi-cost').textContent;
-  var note=document.getElementById('bi-note').textContent;
-  copyToClipboard('Power BI Licensing Recommendation\nTier: '+tier+'\nEst. monthly cost: '+cost+'\n'+note,this);
+
+const BI_DEFAULTS = [{ id: 'bi-authors', value: 5 }, { id: 'bi-viewers', value: 80 }, { id: 'bi-external', value: 0 }];
+['bi-authors','bi-viewers','bi-external'].forEach(id =>
+  document.getElementById(id).addEventListener('input', calcBI));
+['bi-embed','bi-refresh','bi-model','bi-m365','bi-paginated','bi-fabric'].forEach(id =>
+  document.getElementById(id).addEventListener('change', calcBI));
+
+document.getElementById('bi-reset').addEventListener('click', function() {
+  resetForm(BI_DEFAULTS);
+  document.getElementById('bi-embed').value      = 'no';
+  document.getElementById('bi-refresh').value    = 'daily';
+  document.getElementById('bi-model').value      = 'small';
+  document.getElementById('bi-m365').value       = 'e5';
+  document.getElementById('bi-paginated').value  = 'no';
+  document.getElementById('bi-fabric').value     = 'no';
+  calcBI();
 });
+
+document.getElementById('bi-copy').addEventListener('click', function() {
+  const tier = document.getElementById('bi-tier').textContent;
+  const cost = document.getElementById('bi-cost').textContent;
+  const note = document.getElementById('bi-note').textContent;
+  copyToClipboard(
+    'Power BI Licensing Recommendation\nTier: ' + tier +
+    '\nEst. monthly cost: ' + cost + '\n' + note,
+    this
+  );
+});
+
 calcBI();
 </script>
 </main>

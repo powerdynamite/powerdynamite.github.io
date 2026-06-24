@@ -124,6 +124,36 @@
           </select>
         </div>
       </div>
+      <details class="calc-advanced" id="cs-advanced">
+        <summary>Advanced options <svg class="calc-advanced-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6,9 12,15 18,9"/></svg></summary>
+        <div class="calc-advanced-body">
+          <p class="calc-advanced-hint">Tune these to get closer to your real-world scenario.</p>
+          <div class="calc-grid">
+            <div class="calc-field">
+              <label class="calc-label" for="cs-peak">Peak usage multiplier <span class="calc-hint">busy periods</span></label>
+              <div class="calc-range-wrap">
+                <input class="calc-range" type="range" id="cs-peak" min="1" max="3" step="0.1" value="1">
+                <span class="calc-range-val" id="cs-peak-val">1.0×</span>
+              </div>
+            </div>
+            <div class="calc-field">
+              <label class="calc-label" for="cs-deflect">Deflection rate <span class="calc-hint">% resolved without human</span></label>
+              <div class="calc-range-wrap">
+                <input class="calc-range" type="range" id="cs-deflect" min="0" max="80" step="5" value="0">
+                <span class="calc-range-val" id="cs-deflect-val">0%</span>
+              </div>
+            </div>
+            <div class="calc-field">
+              <label class="calc-label" for="cs-channel">Channel mix</label>
+              <select class="calc-select" id="cs-channel">
+                <option value="1" selected>Web / Teams (1× messages)</option>
+                <option value="1.5">Mixed Web + Voice</option>
+                <option value="3">Primarily Voice (3× messages)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </details>
       <div class="calc-result" id="cs-result">
         <div class="calc-result-item">
           <div class="calc-result-label">Messages / mo</div>
@@ -182,37 +212,83 @@ const MULTIPLIER = { classic: 1, generative: 2, plugin: 3 };
 const CS_DEFAULTS = [{id:'cs-users',value:200},{id:'cs-sessions',value:8},{id:'cs-turns',value:5}];
 function fmt(n) { if(n>=1000000)return(n/1000000).toFixed(1)+'M'; if(n>=1000)return(n/1000).toFixed(1)+'k'; return n.toLocaleString(); }
 function calcCS() {
-  const users=parseInt(document.getElementById('cs-users').value)||0;
-  const sessions=parseInt(document.getElementById('cs-sessions').value)||0;
-  const turns=parseInt(document.getElementById('cs-turns').value)||0;
-  const type=document.getElementById('cs-type').value;
-  const included=parseInt(document.getElementById('cs-license').value)||0;
-  const currency=document.getElementById('cs-currency').value;
-  const msgs=users*sessions*turns*MULTIPLIER[type];
-  const overage=Math.max(0,msgs-included);
-  const cost=overage*PAYG_RATE[currency];
-  const sym=CURRENCY_SYM[currency];
-  document.getElementById('cs-msgs').textContent=fmt(msgs);
-  document.getElementById('cs-included').textContent=fmt(included);
-  document.getElementById('cs-overage').textContent=fmt(overage);
-  document.getElementById('cs-cost').textContent=overage===0?'Within capacity':sym+cost.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
-  const noteText=overage>0?`You need ${fmt(overage)} additional messages (${sym}${cost.toFixed(2)}/mo PAYG). Consider an extra Tenant licence at ${sym==='$'?'$200':'~'+sym+'165'}/mo for ${fmt(50000)} msgs.`:`Your ${fmt(included)} included messages cover your estimate with ${fmt(included-msgs)} headroom.`;
-  document.getElementById('cs-note').textContent=noteText;
-  const headroom=included>0?(included-msgs)/included:1;
-  const status=overage>0?'danger':headroom<0.2?'warn':'ok';
-  setResultStatus(document.getElementById('cs-result'),status);
+  const users    = parseInt(document.getElementById('cs-users').value)    || 0;
+  const sessions = parseInt(document.getElementById('cs-sessions').value) || 0;
+  const turns    = parseInt(document.getElementById('cs-turns').value)    || 0;
+  const type     = document.getElementById('cs-type').value;
+  const included = parseInt(document.getElementById('cs-license').value)  || 0;
+  const currency = document.getElementById('cs-currency').value;
+
+  // advanced
+  const peak     = parseFloat(document.getElementById('cs-peak').value)    || 1;
+  const deflect  = parseFloat(document.getElementById('cs-deflect').value) || 0;
+  const channel  = parseFloat(document.getElementById('cs-channel').value) || 1;
+
+  const rawMsgs   = users * sessions * turns * MULTIPLIER[type];
+  const peakMsgs  = rawMsgs * peak;
+  const deflected = peakMsgs * (deflect / 100);
+  const msgs      = Math.round((peakMsgs - deflected) * channel);
+
+  const overage = Math.max(0, msgs - included);
+  const cost    = overage * PAYG_RATE[currency];
+  const sym     = CURRENCY_SYM[currency];
+
+  document.getElementById('cs-msgs').textContent     = fmt(msgs);
+  document.getElementById('cs-included').textContent = fmt(included);
+  document.getElementById('cs-overage').textContent  = fmt(overage);
+  document.getElementById('cs-cost').textContent     = overage === 0
+    ? 'Within capacity'
+    : sym + cost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  const noteText = overage > 0
+    ? `You need ${fmt(overage)} additional messages (${sym}${cost.toFixed(2)}/mo PAYG). Consider an extra Tenant licence at ${sym === '$' ? '$200' : '~' + sym + '165'}/mo for ${fmt(50000)} msgs.`
+    : `Your ${fmt(included)} included messages cover your estimate with ${fmt(included - msgs)} headroom.`;
+  document.getElementById('cs-note').textContent = noteText;
+
+  const headroom = included > 0 ? (included - msgs) / included : 1;
+  const status   = overage > 0 ? 'danger' : headroom < 0.2 ? 'warn' : 'ok';
+  setResultStatus(document.getElementById('cs-result'), status);
 }
-['cs-users','cs-sessions','cs-turns'].forEach(id=>document.getElementById(id).addEventListener('input',calcCS));
-['cs-type','cs-license','cs-currency'].forEach(id=>document.getElementById(id).addEventListener('change',calcCS));
-document.getElementById('cs-reset').addEventListener('click',function(){resetForm(CS_DEFAULTS);document.getElementById('cs-type').value='generative';document.getElementById('cs-license').value='50000';document.getElementById('cs-currency').value='USD';calcCS();});
-document.getElementById('cs-copy').addEventListener('click',function(){
-  var msgs=document.getElementById('cs-msgs').textContent;
-  var included=document.getElementById('cs-included').textContent;
-  var overage=document.getElementById('cs-overage').textContent;
-  var cost=document.getElementById('cs-cost').textContent;
-  var note=document.getElementById('cs-note').textContent;
-  copyToClipboard('Copilot Studio Message Estimate\nMessages/mo: '+msgs+'\nIncluded: '+included+'\nOverage: '+overage+'\nEst. PAYG cost: '+cost+'\n'+note,this);
+
+['cs-users','cs-sessions','cs-turns'].forEach(id => document.getElementById(id).addEventListener('input', calcCS));
+['cs-type','cs-license','cs-currency','cs-channel'].forEach(id => document.getElementById(id).addEventListener('change', calcCS));
+
+// range live labels
+document.getElementById('cs-peak').addEventListener('input', function() {
+  document.getElementById('cs-peak-val').textContent = parseFloat(this.value).toFixed(1) + '×';
+  calcCS();
 });
+document.getElementById('cs-deflect').addEventListener('input', function() {
+  document.getElementById('cs-deflect-val').textContent = this.value + '%';
+  calcCS();
+});
+
+document.getElementById('cs-reset').addEventListener('click', function() {
+  resetForm(CS_DEFAULTS);
+  document.getElementById('cs-type').value    = 'generative';
+  document.getElementById('cs-license').value = '50000';
+  document.getElementById('cs-currency').value = 'USD';
+  // reset advanced
+  document.getElementById('cs-peak').value    = 1;   document.getElementById('cs-peak-val').textContent    = '1.0×';
+  document.getElementById('cs-deflect').value = 0;   document.getElementById('cs-deflect-val').textContent = '0%';
+  document.getElementById('cs-channel').value = '1';
+  calcCS();
+});
+
+document.getElementById('cs-copy').addEventListener('click', function() {
+  const msgs     = document.getElementById('cs-msgs').textContent;
+  const included = document.getElementById('cs-included').textContent;
+  const overage  = document.getElementById('cs-overage').textContent;
+  const cost     = document.getElementById('cs-cost').textContent;
+  const note     = document.getElementById('cs-note').textContent;
+  copyToClipboard(
+    'Copilot Studio Message Estimate\n' +
+    'Messages/mo: ' + msgs + '\nIncluded: ' + included +
+    '\nOverage: ' + overage + '\nEst. PAYG cost: ' + cost + '\n' + note,
+    this
+  );
+});
+
 calcCS();
 </script>
 </main>

@@ -128,6 +128,32 @@
           </select>
         </div>
       </div>
+      <details class="calc-advanced" id="pa-advanced">
+        <summary>Advanced options <svg class="calc-advanced-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6,9 12,15 18,9"/></svg></summary>
+        <div class="calc-advanced-body">
+          <p class="calc-advanced-hint">Failed runs still count against your quota. Parallel branches multiply action counts.</p>
+          <div class="calc-grid">
+            <div class="calc-field">
+              <label class="calc-label" for="pa-retry">Failure / retry rate <span class="calc-hint">% of runs that fail and retry</span></label>
+              <div class="calc-range-wrap">
+                <input class="calc-range" type="range" id="pa-retry" min="0" max="30" step="1" value="0">
+                <span class="calc-range-val" id="pa-retry-val">0%</span>
+              </div>
+            </div>
+            <div class="calc-field">
+              <label class="calc-label" for="pa-bizdays">Business days only?</label>
+              <select class="calc-select" id="pa-bizdays">
+                <option value="1" selected>No — runs 7 days/week</option>
+                <option value="0.714">Yes — weekdays only (÷1.4)</option>
+              </select>
+            </div>
+            <div class="calc-field">
+              <label class="calc-label" for="pa-branches">Avg parallel branches <span class="calc-hint">per flow run</span></label>
+              <input class="calc-input" type="number" id="pa-branches" value="1" min="1" max="20">
+            </div>
+          </div>
+        </div>
+      </details>
       <div class="calc-result" id="pa-result">
         <div class="calc-result-item">
           <div class="calc-result-label">Runs / mo</div>
@@ -175,39 +201,96 @@
 
 <script src="js/tool-utils.js"></script>
 <script>
-function fmt(n){if(n>=1000000)return(n/1000000).toFixed(1)+'M';if(n>=1000)return(n/1000).toFixed(1)+'k';return n.toLocaleString();}
-function calcPA() {
-  const flows=parseInt(document.getElementById('pa-flows').value)||0;
-  const trigger=parseInt(document.getElementById('pa-trigger').value)||0;
-  const actions=parseInt(document.getElementById('pa-actions').value)||0;
-  const cap=parseInt(document.getElementById('pa-licence').value)||0;
-  const rpa=document.getElementById('pa-rpa').value;
-  const premium=document.getElementById('pa-premium').value;
-  const runs=flows*trigger;
-  const actTotal=runs*actions;
-  document.getElementById('pa-runs').textContent=fmt(runs);
-  document.getElementById('pa-act').textContent=fmt(actTotal);
-  let rec='',note='',status='ok';
-  if(rpa==='unattended'){rec='Process + Unattended RPA';note='Unattended RPA requires a Process licence per flow plus the Unattended RPA add-on ($150/bot/mo).';status='warn';}
-  else if(rpa==='attended'){rec='Per-User + RPA add-on';note='Attended RPA requires the Per-User with RPA plan ($40/user/mo).';status='warn';}
-  else if(runs>cap){rec=runs>250000?'Multiple Process licences':'Process licence';note=`Your ${fmt(runs)} runs/mo exceed the ${fmt(cap)} cap. A Process licence ($150/mo) covers one automated flow.`;status='danger';}
-  else if(premium==='yes'&&cap===6000){rec='Per-User Plan required';note='Premium connectors require at minimum a Per-User Power Automate plan ($15/user/mo).';status='warn';}
-  else{rec='Current licence sufficient';note=`Your ${fmt(runs)} runs/mo fit within the ${fmt(cap)} cap with ${fmt(cap-runs)} headroom.`;status='ok';}
-  document.getElementById('pa-rec').textContent=rec;
-  document.getElementById('pa-note').textContent=note;
-  setResultStatus(document.getElementById('pa-result'),status);
+function fmt(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000)    return (n / 1000).toFixed(1) + 'k';
+  return n.toLocaleString();
 }
-const PA_DEFAULTS=[{id:'pa-flows',value:10},{id:'pa-actions',value:8}];
-['pa-flows','pa-actions'].forEach(id=>document.getElementById(id).addEventListener('input',calcPA));
-['pa-trigger','pa-licence','pa-rpa','pa-premium'].forEach(id=>document.getElementById(id).addEventListener('change',calcPA));
-document.getElementById('pa-reset').addEventListener('click',function(){resetForm(PA_DEFAULTS);document.getElementById('pa-trigger').value='150';document.getElementById('pa-licence').value='15000';document.getElementById('pa-rpa').value='no';document.getElementById('pa-premium').value='no';calcPA();});
-document.getElementById('pa-copy').addEventListener('click',function(){
-  var runs=document.getElementById('pa-runs').textContent;
-  var act=document.getElementById('pa-act').textContent;
-  var rec=document.getElementById('pa-rec').textContent;
-  var note=document.getElementById('pa-note').textContent;
-  copyToClipboard('Power Automate Flow Run Estimate\nRuns/mo: '+runs+'\nActions/mo: '+act+'\nLicence needed: '+rec+'\n'+note,this);
+
+function calcPA() {
+  const flows   = parseInt(document.getElementById('pa-flows').value)   || 0;
+  const trigger = parseInt(document.getElementById('pa-trigger').value) || 0;
+  const actions = parseInt(document.getElementById('pa-actions').value) || 0;
+  const cap     = parseInt(document.getElementById('pa-licence').value) || 0;
+  const rpa     = document.getElementById('pa-rpa').value;
+  const premium = document.getElementById('pa-premium').value;
+
+  // advanced
+  const retryPct  = parseFloat(document.getElementById('pa-retry').value)   || 0;
+  const bizFactor = parseFloat(document.getElementById('pa-bizdays').value) || 1;
+  const branches  = parseInt(document.getElementById('pa-branches').value)  || 1;
+
+  const baseRuns    = flows * trigger * bizFactor;
+  const retryRuns   = baseRuns * (retryPct / 100);
+  const runs        = Math.round(baseRuns + retryRuns);
+  const actTotal    = Math.round(runs * actions * branches);
+
+  document.getElementById('pa-runs').textContent = fmt(runs);
+  document.getElementById('pa-act').textContent  = fmt(actTotal);
+
+  let rec = '', note = '', status = 'ok';
+  if (rpa === 'unattended') {
+    rec = 'Process + Unattended RPA';
+    note = 'Unattended RPA requires a Process licence per flow plus the Unattended RPA add-on ($150/bot/mo).';
+    status = 'warn';
+  } else if (rpa === 'attended') {
+    rec = 'Per-User + RPA add-on';
+    note = 'Attended RPA requires the Per-User with RPA plan ($40/user/mo).';
+    status = 'warn';
+  } else if (runs > cap) {
+    rec = runs > 250000 ? 'Multiple Process licences' : 'Process licence';
+    note = `Your ${fmt(runs)} runs/mo exceed the ${fmt(cap)} cap. A Process licence ($150/mo) covers one automated flow.`;
+    status = 'danger';
+  } else if (premium === 'yes' && cap === 6000) {
+    rec = 'Per-User Plan required';
+    note = 'Premium connectors require at minimum a Per-User Power Automate plan ($15/user/mo).';
+    status = 'warn';
+  } else {
+    rec = 'Current licence sufficient';
+    note = `Your ${fmt(runs)} runs/mo fit within the ${fmt(cap)} cap with ${fmt(cap - runs)} headroom.${retryPct > 0 ? ' Includes ' + fmt(Math.round(retryRuns)) + ' estimated retry runs.' : ''}`;
+    status = 'ok';
+  }
+
+  document.getElementById('pa-rec').textContent  = rec;
+  document.getElementById('pa-note').textContent = note;
+  setResultStatus(document.getElementById('pa-result'), status);
+}
+
+const PA_DEFAULTS = [{ id: 'pa-flows', value: 10 }, { id: 'pa-actions', value: 8 }, { id: 'pa-branches', value: 1 }];
+['pa-flows','pa-actions','pa-branches'].forEach(id =>
+  document.getElementById(id).addEventListener('input', calcPA));
+['pa-trigger','pa-licence','pa-rpa','pa-premium','pa-bizdays'].forEach(id =>
+  document.getElementById(id).addEventListener('change', calcPA));
+
+document.getElementById('pa-retry').addEventListener('input', function() {
+  document.getElementById('pa-retry-val').textContent = this.value + '%';
+  calcPA();
 });
+
+document.getElementById('pa-reset').addEventListener('click', function() {
+  resetForm(PA_DEFAULTS);
+  document.getElementById('pa-trigger').value  = '150';
+  document.getElementById('pa-licence').value  = '15000';
+  document.getElementById('pa-rpa').value      = 'no';
+  document.getElementById('pa-premium').value  = 'no';
+  document.getElementById('pa-bizdays').value  = '1';
+  document.getElementById('pa-retry').value    = 0;
+  document.getElementById('pa-retry-val').textContent = '0%';
+  calcPA();
+});
+
+document.getElementById('pa-copy').addEventListener('click', function() {
+  const runs = document.getElementById('pa-runs').textContent;
+  const act  = document.getElementById('pa-act').textContent;
+  const rec  = document.getElementById('pa-rec').textContent;
+  const note = document.getElementById('pa-note').textContent;
+  copyToClipboard(
+    'Power Automate Flow Run Estimate\nRuns/mo: ' + runs +
+    '\nActions/mo: ' + act + '\nLicence needed: ' + rec + '\n' + note,
+    this
+  );
+});
+
 calcPA();
 </script>
 </main>
