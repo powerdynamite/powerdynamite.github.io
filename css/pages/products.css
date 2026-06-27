@@ -105,6 +105,46 @@
   display: flex; align-items: center; gap: 0.2rem;
 }
 
+/* ── Coming soon card variant ───────────────────────────────── */
+.product-badge--soon {
+  background: rgba(168,85,247,.08);
+  border-color: rgba(168,85,247,.3);
+  color: #7c3aed;
+}
+
+.product-card--soon {
+  opacity: 0.82;
+  border-style: dashed;
+}
+.product-card--soon:hover {
+  opacity: 1;
+  border-style: dashed;
+  border-color: var(--border2);
+  transform: none;
+  box-shadow: none;
+}
+
+.product-card-link--muted {
+  color: var(--muted2);
+  font-size: 0.74rem; font-weight: 500;
+}
+
+.product-soon-notify {
+  display: inline-flex; align-items: center;
+  font-size: 0.74rem; font-weight: 700;
+  color: #7c3aed;
+  background: rgba(168,85,247,.08);
+  border: 1px solid rgba(168,85,247,.3);
+  border-radius: var(--radius-full);
+  padding: 0.2rem 0.65rem;
+  text-decoration: none;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+.product-soon-notify:hover {
+  background: rgba(168,85,247,.16);
+  color: #6d28d9;
+}
+
 /* ── Consulting tiers ───────────────────────────────────────── */
 .consulting-grid {
   display: grid;
