@@ -4,7 +4,8 @@
 
 
 /* ── Page padding ────────────────────────────────────────── */
-.home-page { padding: 2rem 1.25rem 5rem; }
+.home-page { padding: 0 1.25rem 5rem; }
+.home-page .wrap { margin-top: 2rem; }
 
 
 /* ── Header ──────────────────────────────────────────────── */

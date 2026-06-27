@@ -73,14 +73,6 @@
 
 <div class="wizard-wrap">
 
-  <div class="lp-restore-banner" id="lpRestoreBanner" style="display:none; background:var(--amber-lo); border:1px solid rgba(217,119,6,.25); border-radius:var(--radius-md); padding:0.75rem 1rem; margin-bottom:1rem; font-size:0.83rem; color:var(--text); display:flex; align-items:center; justify-content:space-between; gap:0.75rem; flex-wrap:wrap;">
-    <span>You have a saved session — restore it?</span>
-    <div style="display:flex;gap:0.5rem;">
-      <button class="copy-btn" id="lpRestoreYes">Restore</button>
-      <button class="calc-reset-btn" id="lpRestoreNo">Discard</button>
-    </div>
-  </div>
-
   <div class="wiz-progress">
     <div class="wiz-step active" id="wiz-step-1"><div class="wiz-step-num">1</div><span class="wiz-step-label">What you're building</span></div>
     <div class="wiz-step-connector" id="wiz-conn-1"></div>
@@ -121,11 +113,13 @@
     <div class="wiz-card">
       <div class="wiz-card-title">Build your team</div>
       <div class="wiz-card-sub">Set how many people fill each role. Swap the license tier from the dropdown if you want a cheaper or richer option, and enter any seats you <strong>already own</strong> so we only cost the net-new licenses.</div>
-      <div class="calc-actions" style="margin-bottom:0.5rem;">
-        <span style="font-size:0.72rem;color:var(--muted2);font-weight:700;text-transform:uppercase;letter-spacing:0.8px;">Team preset:</span>
-        <button class="copy-btn" id="preset-small">Small (1–10)</button>
-        <button class="copy-btn" id="preset-medium">Medium (10–50)</button>
-        <button class="copy-btn" id="preset-large">Large (50+)</button>
+      <div style="margin-bottom:1rem;">
+        <div style="font-size:0.72rem;color:var(--muted2);font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:0.4rem;">Team size preset</div>
+        <div class="lp-preset-group" id="teamPresets">
+          <button class="lp-preset-btn" id="preset-small" data-preset="small">Small <span>1–10</span></button>
+          <button class="lp-preset-btn lp-preset-btn--active" id="preset-medium" data-preset="medium">Medium <span>10–50</span></button>
+          <button class="lp-preset-btn" id="preset-large" data-preset="large">Large <span>50+</span></button>
+        </div>
       </div>
       <div id="rolesWrap"></div>
     </div>
@@ -979,9 +973,12 @@ function applyPreset(multiplier) {
 }
 
 document.addEventListener('click', function(e) {
-  if (e.target.id === 'preset-small')  { applyPreset(0.25); return; }
-  if (e.target.id === 'preset-medium') { applyPreset(1);    return; }
-  if (e.target.id === 'preset-large')  { applyPreset(3);    return; }
+  var btn = e.target.closest('[data-preset]');
+  if (!btn) return;
+  document.querySelectorAll('#teamPresets .lp-preset-btn').forEach(b => b.classList.remove('lp-preset-btn--active'));
+  btn.classList.add('lp-preset-btn--active');
+  var mult = btn.dataset.preset === 'small' ? 0.25 : btn.dataset.preset === 'large' ? 3 : 1;
+  applyPreset(mult);
 });
 
 /* ── localStorage save/restore ──────────────────────────────────────────── */
@@ -1016,23 +1013,14 @@ document.addEventListener('change', function() {
 (function checkRestore() {
   var saved;
   try { saved = loadState('license-planner'); } catch(e) { return; }
-  var banner = document.getElementById('lpRestoreBanner');
-  if (!saved || !banner) return;
-  banner.style.display = 'flex';
-  document.getElementById('lpRestoreYes').addEventListener('click', function() {
-    banner.style.display = 'none';
-    if (saved.base)      wiz.baseLicense = saved.base;
-    if (saved.solutions) wiz.solutions   = new Set(saved.solutions);
-    if (saved.roles)     wiz.roleState   = saved.roles;
-    if (saved.shared)    wiz.shared      = saved.shared;
-    renderBase();
-    renderSolutions();
-    document.getElementById('step1Next').disabled = wiz.solutions.size === 0;
-  });
-  document.getElementById('lpRestoreNo').addEventListener('click', function() {
-    banner.style.display = 'none';
-    try { localStorage.removeItem('license-planner'); } catch(e) {}
-  });
+  if (!saved) return;
+  if (saved.base)      wiz.baseLicense = saved.base;
+  if (saved.solutions) wiz.solutions   = new Set(saved.solutions);
+  if (saved.roles)     wiz.roleState   = saved.roles;
+  if (saved.shared)    wiz.shared      = saved.shared;
+  renderBase();
+  renderSolutions();
+  document.getElementById('step1Next').disabled = wiz.solutions.size === 0;
 })();
 </script>
 </main>

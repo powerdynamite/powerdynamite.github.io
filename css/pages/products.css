@@ -1,0 +1,186 @@
+/* =============================================================
+   PRODUCTS PAGE
+   ============================================================= */
+
+.products-page { padding: 0 0 5rem; background: var(--bg); }
+
+/* ── Wrap ───────────────────────────────────────────────────── */
+.products-wrap {
+  max-width: 920px;
+  margin: 2.5rem auto;
+  padding: 0 1.25rem;
+}
+
+/* ── Section headings ───────────────────────────────────────── */
+.products-section-head {
+  margin: 3rem 0 1.25rem;
+  display: flex; align-items: baseline; gap: 0.75rem;
+}
+.products-section-head:first-child { margin-top: 0; }
+
+.products-section-title {
+  font-size: 1rem; font-weight: 800; color: var(--text); letter-spacing: -0.3px;
+}
+.products-section-sub {
+  font-size: 0.8rem; color: var(--muted);
+}
+
+/* ── Product grid ───────────────────────────────────────────── */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+/* ── Product card ───────────────────────────────────────────── */
+.product-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.4rem;
+  display: flex; flex-direction: column; gap: 0.75rem;
+  transition: border-color var(--transition-fast), transform var(--transition-mid), box-shadow var(--transition-mid);
+  text-decoration: none; color: inherit;
+}
+.product-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0,120,212,.10);
+}
+
+.product-card-top {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem;
+}
+
+.product-card-icon {
+  width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+}
+.product-card-icon img {
+  width: 100%; height: 100%; border-radius: inherit; display: block; object-fit: cover;
+}
+
+.product-card-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+.product-badge {
+  display: inline-flex; align-items: center;
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase;
+  padding: 0.18rem 0.55rem; border-radius: var(--radius-full);
+  border: 1px solid;
+}
+.product-badge--free  { background: var(--green-lo);   border-color: rgba(22,163,74,.35); color: var(--green); }
+.product-badge--open  { background: var(--accent-lo);  border-color: var(--accent-mid);   color: var(--accent); }
+.product-badge--tool  { background: rgba(168,85,247,.08); border-color: rgba(168,85,247,.3); color: #7c3aed; }
+.product-badge--skill { background: rgba(14,165,233,.08); border-color: rgba(14,165,233,.3); color: #0284c7; }
+
+.product-card-name {
+  font-size: 0.97rem; font-weight: 800; color: var(--text); letter-spacing: -0.3px;
+  line-height: 1.3;
+}
+.product-card-desc {
+  font-size: 0.8rem; color: var(--muted); line-height: 1.6; flex: 1;
+}
+
+.product-card-tags {
+  display: flex; gap: 0.35rem; flex-wrap: wrap; margin-top: 0.1rem;
+}
+.product-tag {
+  font-size: 0.68rem; color: var(--muted2); background: var(--card2);
+  border: 1px solid var(--border); border-radius: var(--radius-full);
+  padding: 0.15rem 0.55rem;
+}
+
+.product-card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 0.75rem; border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+.product-card-link {
+  font-size: 0.76rem; font-weight: 600; color: var(--accent);
+  display: flex; align-items: center; gap: 0.3rem;
+}
+.product-card-stars {
+  font-size: 0.74rem; color: var(--muted2);
+  display: flex; align-items: center; gap: 0.2rem;
+}
+
+/* ── Consulting tiers ───────────────────────────────────────── */
+.consulting-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+@media (max-width: 680px) { .consulting-grid { grid-template-columns: 1fr; } }
+
+.consulting-card {
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1.4rem;
+  display: flex; flex-direction: column; gap: 0.6rem;
+  position: relative;
+}
+.consulting-card--featured {
+  border-color: var(--accent);
+  background: var(--accent-lo);
+}
+.consulting-card--featured::before {
+  content: 'Most popular';
+  position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+  background: var(--accent); color: #fff;
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+  padding: 0.2rem 0.7rem; border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
+.consulting-tier { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted2); }
+.consulting-price {
+  font-size: 1.6rem; font-weight: 800; color: var(--text); letter-spacing: -1px;
+  line-height: 1;
+}
+.consulting-price span { font-size: 0.8rem; font-weight: 400; color: var(--muted); }
+.consulting-name { font-size: 0.9rem; font-weight: 700; color: var(--text); }
+.consulting-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.55; }
+
+.consulting-features { list-style: none; display: flex; flex-direction: column; gap: 0.45rem; margin-top: 0.25rem; flex: 1; }
+.consulting-features li {
+  font-size: 0.78rem; color: var(--text);
+  display: flex; align-items: flex-start; gap: 0.45rem; line-height: 1.4;
+}
+.consulting-features li::before {
+  content: '✓'; color: var(--success); font-weight: 700; font-size: 0.72rem; flex-shrink: 0; margin-top: 0.1rem;
+}
+
+.consulting-cta {
+  display: block; text-align: center;
+  margin-top: 1rem; padding: 0.55rem 1rem;
+  border-radius: var(--radius-md); font-size: 0.82rem; font-weight: 700;
+  text-decoration: none;
+  border: 1.5px solid var(--border2); color: var(--muted);
+  transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
+}
+.consulting-cta:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-lo); }
+.consulting-card--featured .consulting-cta {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+}
+.consulting-card--featured .consulting-cta:hover { opacity: 0.9; }
+
+/* ── Free tools callout ─────────────────────────────────────── */
+.products-free-callout {
+  margin-top: 3rem;
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1.4rem 1.6rem;
+  display: flex; align-items: center; justify-content: space-between; gap: 1.25rem;
+  flex-wrap: wrap;
+}
+.products-free-callout-body { flex: 1; }
+.products-free-callout-title { font-size: 0.95rem; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+.products-free-callout-desc { font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; line-height: 1.5; }
+.products-free-callout-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: var(--card); border: 1.5px solid var(--border2);
+  border-radius: var(--radius-md); padding: 0.5rem 1.1rem;
+  font-size: 0.82rem; font-weight: 700; color: var(--text);
+  text-decoration: none; white-space: nowrap;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+.products-free-callout-btn:hover { border-color: var(--accent); color: var(--accent); }

@@ -36,6 +36,7 @@
     + '<div class="site-nav-links">'
     +   '<a href="index.html"    class="site-nav-link' + lnk('profile')  + '">Profile</a>'
     +   '<a href="articles.html" class="site-nav-link' + lnk('articles') + '">Articles</a>'
+    +   '<a href="products.html" class="site-nav-link' + lnk('products') + '">Products</a>'
     + '</div>'
 
     /* right cluster: tools dropdown + contact */
