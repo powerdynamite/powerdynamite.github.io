@@ -134,6 +134,93 @@ const projects = {
     tech: ['Azure Functions', 'Azure Blob Storage', 'Azure AI Search', 'Copilot Studio', 'SharePoint', 'Microsoft Graph API', 'App Registration', 'Certificate Auth', 'RAG Pipeline', 'Azure Resource Manager']
   },
 
+  /* ── Products page entries ─────────────────────────────── */
+
+  prod_formengine: {
+    tag: { text: 'Solution Accelerator · Mature & Active', cls: 'badge--green' },
+    title: 'Configurable Form Engine',
+    subtitle: 'Creator · Power Platform Developer',
+    overview: 'A Power Platform open-source accelerator that solves a real enterprise pain point — the need to change form structures in Dataverse without creating new solution versions or deploying code. The engine lets administrators define, version, and publish dynamic forms entirely through configuration.',
+    highlights: [
+      'Metadata-driven form rendering built on Canvas Apps and Dataverse — fields, sections, validations, and layouts are stored as config records, not hardcoded in the app.',
+      'Supports field-level configuration including data type, label, placeholder, required rules, conditional visibility logic, and display order — manageable by non-developers.',
+      'Form versioning allows multiple versions to coexist — enabling A/B testing, gradual rollouts, and safe changes without breaking existing submissions.',
+      'Designed for reuse across entity types — the same engine renders onboarding forms, inspection forms, survey forms, or any structured data entry form in a D365 environment.',
+      'Addresses a genuine gap in Power Platform where form structure changes typically require developer intervention and solution deployments.',
+      'Published on GitHub — documented for community use and actively maintained with improvements from real-world enterprise usage patterns.'
+    ],
+    tech: ['Canvas Apps', 'Dataverse', 'Power Automate', 'Model-Driven Apps', 'Power Fx', 'JSON Config', 'Open Source'],
+    github: 'https://github.com/powerdynamite/configurable-form-engine'
+  },
+
+  prod_auditinsights: {
+    tag: { text: 'Solution Accelerator · Open Source', cls: 'badge--green' },
+    title: 'Dataverse Audit Insights',
+    subtitle: 'Power BI Developer · Power Apps Builder',
+    overview: 'Turns the Dataverse audit table into an active governance and adoption intelligence layer — a 4-page Power BI dashboard plus a Canvas App for record-level diff and restore. Free stack only (Power BI + Dataverse + Power Apps), portable across environments via a single parameter. The audit table is not exposed via the standard Dataverse connector so the model uses the Web API OData endpoint directly.',
+    highlights: [
+      '4-page Power BI report — User Activity, Tables, Trends, and Compliance — sourced from the Dataverse Web API (/api/data/v9.2/audits) with a parameterised environment URL for easy redeployment.',
+      'Star schema built in Power Query — changedata JSON is parsed and shaped into a clean semantic model with DAX measures for all key governance metrics.',
+      'Canvas App for record-level restore — uses the RetrieveRecordChangeHistory API via a custom connector to surface a before/after diff for any audited record and enable selective field restore.',
+      'Free stack throughout — no premium connectors, no additional licences beyond what a standard Power Platform environment already includes.',
+      'Single-parameter portability — switch the DataverseEnvironmentUrl parameter to point the entire report at any environment.',
+      'Reframes audit logs from a break-glass investigation tool into a continuous operational intelligence feed for Dynamics 365 and Power Platform admins.'
+    ],
+    tech: ['Power BI', 'Dataverse Web API', 'Power Query', 'DAX', 'Canvas Apps', 'Custom Connector', 'RetrieveRecordChangeHistory', 'OData', 'Data Governance', 'Open Source'],
+    github: 'https://github.com/powerdynamite/dataverse-audit-insights'
+  },
+
+  prod_governancehub: {
+    tag: { text: 'Solution Accelerator · Open Source', cls: 'badge--green' },
+    title: 'PP Governance Hub',
+    subtitle: 'Creator · Power Platform Architect',
+    overview: 'A lighter-weight CoE Kit replacement built as a Power Apps Code App with Dataverse plugins. Designed for teams that need governance visibility without the overhead and complexity of the full Microsoft CoE Starter Kit — easier to deploy, easier to customise, and easier to maintain.',
+    highlights: [
+      'Built as a Power Apps Code App (React + TypeScript) giving full UI control — no canvas layout constraints, full component composability, and proper state management.',
+      'Dataverse plugins handle server-side business logic — environment inventory sync, app usage aggregation, connector policy checks, and policy violation flagging.',
+      'Covers the core governance use cases: environment inventory, app and flow ownership tracking, orphaned resource detection, and DLP policy visibility.',
+      'Significantly lighter deployment footprint than the CoE Starter Kit — no heavy solution imports, no managed dependencies, no complex scheduled flow chains.',
+      'Designed to be forked and extended — the Code App architecture makes it straightforward to add new governance views or data sources without breaking existing functionality.',
+      'Open-sourced on GitHub with documentation covering deployment prerequisites, Dataverse schema setup, and plugin registration.'
+    ],
+    tech: ['Power Apps Code App', 'React', 'TypeScript', 'Dataverse', 'C# Plugins', 'Power Platform Admin APIs', 'CoE', 'Governance', 'Open Source'],
+    github: 'https://github.com/powerdynamite/pp-governance-hub'
+  },
+
+  prod_architectskill: {
+    tag: { text: 'Claude Code Skill · Open Source', cls: 'badge--accent' },
+    title: 'Power Platform Architect Skill',
+    subtitle: 'Creator · AI Tool Builder',
+    overview: 'A custom Claude Code skill built to make Power Platform architecture work faster and cheaper with AI. Instead of repeatedly explaining Dataverse patterns, plugin conventions, ALM structures, and Copilot Studio YAML syntax to an AI assistant, this skill pre-loads all that domain knowledge — so you can work at architect speed from the first prompt.',
+    highlights: [
+      'Packages deep Power Platform architect knowledge as a Claude Code skill — covering Dataverse schema design patterns, C# plugin best practices, solution layering strategies, and Custom API conventions.',
+      'Dramatically reduces token usage by eliminating the need to re-explain context in every session — the skill provides the baseline so prompts can be concise and targeted.',
+      'Includes Copilot Studio YAML authoring guidance — topic design, trigger patterns, action configurations, and adaptive card structures built into the skill context.',
+      'Covers ALM pipeline patterns using PAC CLI and the Dataverse Web API — enabling the AI to generate accurate pipeline scripts and deployment automation without trial-and-error.',
+      'Open-sourced on GitHub — any developer using Claude Code can install this skill and immediately gain architecture-level AI assistance on Power Platform work.',
+      'Built using the Claude Code Agent SDK — demonstrates how domain specialists can package their expertise into reusable AI skills for team productivity.'
+    ],
+    tech: ['Claude Code SDK', 'Anthropic Agent SDK', 'Power Platform', 'Dataverse', 'C# Plugins', 'Copilot Studio YAML', 'PAC CLI', 'ALM', 'Open Source'],
+    github: 'https://github.com/powerdynamite/powerplatform-architect-skill'
+  },
+
+  prod_codeappskill: {
+    tag: { text: 'Claude Code Skill · Open Source', cls: 'badge--accent' },
+    title: 'Power Apps Code App Skill',
+    subtitle: 'Creator · AI Tool Builder',
+    overview: 'A production-proven Claude Code skill for building Power Apps Code Apps (React + TypeScript + Vite) with Dataverse. Built from real-world experience developing a full production Code App — every pattern in this skill was discovered the hard way and is now codified so the AI gets it right first time.',
+    highlights: [
+      '15 production-proven patterns covering the most common Code App pitfalls — SDK body-wrapping bugs, lookup field quirks, OData navigation properties, audit table parsing, and more.',
+      'Covers the full Dataverse SDK integration layer — retrieveMultipleRecords, createRecord, updateRecord, and deleteRecord with proper error handling and TypeScript typing.',
+      'Fluent UI v9 component patterns built in — the skill knows how to compose DataGrid, DetailsList, Dialog, Panel, and form controls correctly against Dataverse data shapes.',
+      'Includes a deployment checklist codified from real go-live experience — PCF config, solution packaging, publisher prefix conventions, and App Registration setup.',
+      'Dramatically reduces the back-and-forth of debugging Dataverse connector quirks in a Code App context — the skill front-loads the context the AI needs.',
+      'Open-sourced on GitHub for the Power Platform community — installable as a Claude Code skill in minutes.'
+    ],
+    tech: ['Claude Code SDK', 'Power Apps Code App', 'React', 'TypeScript', 'Vite', 'Dataverse SDK', 'Fluent UI v9', 'PCF', 'OData', 'Open Source'],
+    github: 'https://github.com/powerdynamite/powerapp-code-app-skill'
+  },
+
   alm: {
     tag: { text: 'Power Platform · DevOps', cls: 'badge--rose' },
     title: 'ALM Pipeline Automation — PAC CLI + Dataverse Web API',
