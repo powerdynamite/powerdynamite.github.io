@@ -322,6 +322,86 @@
   margin-bottom: 0.75rem; line-height: 1.5;
 }
 
+/* ── ALM Checklist ───────────────────────────────────────── */
+.alm-progress-row {
+  display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+.alm-progress-bar {
+  flex: 1; min-width: 120px; height: 8px;
+  background: var(--border2); border-radius: var(--radius-full); overflow: hidden;
+}
+.alm-progress-fill {
+  height: 100%; width: 0%; border-radius: var(--radius-full);
+  background: var(--accent); transition: width 0.35s ease;
+}
+.alm-progress-label {
+  font-size: 0.82rem; font-weight: 700; color: var(--accent); min-width: 2.5rem;
+}
+.alm-reset {
+  font-size: 0.78rem; color: var(--muted); cursor: pointer;
+  text-decoration: underline; text-underline-offset: 2px;
+  background: none; border: none; font-family: inherit; padding: 0;
+  transition: color var(--transition-fast);
+}
+.alm-reset:hover { color: var(--rose); }
+
+.alm-cats { display: flex; flex-direction: column; gap: 1.1rem; }
+
+.alm-cat {
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: var(--radius-md); overflow: hidden;
+}
+
+.alm-cat-title {
+  padding: 0.75rem 1rem;
+  background: var(--card); border-bottom: 1px solid var(--border);
+  font-size: 0.9rem; font-weight: 700; color: var(--text);
+  user-select: none;
+}
+.alm-cat-collapsed .alm-cat-title { border-bottom: none; }
+
+.alm-items { padding: 0.4rem 0; }
+
+.alm-item {
+  display: flex; align-items: flex-start; gap: 0.85rem;
+  padding: 0.6rem 1rem; cursor: pointer;
+  transition: background var(--transition-fast);
+  border-bottom: 1px solid var(--border);
+}
+.alm-item:last-child { border-bottom: none; }
+.alm-item:hover { background: rgba(0,120,212,.04); }
+
+.alm-check {
+  width: 18px; height: 18px; border-radius: 5px; flex-shrink: 0;
+  border: 2px solid var(--border2); background: var(--card);
+  margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+  position: relative;
+}
+.alm-item.checked .alm-check {
+  background: var(--accent); border-color: var(--accent);
+}
+.alm-item.checked .alm-check::after {
+  content: '';
+  width: 10px; height: 6px;
+  border-left: 2px solid #fff; border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translateY(-1px);
+  display: block;
+}
+
+.alm-item-text {
+  font-size: 0.85rem; color: var(--text); line-height: 1.5;
+}
+.alm-item.checked .alm-item-text {
+  color: var(--muted2); text-decoration: line-through;
+}
+.alm-item-sub {
+  font-size: 0.75rem; color: var(--muted); margin-top: 0.15rem;
+}
+
+
 /* range slider inputs */
 .calc-range-wrap {
   display: flex; align-items: center; gap: 0.6rem;
