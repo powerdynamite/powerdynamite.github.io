@@ -76,18 +76,23 @@ function renderBar(fillEl, pct) {
  * @param {string} key
  * @param {object} obj
  */
+var STATE_VERSION = 1;
+
 function saveState(key, obj) {
-  try { localStorage.setItem(key, JSON.stringify(obj)); } catch (e) { /* quota or private */ }
+  try { localStorage.setItem(key, JSON.stringify(Object.assign({ _v: STATE_VERSION }, obj))); } catch (e) { /* quota or private */ }
 }
 
 /**
- * Load a state snapshot from localStorage.
+ * Load a state snapshot from localStorage. Returns null if missing or version mismatch.
  * @param {string} key
  * @returns {object|null}
  */
 function loadState(key) {
   try {
     var raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) return null;
+    var parsed = JSON.parse(raw);
+    if (parsed._v !== STATE_VERSION) { localStorage.removeItem(key); return null; }
+    return parsed;
   } catch (e) { return null; }
 }
