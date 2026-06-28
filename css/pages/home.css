@@ -102,7 +102,7 @@
 /* ── Stats ───────────────────────────────────────────────── */
 .stats-grid {
   display: grid; grid-template-columns: 1fr 1fr;
-  gap: var(--sp-3); height: 100%;
+  gap: var(--sp-3);
 }
 .stat {
   background: var(--card2); border: 1px solid var(--border);
@@ -112,12 +112,12 @@
 .stat--accent { border-top-color: var(--accent); }
 .stat--green  { border-top-color: var(--green); }
 .stat--amber  { border-top-color: var(--amber); }
-.stat--sky    { border-top-color: var(--sky); }
+.stat--rose   { border-top-color: var(--rose); }
 
 .stat--accent .stat-num { color: var(--accent); }
 .stat--green  .stat-num { color: var(--green); }
 .stat--amber  .stat-num { color: var(--amber); }
-.stat--sky    .stat-num { color: var(--sky); }
+.stat--rose   .stat-num { color: var(--rose); }
 
 .stat-num { font-size: 1.9rem; font-weight: 800; letter-spacing: -1px; line-height: 1; }
 .stat-lbl { font-size: 0.68rem; color: var(--muted); margin-top: var(--sp-1); letter-spacing: .3px; }
