@@ -32,15 +32,11 @@
     +   '<span class="site-nav-brand-name">Abdul Basit</span>'
     + '</a>'
 
-    /* primary links */
+    /* centred primary links + tools dropdown */
     + '<div class="site-nav-links">'
     +   '<a href="index.html"    class="site-nav-link' + lnk('profile')  + '">Profile</a>'
     +   '<a href="articles.html" class="site-nav-link' + lnk('articles') + '">Articles</a>'
     +   '<a href="products.html" class="site-nav-link' + lnk('products') + '">Products</a>'
-    + '</div>'
-
-    /* right cluster: tools dropdown + contact */
-    + '<div class="site-nav-right">'
     +   '<div class="site-nav-dropdown" id="navToolsDropdown">'
     +     '<button class="site-nav-dropdown-toggle' + lnk('tools') + '" aria-haspopup="true" aria-expanded="false">'
     +       'Tools ' + CHEVRON
@@ -57,7 +53,11 @@
     +       '<a href="alm-checklist.html"    class="site-nav-dropdown-item' + itm('alm-checklist.html')    + '" role="menuitem"><span class="site-nav-dropdown-item-icon">✅</span> ALM Checklist</a>'
     +     '</div>'
     +   '</div>'
-    +   '<a href="contact.html" class="site-nav-link' + lnk('contact') + '">Contact</a>'
+    + '</div>'
+
+    /* right: contact CTA pill */
+    + '<div class="site-nav-right">'
+    +   '<a href="contact.html" class="site-nav-cta' + (active === 'contact' ? ' site-nav-link active' : '') + '">Contact</a>'
     + '</div>'
 
     + '</div>'
