@@ -31,6 +31,7 @@
   --accent-hi: #106ebe;
   --accent-lo: rgba(0,120,212,0.08);
   --accent-mid:rgba(0,120,212,0.22);
+  --accent-text: #0a5c9e; /* darker accent for text on accent-lo/card2 — WCAG AA */
 
   /* ── Semantic colours ──────────────────────────────── */
   --green:     #16a34a;
@@ -277,7 +278,7 @@ img, svg { display: block; }
 }
 
 /* Semantic colour modifiers */
-.badge--accent { background: var(--accent-lo); color: var(--accent);    border: 1px solid var(--accent-mid); }
+.badge--accent { background: var(--accent-lo); color: var(--accent-text); border: 1px solid var(--accent-mid); }
 .badge--green  { background: var(--green-lo);  color: var(--green);     border: 1px solid rgba(22,163,74,.25); }
 .badge--sky    { background: var(--sky-lo);    color: var(--sky);       border: 1px solid rgba(2,132,199,.25); }
 .badge--amber  { background: var(--amber-lo);  color: var(--amber);     border: 1px solid rgba(217,119,6,.25); }
@@ -294,7 +295,7 @@ img, svg { display: block; }
 .page-hero-badge {
   display: inline-flex; align-items: center; gap: 0.45rem;
   background: var(--accent-lo); border: 1px solid var(--accent-mid);
-  color: var(--accent); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px;
+  color: var(--accent-text); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px;
   padding: 0.28rem 0.85rem; border-radius: var(--radius-full);
   margin-bottom: 1rem;
 }
@@ -366,7 +367,7 @@ img, svg { display: block; }
 
 .btn--ghost {
   background: var(--accent-lo);
-  color: var(--accent);
+  color: var(--accent-text);
   border-color: var(--accent-mid);
 }
 .btn--ghost:hover { background: rgba(0,120,212,.18); }
@@ -571,7 +572,7 @@ img, svg { display: block; }
   transition: background var(--transition-fast), color var(--transition-fast);
 }
 .site-nav-link:hover   { background: var(--card2); color: var(--text); }
-.site-nav-link.active  { background: var(--accent-lo); color: var(--accent); font-weight: 600; }
+.site-nav-link.active  { background: var(--accent-lo); color: var(--accent-text); font-weight: 600; }
 
 /* ── Nav dropdown ── */
 .site-nav-dropdown {
@@ -590,7 +591,7 @@ img, svg { display: block; }
 }
 .site-nav-dropdown-toggle:hover,
 .site-nav-dropdown.open .site-nav-dropdown-toggle { background: var(--card2); color: var(--text); }
-.site-nav-dropdown-toggle.active { background: var(--accent-lo); color: var(--accent); font-weight: 600; }
+.site-nav-dropdown-toggle.active { background: var(--accent-lo); color: var(--accent-text); font-weight: 600; }
 .site-nav-dropdown-toggle svg { transition: transform .2s ease; }
 .site-nav-dropdown.open .site-nav-dropdown-toggle svg { transform: rotate(180deg); }
 
@@ -612,8 +613,8 @@ img, svg { display: block; }
   text-decoration: none;
   transition: background var(--transition-fast), color var(--transition-fast);
 }
-.site-nav-dropdown-item:hover { background: var(--accent-lo); color: var(--accent); }
-.site-nav-dropdown-item.active { background: var(--accent-lo); color: var(--accent); font-weight: 600; }
+.site-nav-dropdown-item:hover { background: var(--accent-lo); color: var(--accent-text); }
+.site-nav-dropdown-item.active { background: var(--accent-lo); color: var(--accent-text); font-weight: 600; }
 .site-nav-dropdown-item-icon {
   width: 26px; height: 26px; border-radius: 7px;
   background: var(--accent-lo); display: flex; align-items: center;
