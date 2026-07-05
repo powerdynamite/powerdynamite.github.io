@@ -24,10 +24,7 @@
   <meta name="twitter:image" content="https://powerdynamite.github.io/og-image.svg">
   <link rel="canonical" href="https://powerdynamite.github.io/articles.html">
 
-  <link rel="stylesheet" href="css/tokens.css">
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/core.css">
   <link rel="stylesheet" href="css/pages/articles.css">
 </head>
 <body class="art-page">
@@ -70,6 +67,7 @@
         <div class="article-card-body">
           <div class="article-card-title">Microsoft Scout: Your AI Colleague Has Arrived — and It Already Read Your Emails</div>
           <div class="article-card-desc">The era of reactive AI is over. Microsoft's new always-on agent doesn't wait to be asked.</div>
+          <p class="article-card-summary">Microsoft Scout signals a shift from Copilot-as-assistant to Copilot-as-colleague — an agent that works ambiently in the background instead of waiting for a prompt. For architects, that raises real questions before rollout: what triggers the agent, what data scope it's allowed to read, and how you audit what it acted on. This piece walks through what changes for enterprise governance once AI starts acting without being asked.</p>
           <div class="article-card-meta">
             <span class="article-card-date">Jun 2026</span>
             <span class="article-card-read">Read on Medium →</span>
@@ -82,6 +80,7 @@
         <div class="article-card-body">
           <div class="article-card-title">I Taught My Form Engine to Talk: Configuring Dynamics 365 Forms in Plain English</div>
           <div class="article-card-desc">Part 2 of the Configurable Form Engine story — where config records meet a Copilot.</div>
+          <p class="article-card-summary">The Configurable Form Engine already lets admins define Dynamics 365 form behavior — field visibility, validation, defaults — entirely through Dataverse config records, no JavaScript required. This follow-up adds a Copilot layer on top: describing the form change you want in plain English and having it translate into the same config records the engine already understands. It's a look at what "low-code" actually means once an AI agent is the one writing the configuration.</p>
           <div class="article-card-meta">
             <span class="article-card-date">Jun 13, 2026</span>
             <span class="article-card-read">Read on Medium →</span>
@@ -94,6 +93,7 @@
         <div class="article-card-body">
           <div class="article-card-title">Your CRM Doesn't Need Another Chatbot. It Needs an Agent.</div>
           <div class="article-card-desc">How event-triggered Copilot agents are quietly changing what automation means in Dynamics 365.</div>
+          <p class="article-card-summary">Most "AI in your CRM" pitches are still just a chatbot bolted onto a knowledge base — you ask, it answers. This article makes the case for event-triggered agents instead: automation that reacts to what's actually happening in Dynamics 365 — a stage change, a stale opportunity, a missed SLA — and takes multi-step action on its own. That's the practical difference between AI as a search box and AI as a coworker.</p>
           <div class="article-card-meta">
             <span class="article-card-date">Jun 10, 2026</span>
             <span class="article-card-read">Read on Medium →</span>
@@ -106,6 +106,7 @@
         <div class="article-card-body">
           <div class="article-card-title">Stop Writing Form JavaScript Forever: How a Configurable Form Engine Transforms Dynamics 365</div>
           <div class="article-card-desc">The dirty secret of every Dynamics 365 project: you're rewriting the same JavaScript, over and over again.</div>
+          <p class="article-card-summary">Every Dynamics 365 project reinvents the same form JavaScript — show this field, hide that section, default this value — project after project, client after client. This article breaks down the Configurable Form Engine's approach: moving that logic out of code and into versioned Dataverse configuration, so a form behavior change is a data update, not a deployment.</p>
           <div class="article-card-meta">
             <span class="article-card-date">Jun 9, 2026</span>
             <span class="article-card-read">Read on Medium →</span>
@@ -118,6 +119,7 @@
         <div class="article-card-body">
           <div class="article-card-title">I Built an AI Architect's Second Brain for Power Platform — Here's Why It Starts by Saying "Stop"</div>
           <div class="article-card-desc">Most AI coding tools have the same instinct: you describe what you want, they start building.</div>
+          <p class="article-card-summary">Most AI coding assistants have one instinct: you ask, they build. This article explains why the Power Platform Architect Skill for Claude Code is built to do the opposite first — pushing back with clarifying questions about schema, security roles, and solution layering before generating anything, the way a senior architect would. It's a case for slowing an AI agent down being a feature, not a bug, in Power Platform delivery.</p>
           <div class="article-card-meta">
             <span class="article-card-date">Jun 8, 2026</span>
             <span class="article-card-read">Read on Medium →</span>
@@ -130,6 +132,7 @@
         <div class="article-card-body">
           <div class="article-card-title">Unlocking Context: How MCP Servers Supercharge Microsoft 365 Copilot</div>
           <div class="article-card-desc">Microsoft 365 Copilot is powerful on its own — MCP takes it further by wiring it into your real data.</div>
+          <p class="article-card-summary">Microsoft 365 Copilot is only as useful as the context it can reach. Model Context Protocol (MCP) is Microsoft's answer to that limit — a standard way to wire Copilot into systems it wasn't natively built to see, from internal databases to line-of-business apps. This article breaks down what MCP actually does and where it fits alongside Copilot's existing connectors.</p>
           <div class="article-card-meta">
             <span class="article-card-date">Jul 25, 2025</span>
             <span class="article-card-read">Read on Medium →</span>
@@ -142,6 +145,7 @@
         <div class="article-card-body">
           <div class="article-card-title">Connect to Dataverse with Model Context Protocol (MCP) — Preview</div>
           <div class="article-card-desc">A practical guide to integrating Microsoft Dataverse with Large Language Models via MCP.</div>
+          <p class="article-card-summary">Large language models are only useful against enterprise data if they can query it safely and correctly. This preview walks through connecting Dataverse to an LLM via MCP — what the server needs to expose, how authentication is handled, and where the guardrails belong so a language model can query CRM data without becoming a security hole.</p>
           <div class="article-card-meta">
             <span class="article-card-date">Jul 8, 2025</span>
             <span class="article-card-read">Read on Medium →</span>
@@ -154,6 +158,7 @@
         <div class="article-card-body">
           <div class="article-card-title">Managed Environments in Power Platform: A Developer's Guide to Governance and Lifecycle Management</div>
           <div class="article-card-desc">Everything you need to know about governance and lifecycle management in Power Platform.</div>
+          <p class="article-card-summary">Managed Environments turn on a set of governance controls most Power Platform admins don't fully use — usage insights, sharing limits, weekly digest emails, and pipeline-based deployment. This guide walks through what actually changes when you enable them, and the lifecycle-management decisions that determine whether they help or just add friction.</p>
           <div class="article-card-meta">
             <span class="article-card-date">Jul 8, 2025</span>
             <span class="article-card-read">Read on Medium →</span>
@@ -166,6 +171,7 @@
         <div class="article-card-body">
           <div class="article-card-title">Model Context Protocol (MCP): Microsoft's Standard for AI Integration</div>
           <div class="article-card-desc">How MCP is becoming the de-facto standard for connecting AI models to enterprise data and tools.</div>
+          <p class="article-card-summary">MCP is quickly becoming the common language between AI models and the tools they need to act on — the same role REST APIs played for web services. This article explains why Microsoft is standardizing around it, what a client-server MCP integration actually looks like, and why that matters for anyone building AI agents on the Microsoft stack rather than just chat interfaces.</p>
           <div class="article-card-meta">
             <span class="article-card-date">Jul 4, 2025</span>
             <span class="article-card-read">Read on Medium →</span>
@@ -178,6 +184,7 @@
         <div class="article-card-body">
           <div class="article-card-title">Model-Driven App Copilot: Customization, Capabilities, and Future Enhancements</div>
           <div class="article-card-desc">A deep-dive into what you can and can't customize in the Model-Driven App Copilot experience today.</div>
+          <p class="article-card-summary">The Copilot experience inside Model-Driven Apps is still evolving, and it's not always clear where the customization boundaries actually sit today. This deep-dive covers what you can configure — and what's still locked down — across the current Model-Driven App Copilot experience, so you know what to promise a client before you scope the work.</p>
           <div class="article-card-meta">
             <span class="article-card-date">Jun 30, 2025</span>
             <span class="article-card-read">Read on Medium →</span>

@@ -75,6 +75,7 @@
 .article-card-body          { flex: 1; }
 .article-card-title         { font-size: 0.95rem; font-weight: 700; color: var(--text); line-height: 1.45; margin-bottom: 0.3rem; }
 .article-card-desc          { font-size: 0.8rem; color: var(--muted); line-height: 1.55; }
+.article-card-summary       { font-size: 0.8rem; color: var(--muted); line-height: 1.65; margin-top: 0.6rem; }
 .article-card-meta          { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.5rem; }
 .article-card-date          { font-size: 0.72rem; color: var(--muted2); }
 .article-card-read          { font-size: 0.72rem; font-weight: 600; color: var(--accent); margin-left: auto; display: flex; align-items: center; gap: 0.25rem; }

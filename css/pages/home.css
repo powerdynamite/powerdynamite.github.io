@@ -23,7 +23,7 @@
 .hdr-eyebrow {
   display: inline-flex; align-items: center; gap: var(--sp-2);
   background: var(--accent-lo); border: 1px solid var(--accent-mid);
-  color: var(--accent); font-size: 0.72rem; letter-spacing: 1.8px;
+  color: var(--accent-text); font-size: 0.72rem; letter-spacing: 1.8px;
   text-transform: uppercase; padding: 0.3rem 1rem;
   border-radius: var(--radius-full); margin-bottom: 1.1rem;
 }
@@ -78,12 +78,12 @@
 .id-badge {
   display: inline-flex; align-items: center; gap: var(--sp-2);
   background: var(--accent-lo); border: 1px solid var(--accent-mid);
-  color: var(--accent); font-size: 0.7rem; font-weight: 600;
+  color: var(--accent-text); font-size: 0.7rem; font-weight: 600;
   letter-spacing: .5px; padding: 0.25rem 0.7rem;
   border-radius: var(--radius-sm); margin-bottom: var(--sp-3);
 }
 
-.id-title { font-size: 0.9rem; color: var(--accent); font-weight: 600; margin: 0 0 0.9rem; line-height: 1.5; }
+.id-title { font-size: 0.9rem; color: var(--accent-text); font-weight: 600; margin: 0 0 0.9rem; line-height: 1.5; }
 .id-bio   { font-size: var(--font-size-md); color: var(--muted); line-height: 1.72; margin-bottom: 1.1rem; }
 
 .id-chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
@@ -230,7 +230,7 @@
 .loc-badge {
   margin-top: 0.65rem;
   background: var(--accent-lo); border: 1px solid var(--accent-mid);
-  color: var(--accent); font-size: 0.7rem;
+  color: var(--accent-text); font-size: 0.7rem;
   padding: 0.22rem 0.65rem; border-radius: var(--radius-full);
 }
 
@@ -277,7 +277,7 @@
 /* Clickable project cards */
 .proj-clickable { cursor: pointer; }
 .proj-clickable:hover { border-color: var(--accent); background: rgba(0,120,212,.04); }
-.proj-cta { font-size: 0.73rem; color: var(--accent); margin-top: var(--sp-2); font-weight: 500; }
+.proj-cta { font-size: 0.73rem; color: var(--accent-text); margin-top: var(--sp-2); font-weight: 500; }
 
 
 /* ── Personal projects grid ──────────────────────────────── */
@@ -313,7 +313,7 @@
   gap: var(--sp-2); margin-top: 0.6rem;
 }
 .cert      { background: var(--card2); border: 1px solid var(--border); border-radius: 9px; padding: 0.6rem 0.75rem; }
-.cert-code { font-size: 0.84rem; font-weight: 700; color: var(--accent); }
+.cert-code { font-size: 0.84rem; font-weight: 700; color: var(--accent-text); }
 .cert-name { font-size: 0.73rem; color: var(--muted); margin-top: 0.1rem; line-height: 1.3; }
 
 

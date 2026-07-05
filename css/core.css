@@ -1,4 +1,199 @@
 /* =============================================================
+   CORE  —  bundled tokens + base + layout + components
+   Merged into one file to cut render-blocking requests on every
+   page (was 4 separate <link> tags, always loaded together).
+   ============================================================= */
+
+/* =============================================================
+   DESIGN TOKENS  —  single source of truth
+   Change a value here and it updates everywhere.
+   ============================================================= */
+
+:root {
+
+  /* ── Surfaces ──────────────────────────────────────── */
+  --bg:        #faf9f8;   /* page background — Fluent UI off-white */
+  --surface:   #f3f2f1;   /* slightly darker surface               */
+  --card:      #ffffff;   /* card background — pure white          */
+  --card2:     #f3f2f1;   /* secondary card / inset bg             */
+
+  /* ── Borders ───────────────────────────────────────── */
+  --border:    rgba(0,0,0,0.08);
+  --border2:   rgba(0,0,0,0.15);
+
+  /* ── Text ──────────────────────────────────────────── */
+  --text:      #323130;   /* primary text — Fluent UI near-black   */
+  --muted:     #605e5c;   /* body / secondary text                 */
+  --muted2:    #6e6c6b;   /* placeholder / tertiary text (WCAG AA on card2) */
+
+  /* ── Accent — Microsoft Blue ───────────────────────── */
+  --accent:    #0078d4;
+  --accent-hi: #106ebe;
+  --accent-lo: rgba(0,120,212,0.08);
+  --accent-mid:rgba(0,120,212,0.22);
+  --accent-text: #0a5c9e; /* darker accent for text on accent-lo/card2 — WCAG AA */
+
+  /* ── Semantic colours ──────────────────────────────── */
+  --green:     #16a34a;
+  --green-lo:  rgba(22,163,74,0.10);
+  --amber:     #d97706;
+  --amber-lo:  rgba(217,119,6,0.10);
+  --rose:      #e11d48;
+  --rose-lo:   rgba(225,29,72,0.10);
+  --sky:       #0284c7;
+  --sky-lo:    rgba(2,132,199,0.10);
+
+  /* ── Hero background ───────────────────────────────── */
+  --hero-bg: linear-gradient(135deg, #f0f6ff 0%, #e8f1fb 100%);
+
+  /* ── Extended semantic ──────────────────────────────── */
+  --success:     #107c10;
+  --success-lo:  rgba(16,124,16,0.10);
+  --yellow:      #ffd23f;
+  --yellow-dark: #3d2c00;
+
+  /* ── Brand colours ─────────────────────────────────── */
+  --brand-li:  #0a66c2;   /* LinkedIn                        */
+  --brand-yt:  #ff0000;   /* YouTube                         */
+  --brand-wa:  #25d366;   /* WhatsApp                        */
+  --brand-med: #1c1917;   /* Medium (dark on light bg)       */
+  --brand-gh:  #1c1917;   /* GitHub (dark on light bg)       */
+
+  /* ── Spacing scale ─────────────────────────────────── */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.25rem;
+  --sp-6: 1.5rem;
+  --sp-8: 2rem;
+  --sp-10:2.5rem;
+
+  /* ── Radius ────────────────────────────────────────── */
+  --radius-sm: 6px;
+  --radius-md: 11px;
+  --radius-lg: 18px;
+  --radius-full: 99px;
+
+  /* ── Typography ────────────────────────────────────── */
+  --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-size-xs:  0.65rem;
+  --font-size-sm:  0.78rem;
+  --font-size-md:  0.88rem;
+  --font-size-base: 1rem;
+  --font-size-lg:  1.1rem;
+  --font-size-xl:  1.25rem;
+  --font-size-2xl: 1.9rem;
+
+  /* ── Transitions ───────────────────────────────────── */
+  --transition-fast: .18s ease;
+  --transition-mid:  .25s ease;
+  --transition-drawer: .35s cubic-bezier(.4,0,.2,1);
+}
+
+/* =============================================================
+   BASE  —  reset, body, typography, global animations
+   ============================================================= */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Subtle dot-grid texture */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image: radial-gradient(circle, rgba(0,120,212,0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+a { color: inherit; }
+
+img, svg { display: block; }
+
+/* ── Animations ─────────────────────────────────────────── */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .3; }
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(1);   opacity: .6; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* =============================================================
+   LAYOUT  —  page wrapper, bento grid, responsive breakpoints
+   ============================================================= */
+
+/* ── Page scaffold ──────────────────────────────────────── */
+.page {
+  padding: var(--sp-10) var(--sp-5) 5rem;
+}
+
+.wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Bento grid ─────────────────────────────────────────── */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 0.875rem;
+}
+
+/* Column span helpers */
+.c1  { grid-column: span 1; }
+.c2  { grid-column: span 2; }
+.c3  { grid-column: span 3; }
+.c4  { grid-column: span 4; }
+.c5  { grid-column: span 5; }
+.c6  { grid-column: span 6; }
+.c7  { grid-column: span 7; }
+.c8  { grid-column: span 8; }
+.c9  { grid-column: span 9; }
+.c10 { grid-column: span 10; }
+.c11 { grid-column: span 11; }
+.c12 { grid-column: span 12; }
+
+@media (max-width: 860px) {
+  .c1,.c2,.c3,.c4,.c5,.c6,
+  .c7,.c8,.c9,.c10,.c11,.c12 { grid-column: span 12; }
+}
+
+@media (min-width: 861px) and (max-width: 1060px) {
+  .c4 { grid-column: span 6; }
+  .c5 { grid-column: span 6; }
+  .c7 { grid-column: span 8; }
+  .c8 { grid-column: span 8; }
+}
+
+/* ── Standard section gap ───────────────────────────────── */
+.section-gap { margin-top: var(--sp-10); }
+
+/* ── Footer ─────────────────────────────────────────────── */
+.footer {
+  text-align: center;
+  margin-top: var(--sp-8);
+  font-size: var(--font-size-xs);
+  color: var(--muted2);
+}
+
+/* =============================================================
    COMPONENTS  —  reusable UI pieces used across all pages
    ============================================================= */
 
@@ -83,7 +278,7 @@
 }
 
 /* Semantic colour modifiers */
-.badge--accent { background: var(--accent-lo); color: var(--accent);    border: 1px solid var(--accent-mid); }
+.badge--accent { background: var(--accent-lo); color: var(--accent-text); border: 1px solid var(--accent-mid); }
 .badge--green  { background: var(--green-lo);  color: var(--green);     border: 1px solid rgba(22,163,74,.25); }
 .badge--sky    { background: var(--sky-lo);    color: var(--sky);       border: 1px solid rgba(2,132,199,.25); }
 .badge--amber  { background: var(--amber-lo);  color: var(--amber);     border: 1px solid rgba(217,119,6,.25); }
@@ -100,7 +295,7 @@
 .page-hero-badge {
   display: inline-flex; align-items: center; gap: 0.45rem;
   background: var(--accent-lo); border: 1px solid var(--accent-mid);
-  color: var(--accent); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px;
+  color: var(--accent-text); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px;
   padding: 0.28rem 0.85rem; border-radius: var(--radius-full);
   margin-bottom: 1rem;
 }
@@ -172,7 +367,7 @@
 
 .btn--ghost {
   background: var(--accent-lo);
-  color: var(--accent);
+  color: var(--accent-text);
   border-color: var(--accent-mid);
 }
 .btn--ghost:hover { background: rgba(0,120,212,.18); }
@@ -377,7 +572,7 @@
   transition: background var(--transition-fast), color var(--transition-fast);
 }
 .site-nav-link:hover   { background: var(--card2); color: var(--text); }
-.site-nav-link.active  { background: var(--accent-lo); color: var(--accent); font-weight: 600; }
+.site-nav-link.active  { background: var(--accent-lo); color: var(--accent-text); font-weight: 600; }
 
 /* ── Nav dropdown ── */
 .site-nav-dropdown {
@@ -396,7 +591,7 @@
 }
 .site-nav-dropdown-toggle:hover,
 .site-nav-dropdown.open .site-nav-dropdown-toggle { background: var(--card2); color: var(--text); }
-.site-nav-dropdown-toggle.active { background: var(--accent-lo); color: var(--accent); font-weight: 600; }
+.site-nav-dropdown-toggle.active { background: var(--accent-lo); color: var(--accent-text); font-weight: 600; }
 .site-nav-dropdown-toggle svg { transition: transform .2s ease; }
 .site-nav-dropdown.open .site-nav-dropdown-toggle svg { transform: rotate(180deg); }
 
@@ -418,8 +613,8 @@
   text-decoration: none;
   transition: background var(--transition-fast), color var(--transition-fast);
 }
-.site-nav-dropdown-item:hover { background: var(--accent-lo); color: var(--accent); }
-.site-nav-dropdown-item.active { background: var(--accent-lo); color: var(--accent); font-weight: 600; }
+.site-nav-dropdown-item:hover { background: var(--accent-lo); color: var(--accent-text); }
+.site-nav-dropdown-item.active { background: var(--accent-lo); color: var(--accent-text); font-weight: 600; }
 .site-nav-dropdown-item-icon {
   width: 26px; height: 26px; border-radius: 7px;
   background: var(--accent-lo); display: flex; align-items: center;

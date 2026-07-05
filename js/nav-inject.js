@@ -27,7 +27,7 @@
     + '<div class="site-nav-inner">'
 
     /* brand */
-    + '<a href="index.html" class="site-nav-brand">'
+    + '<a href="index.html" class="site-nav-brand" aria-label="Abdul Basit — Home">'
     +   BRAND_ICON
     +   '<span class="site-nav-brand-name">Abdul Basit</span>'
     + '</a>'
@@ -57,7 +57,7 @@
 
     /* right: contact CTA pill */
     + '<div class="site-nav-right">'
-    +   '<a href="contact.html" class="site-nav-cta' + (active === 'contact' ? ' site-nav-link active' : '') + '">Contact</a>'
+    +   '<a href="contact.html" class="site-nav-cta">Contact</a>'
     + '</div>'
 
     + '</div>'
