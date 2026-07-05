@@ -24,7 +24,7 @@
   /* ── Text ──────────────────────────────────────────── */
   --text:      #323130;   /* primary text — Fluent UI near-black   */
   --muted:     #605e5c;   /* body / secondary text                 */
-  --muted2:    #8a8886;   /* placeholder / tertiary text           */
+  --muted2:    #6e6c6b;   /* placeholder / tertiary text (WCAG AA on card2) */
 
   /* ── Accent — Microsoft Blue ───────────────────────── */
   --accent:    #0078d4;
